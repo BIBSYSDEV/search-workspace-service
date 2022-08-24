@@ -6,3 +6,6 @@ build
 
 # Idea
 .idea
+
+# sam
+.aws-sam

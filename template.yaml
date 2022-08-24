@@ -280,15 +280,21 @@ Resources:
           PredefinedMetricType: LambdaProvisionedConcurrencyUtilization
 
 
-  InitHandler:
+  DemoApiHandler:
     Type: AWS::Serverless::Function
     Properties:
-      #CodeUri: indexing-handlers
-      Handler: no.unit.nva.indexing.handlers.InitHandler::handleRequest #TODO
-      Runtime: java11
-      MemorySize: 1024
-      Role: !GetAtt ReadOnlyAccessS3Role.Arn
+      CodeUri: demo
+      Description: Demo Http handler
       Environment:
         Variables:
-          ELASTICSEARCH_ENDPOINT_ADDRESS: !GetAtt WorkspaceServiceOpenSearch.DomainEndpoint
-          ELASTICSEARCH_REGION: !Ref "AWS::Region"
+          ALLOWED_ORIGIN: '*'
+      Events:
+        RestEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /message
+            RestApiId: !Ref SearchWorkspaceServiceApi
+      Handler: no.unit.nva.search.SearchResourcesApiHandler::handleRequest
+      Runtime: java11
+      Role: !GetAtt ReadOnlyAccessS3Role.Arn
