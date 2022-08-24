@@ -208,7 +208,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda
 
-  NvaSearchResourcesApiFunction:
+  WorkspaceSearchResourcesApiFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: search-resources-api
@@ -235,34 +235,12 @@ Resources:
             Method: get
             RestApiId: !Ref SearchWorkspaceServiceApi
 
-  NvaSearchMessagesHandler:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: search-resources-api
-      Handler: no.unit.nva.search.SearchHandler::handleRequest
-      Runtime: java11
-      Role: !GetAtt ReadOnlyAccessElasticSearchRole.Arn
-      Environment:
-        Variables:
-          ALLOWED_ORIGIN: '*'
-          ELASTICSEARCH_ENDPOINT_ADDRESS: !GetAtt WorkspaceServiceOpenSearch.DomainEndpoint
-          ELASTICSEARCH_REGION: !Ref "AWS::Region"
-          IDENTITY_SERVICE_SECRET_NAME: 'IdentityServiceSecret-' #TODO update when secret name is updated
-          IDENTITY_SERVICE_SECRET_KEY: 'IdentityServiceSecretKey'
-          API_HOST: !Sub 'api.${CustomDomain}'
-      Events:
-        GetEvent:
-          Type: Api
-          Properties:
-            Path: /messages
-            Method: get
-            RestApiId: !Ref SearchWorkspaceServiceApi
 
   OpenSearchPublishingRequestsHandler:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: search-resources-api
-      Handler: no.unit.nva.search.SearchHandler::handleRequest
+      Handler: no.unit.nva.search.SearchHandler::handleRequest #TODO
       Runtime: java11
       Role: !GetAtt ReadOnlyAccessElasticSearchRole.Arn
       Environment:
@@ -288,11 +266,11 @@ Resources:
     Properties:
       MaxCapacity: !Ref MaxConcurrency
       MinCapacity: !Ref MinConcurrency
-      ResourceId: !Sub function:${NvaSearchResourcesApiFunction}:live
+      ResourceId: !Sub function:${WorkspaceSearchResourcesApiFunction}:live
       RoleARN: !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/lambda.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_LambdaConcurrency
       ScalableDimension: lambda:function:ProvisionedConcurrency
       ServiceNamespace: lambda
-    DependsOn: NvaSearchResourcesApiFunctionAliaslive
+    DependsOn: WorkspaceSearchResourcesApiFunctionAliaslive
 
   SearchResourcesApiFunctionScalingPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
@@ -310,7 +288,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: indexing-handlers
-      Handler: no.unit.nva.indexing.handlers.InitHandler::handleRequest
+      Handler: no.unit.nva.indexing.handlers.InitHandler::handleRequest #TODO
       Runtime: java11
       MemorySize: 1024
       Role: !GetAtt ReadOnlyAccessS3Role.Arn
