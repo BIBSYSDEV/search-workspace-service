@@ -283,7 +283,7 @@ Resources:
   DemoApiHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: demo
+      #CodeUri: demo
       Description: Demo Http handler
       Environment:
         Variables:
