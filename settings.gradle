@@ -11,10 +11,11 @@
 rootProject.name = 'search-workspace-service'
 enableFeaturePreview('VERSION_CATALOGS')
 
+/*
 include 'search-commons'
 include 'search-testing'
-include 'search-resources-api'
 include 'indexing-handlers'
-git
+
+ */
 
 include('lib')

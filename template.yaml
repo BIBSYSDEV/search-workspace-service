@@ -187,6 +187,7 @@ Resources:
       AccessLogSetting:
         DestinationArn: !GetAtt ApiAccessLogGroup.Arn
         Format: '{ "apiId": "$context.apiId", "requestId": "$context.requestId", "requestTime": "$context.requestTime", "requestTimeEpoch": "$context.requestTimeEpoch", "httpMethod": "$context.httpMethod", "path": "$context.path", "status": "$context.status",  "error.message": "$context.error.message" }'
+      StageName: SANDBOX #TODO
       EndpointConfiguration: REGIONAL
       DefinitionBody:
         'Fn::Transform':
@@ -211,7 +212,7 @@ Resources:
   WorkspaceSearchResourcesApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: search-resources-api
+      #CodeUri: search-resources-api
       Handler: no.unit.nva.search.SearchResourcesApiHandler::handleRequest
       Runtime: java11
       AutoPublishAlias: live
@@ -239,7 +240,7 @@ Resources:
   OpenSearchPublishingRequestsHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: search-resources-api
+      #CodeUri: search-resources-api
       Handler: no.unit.nva.search.SearchHandler::handleRequest #TODO
       Runtime: java11
       Role: !GetAtt ReadOnlyAccessElasticSearchRole.Arn
@@ -287,7 +288,7 @@ Resources:
   InitHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: indexing-handlers
+      #CodeUri: indexing-handlers
       Handler: no.unit.nva.indexing.handlers.InitHandler::handleRequest #TODO
       Runtime: java11
       MemorySize: 1024
