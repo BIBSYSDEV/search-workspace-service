@@ -145,11 +145,6 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              AWS: !GetAtt TriggerExecutionRole.Arn
-            Action: 'es:*'
-            Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
-          - Effect: Allow
-            Principal:
               AWS: !GetAtt ReadOnlyAccessElasticSearchRole.Arn
             Action:
               - es:ESHttpPost
@@ -173,7 +168,7 @@ Resources:
           InstanceType: t2.medium.elasticsearch
         }
       ]
-      OpenSearchEngineVersion: "OpenSearch_2.0"
+      EngineVersion: "OpenSearch_2.0"
       EBSOptions:
         EBSEnabled: true
         VolumeSize: 10
