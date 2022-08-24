@@ -168,7 +168,7 @@ Resources:
           InstanceType: t2.medium.search
         }
       ]
-      EngineVersion: "OpenSearch_2.0"
+      EngineVersion: "OpenSearch_1.3"
       EBSOptions:
         EBSEnabled: true
         VolumeSize: 10
