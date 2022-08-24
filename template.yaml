@@ -155,17 +155,17 @@ Resources:
       ClusterConfig: !If [ LargeElasticSearch,
         {
             DedicatedMasterEnabled: true,
-            DedicatedMasterType: t2.medium.elasticsearch,
+            DedicatedMasterType: t2.medium.search,
             DedicatedMasterCount: 3,
             InstanceCount: 2,
             ZoneAwarenessEnabled: false,
-            InstanceType: t2.medium.elasticsearch
+            InstanceType: t2.medium.search
         },
         {
           DedicatedMasterEnabled: false,
           InstanceCount: 1,
           ZoneAwarenessEnabled: false,
-          InstanceType: t2.medium.elasticsearch
+          InstanceType: t2.medium.search
         }
       ]
       EngineVersion: "OpenSearch_2.0"
