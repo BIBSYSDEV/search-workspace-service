@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/search-workspace-service.iml" filepath="$PROJECT_DIR$/.idea/search-workspace-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/search-workspace-service.lib.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/search-workspace-service.lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/search-workspace-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/search-workspace-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/search-workspace-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/search-workspace-service.test.iml" />
     </modules>
   </component>
 </project>
