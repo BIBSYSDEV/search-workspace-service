@@ -11,8 +11,8 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
  */
 public class SampleApiGateWayHandler extends ApiGatewayHandler<Void, Void> {
 
-    public SampleApiGateWayHandler(Class<Void> iclass) {
-        super(iclass);
+    public SampleApiGateWayHandler() {
+        super(Void.class);
     }
 
     @Override
