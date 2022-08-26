@@ -23,11 +23,9 @@ dependencies {
     api 'org.apache.commons:commons-math3:3.6.1'
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:31.1-jre'
+    implementation libs.guava
 
-    implementation 'com.github.bibsysdev:core:1.25.2'
-    implementation 'com.github.bibsysdev:apigateway:1.25.2'
-    
+    implementation libs.bundles.nva
 }
 
 testing {
