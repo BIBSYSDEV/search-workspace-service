@@ -1,0 +1,14 @@
+[versions]
+guava = { strictly = '31.0.1-jre' }
+nvaCommons = { strictly = '1.25.2'}
+
+
+[libraries]
+guava = { group = 'com.google.guava', name = 'guava', version.ref = 'guava' }
+nva-core = { group = 'com.github.bibsysdev', name = 'core', version.ref = 'nvaCommons' }
+nva-apigateway = { group = 'com.github.bibsysdev', name = 'apigateway', version.ref = 'nvaCommons' }
+
+
+[bundles]
+nva = ['nva-core', 'nva-apigateway']
+
