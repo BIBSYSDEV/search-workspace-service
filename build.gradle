@@ -10,6 +10,7 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+    id 'pmd'
 }
 
 repositories {
@@ -36,4 +37,10 @@ testing {
             useJUnit('4.13.2')
         }
     }
+}
+
+pmd {
+    ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/ruleset.xml')
+    ruleSets = []
+    ignoreFailures = false
 }

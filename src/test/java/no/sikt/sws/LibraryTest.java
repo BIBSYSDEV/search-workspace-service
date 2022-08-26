@@ -3,9 +3,9 @@
  */
 package no.sikt.sws;
 
-import no.sikt.sws.Library;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertTrue;
 
 public class LibraryTest {
     @Test public void someLibraryMethodReturnsTrue() {

@@ -11,11 +11,4 @@
 rootProject.name = 'search-workspace-service'
 enableFeaturePreview('VERSION_CATALOGS')
 
-/*
-include 'search-commons'
-include 'search-testing'
-include 'indexing-handlers'
-
- */
-
 include('lib')
