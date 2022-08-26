@@ -17,11 +17,12 @@ public class SampleApiGateWayHandler extends ApiGatewayHandler<Void, Void> {
 
     @Override
     protected Void processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
+        System.out.println("Inner function processInput called from lambda");
         return null;
     }
 
     @Override
     protected Integer getSuccessStatusCode(Void input, Void output) {
-        return null;
+        return 200;
     }
 }
