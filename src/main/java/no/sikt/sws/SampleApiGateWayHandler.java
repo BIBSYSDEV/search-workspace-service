@@ -1,5 +1,6 @@
 package no.sikt.sws;
 
+
 import com.amazonaws.services.lambda.runtime.Context;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
