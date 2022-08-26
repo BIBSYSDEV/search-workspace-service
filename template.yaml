@@ -20,7 +20,7 @@ Parameters:
   CognitoUri:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Reference to Cognito Auth URI
-    Default: /SWS/CognitoUri
+    Default: /NVA/CognitoUri
   CognitoAuthorizerArn:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Reference to Cognito UserPool for the stage
@@ -35,7 +35,7 @@ Parameters:
     Default: search
   ResourcesBucket:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /SWS/Events/PersistedEntriesBucketName
+    Default: /NVA/Events/PersistedEntriesBucketName
 
   ElasticSearchSize:
     Type: String
