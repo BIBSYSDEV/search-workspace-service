@@ -9,23 +9,20 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 /**
  * Created for checking if external libraries have been imported properly.
  */
-public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse> {
+public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, Void> {
 
     public WorkspaceIndexHandler() {
         super(Void.class);
     }
 
     @Override
-    protected IndexResponse processInput(Void input, RequestInfo request, Context context) throws ApiGatewayException {
-        var httpMethod = RequestUtil.getRequestHttpMethod(request);
-
-        var response = "Lambda called with httpMethod " + httpMethod;
-        System.out.println(response);
-        return new IndexResponse(response);
+    protected Void processInput(Void input, RequestInfo request, Context context) throws ApiGatewayException {
+        System.out.println("Lambda called");
+        return null;
     }
 
     @Override
-    protected Integer getSuccessStatusCode(Void input, IndexResponse output) {
+    protected Integer getSuccessStatusCode(Void input, Void output) {
         return 200;
     }
 }
