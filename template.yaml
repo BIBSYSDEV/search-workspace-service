@@ -17,14 +17,15 @@ Globals:
       AllowOrigin: "'*'"
 
 Parameters:
-  CognitoUri:
-    Type: AWS::SSM::Parameter::Value<String>
-    Description: Reference to Cognito Auth URI
-    Default: /NVA/CognitoUri
-  CognitoAuthorizerArn:
-    Type: AWS::SSM::Parameter::Value<String>
-    Description: Reference to Cognito UserPool for the stage
-    Default: CognitoAuthorizerArn
+  #TODO: Comment this in when we're adding cognito
+  #CognitoUri:
+    #Type: AWS::SSM::Parameter::Value<String>
+    #Description: Reference to Cognito Auth URI
+    #Default: /SWS/CognitoUri
+  #CognitoAuthorizerArn:
+    #Type: AWS::SSM::Parameter::Value<String>
+    #Description: Reference to Cognito UserPool for the stage
+    #Default: CognitoAuthorizerArn
   CustomDomain:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Custom API to connect this lambda to
@@ -33,9 +34,7 @@ Parameters:
     Type: String
     Description: Base path mapping in CustomDomain
     Default: search
-  ResourcesBucket:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /NVA/Events/PersistedEntriesBucketName
+
 
   ElasticSearchSize:
     Type: String
