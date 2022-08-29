@@ -202,9 +202,6 @@ Resources:
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
-      Policies:
-        - AWSLambdaBasicExecutionRole
-        - AWSLambda_ReadOnlyAccess
       Events:
         RestEvent:
           Type: Api
