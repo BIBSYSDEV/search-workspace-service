@@ -154,7 +154,7 @@ Resources:
       CognitoOptions:
         Enabled: false
 
-  SearchWorkspaceServiceApi:
+  SWSApi:
     Type: AWS::Serverless::Api
     Properties:
       AccessLogSetting:
@@ -182,11 +182,11 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda
 
-  DemoApiHandler:
+  WorkspaceIndexHandler:
     Type: AWS::Serverless::Function
     Properties:
       #CodeUri: demo
-      Description: Demo Http handler
+      Description: Workspace-index handler
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -194,9 +194,9 @@ Resources:
         RestEvent:
           Type: Api
           Properties:
-            Method: post
-            Path: /message
-            RestApiId: !Ref SearchWorkspaceServiceApi
-      Handler: no.sikt.sws.SampleApiGateWayHandler::handleRequest
+            Method: post, get
+            Path: /workspace
+            RestApiId: !Ref SWSApi
+      Handler: no.sikt.sws.WorkspaceIndexHandler::handleRequest
       Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn

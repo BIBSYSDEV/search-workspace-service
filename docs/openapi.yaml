@@ -3,19 +3,19 @@ info:
   title: SWS Demo API
   version: 1.0.0
 paths:
-  /message:
+  /workspace:
     post:
-      summary: Send Message
+      summary: Access a workspace
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Message'
+              $ref: '#/components/schemas/Workspace'
       security: []
       x-amazon-apigateway-integration:
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DemoApiHandler.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
         responses: { }
         httpMethod: POST
         type: AWS_PROXY
@@ -39,8 +39,8 @@ components:
           type: integer
         detail:
           type: string
-    Message:
-      description: Message
+    Workspace:
+      description: A workspace is a private opensearch-partition
       type: object
       properties:
         text:
