@@ -10,6 +10,7 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+    id 'checkstyle'
     id 'pmd'
 }
 
@@ -43,4 +44,17 @@ pmd {
     ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/ruleset.xml')
     ruleSets = []
     ignoreFailures = false
+}
+
+checkstyle {
+    configFile = rootProject.resources.text.fromFile('config/checkstyle/checkstyle.xml').asFile()
+    showViolations = true
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required = false
+        html.required = true
+        html.stylesheet rootProject.resources.text.fromFile('config/checkstyle/checkstyle-simple.xsl')
+    }
 }
