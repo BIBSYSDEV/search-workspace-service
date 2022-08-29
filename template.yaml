@@ -187,7 +187,7 @@ Resources:
   WorkspaceIndexHandler:
     Type: AWS::Serverless::Function
     Properties:
-      #CodeUri: demo
+      CodeUri: .
       Description: Workspace-index handler
       Environment:
         Variables:

@@ -28,6 +28,7 @@ dependencies {
     implementation libs.guava
 
     implementation libs.bundles.nva
+    implementation libs.bundles.jackson
 }
 
 testing {
@@ -57,4 +58,10 @@ tasks.withType(Checkstyle) {
         html.required = true
         html.stylesheet rootProject.resources.text.fromFile('config/checkstyle/checkstyle-simple.xsl')
     }
+}
+
+test {
+    environment "ALLOWED_ORIGIN", "*"
+    environment "AWS_REGION", "eu-west-1"
+    environment "COGNITO_HOST", "https://example.com"
 }
