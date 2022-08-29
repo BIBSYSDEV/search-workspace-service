@@ -202,11 +202,14 @@ Resources:
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
       Events:
         RestEvent:
           Type: Api
           Properties:
-            Method: post, get
+            Method: post
             Path: /workspace
             RestApiId: !Ref SWSApi
       Handler: no.sikt.sws.WorkspaceIndexHandler::handleRequest
