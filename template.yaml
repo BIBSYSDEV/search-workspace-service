@@ -4,9 +4,9 @@ Description: >
   Search Workspace Service API and Handlers
 
 Globals:
-#  Function:
-#    Timeout: 60
-#    MemorySize: 1800
+  Function:
+    Timeout: 60
+    MemorySize: 1800
 #    Environment:
 #      Variables:
 #        COGNITO_URI: !Ref CognitoUri
@@ -26,14 +26,17 @@ Parameters:
     #Type: AWS::SSM::Parameter::Value<String>
     #Description: Reference to Cognito UserPool for the stage
     #Default: CognitoAuthorizerArn
-  CustomDomain:
-    Type: AWS::SSM::Parameter::Value<String>
-    Description: Custom API to connect this lambda to
-    Default: CustomDomain
-  CustomDomainBasePath:
-    Type: String
-    Description: Base path mapping in CustomDomain
-    Default: search
+  #CustomDomain:
+    #Type: AWS::SSM::Parameter::Value<String>
+    #Description: Custom API to connect this lambda to
+    #Default: CustomDomain
+  #CustomDomainBasePath:
+    #Type: String
+    #Description: Base path mapping in CustomDomain
+    #Default: search
+  #ResourcesBucket:
+   #Type: AWS::SSM::Parameter::Value<String>
+    #Default: /NVA/Events/PersistedEntriesBucketName
 
 
   ElasticSearchSize:
