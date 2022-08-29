@@ -9,15 +9,15 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 /**
  * Created for checking if external libraries have been imported properly
  */
-public class SampleApiGateWayHandler extends ApiGatewayHandler<Void, Void> {
+public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, Void> {
 
-    public SampleApiGateWayHandler() {
+    public WorkspaceIndexHandler() {
         super(Void.class);
     }
 
     @Override
     protected Void processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
-        System.out.println("Inner function processInput called from lambda");
+        System.out.println("Inner function processInput called from lambda with "+context);
         return null;
     }
 
