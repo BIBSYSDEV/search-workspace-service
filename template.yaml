@@ -4,12 +4,12 @@ Description: >
   Search Workspace Service API and Handlers
 
 Globals:
-  Function:
-    Timeout: 60
-    MemorySize: 1800
-    Environment:
-      Variables:
-        COGNITO_URI: !Ref CognitoUri
+#  Function:
+#    Timeout: 60
+#    MemorySize: 1800
+#    Environment:
+#      Variables:
+#        COGNITO_URI: !Ref CognitoUri
   Api:
     Cors:
       AllowMethods: "'PUT, GET,OPTIONS,DELETE,POST'"
