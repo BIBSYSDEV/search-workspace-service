@@ -3,9 +3,20 @@ info:
   title: SWS Demo API
   version: 1.0.0
 paths:
-  /workspace:
+  /workspace/{workspace}/{resource+}:
     post:
       summary: Access a workspace
+      parameters:
+        - name: workspace
+          in: path
+          required: true
+          type: string
+          description: The name of the workspace to perform the index operation on
+        - name: resource+
+          in: path
+          required: true
+          type: string
+          description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       requestBody:
         required: true
         content:
