@@ -3,9 +3,18 @@ info:
   title: SWS Demo API
   version: 1.0.0
 paths:
-  /workspace:
+  /workspace/{workspace}/{action}:
     post:
       summary: Access a workspace
+      parameters:
+        - name: workspace
+          in: path
+          required: true
+          type: string
+        - name: action
+          in: path
+          required: true
+          type: string
       requestBody:
         required: true
         content:

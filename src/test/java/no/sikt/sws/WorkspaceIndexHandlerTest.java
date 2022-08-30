@@ -11,7 +11,10 @@ import no.unit.nva.commons.json.JsonUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
+
 import static java.net.HttpURLConnection.HTTP_OK;
+import static no.sikt.sws.WorkspaceIndexHandler.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -33,8 +36,14 @@ public class WorkspaceIndexHandlerTest extends TestCase {
     @Test
     void shouldGiveResponse() throws ApiGatewayException, IOException {
 
+        var pathparams = Map.of(
+                WORKSPACE_IDENTIFIER, "sondre",
+                RESOURCE_IDENTIFIER, "index1/_mapping"
+        );
+
         var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
                 .withHttpMethod(HttpMethod.PUT.toString())
+                .withPathParameters(pathparams)
                 .build();
 
         handler.handleRequest(request, output, CONTEXT);
@@ -42,4 +51,5 @@ public class WorkspaceIndexHandlerTest extends TestCase {
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
+
 }
