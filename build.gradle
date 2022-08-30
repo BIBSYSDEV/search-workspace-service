@@ -18,6 +18,7 @@ repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
     maven { url 'https://jitpack.io' }
+    maven { url "https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/release" }
 }
 
 dependencies {
@@ -27,8 +28,17 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
 
+    implementation libs.nva.json
     implementation libs.bundles.nva
     implementation libs.bundles.jackson
+
+    implementation libs.aws.java.sdk.core
+
+    testImplementation libs.bundles.testing
+}
+
+test {
+    useJUnitPlatform()
 }
 
 testing {

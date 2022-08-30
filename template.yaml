@@ -206,7 +206,31 @@ Resources:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Events:
-        RestEvent:
+        PutEvent:
+          Type: Api
+          Properties:
+            Method: put
+            Path: /workspace
+            RestApiId: !Ref SWSApi
+        HeadEvent:
+         Type: Api
+         Properties:
+           Method: head
+           Path: /workspace
+           RestApiId: !Ref SWSApi
+        DeleteEvent:
+          Type: Api
+          Properties:
+            Method: delete
+            Path: /workspace
+            RestApiId: !Ref SWSApi
+        GetEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /workspace
+            RestApiId: !Ref SWSApi
+        PostEvent:
           Type: Api
           Properties:
             Method: post
