@@ -5,24 +5,18 @@ info:
 paths:
   /workspace/{workspace}:
     get:
-      summary: Access a workspace
+      summary: Workspace resources (indexes)
       parameters:
         - name: workspace
           in: path
           required: true
           description: The name of the workspace to perform the index operation on
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Workspace'
       security: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
         responses: { }
-        httpMethod: POST
+        httpMethod: GET
         type: AWS_PROXY
       responses:
         '200':
@@ -35,17 +29,15 @@ paths:
                 $ref: '#/components/schemas/Problem'
   /workspace/{workspace}/{resource+}:
     post:
-      summary: Access a workspace
+      summary: Add content to resource
       parameters:
         - name: workspace
           in: path
           required: true
-          type: string
           description: The name of the workspace to perform the index operation on
         - name: resource+
           in: path
           required: true
-          type: string
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       requestBody:
         required: true
@@ -69,8 +61,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Problem'
-    get:
-      summary: Access a workspace
+    put:
+      summary: Add content to resource
       parameters:
         - name: workspace
           in: path
@@ -81,7 +73,7 @@ paths:
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
@@ -91,7 +83,79 @@ paths:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
         responses: { }
-        httpMethod: POST
+        httpMethod: PUT
+        type: AWS_PROXY
+      responses:
+        '200':
+          description: Ok
+        '201':
+          description: Created
+        '204':
+          description: No content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    delete:
+      summary: Deletes a resource (index)
+      parameters:
+        - name: workspace
+          in: path
+          required: true
+          description: The name of the workspace to perform the index operation on
+        - name: resource+
+          in: path
+          required: true
+          description: The name of the resource. Can be any valid opensearch index-path and can include slashes
+      security: []
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
+        responses: { }
+        httpMethod: DELETE
+        type: AWS_PROXY
+      responses:
+        '200':
+          description: Ok
+        '204':
+          description: Deleted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    get:
+      summary: Access a resource (index)
+      parameters:
+        - name: workspace
+          in: path
+          required: true
+          description: The name of the workspace to perform the index operation on
+        - name: resource+
+          in: path
+          required: true
+          description: The name of the resource. Can be any valid opensearch index-path and can include slashes
+      security: []
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
+        responses: { }
+        httpMethod: GET
         type: AWS_PROXY
       responses:
         '200':
