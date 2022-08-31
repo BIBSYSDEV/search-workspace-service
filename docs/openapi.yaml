@@ -3,6 +3,36 @@ info:
   title: SWS Demo API
   version: 1.0.0
 paths:
+  /workspace/{workspace}:
+    get:
+      summary: Access a workspace
+      parameters:
+        - name: workspace
+          in: path
+          required: true
+          description: The name of the workspace to perform the index operation on
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Workspace'
+      security: []
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
+        responses: { }
+        httpMethod: POST
+        type: AWS_PROXY
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
   /workspace/{workspace}/{resource+}:
     post:
       summary: Access a workspace
@@ -33,6 +63,39 @@ paths:
       responses:
         '202':
           description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    get:
+      summary: Access a workspace
+      parameters:
+        - name: workspace
+          in: path
+          required: true
+          description: The name of the workspace to perform the index operation on
+        - name: resource+
+          in: path
+          required: true
+          description: The name of the resource. Can be any valid opensearch index-path and can include slashes
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Workspace'
+      security: []
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
+        responses: { }
+        httpMethod: POST
+        type: AWS_PROXY
+      responses:
+        '200':
+          description: Ok
         '400':
           description: Bad Request
           content:
