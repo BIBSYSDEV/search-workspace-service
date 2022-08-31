@@ -5,13 +5,14 @@ info:
 paths:
   /workspace/{workspace}:
     get:
-      summary: Workspace resources (indexes)
+      summary: Collection of workspace-resources (indexes)
       parameters:
         - name: workspace
           in: path
           required: true
           description: The name of the workspace to perform the index operation on
-      security: []
+      security:
+        - CognitoUserPool: [ 'https://api.nva.unit.no/scopes/backend', 'https://api.nva.unit.no/scopes/frontend', 'aws.cognito.signin.user.admin' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -29,7 +30,7 @@ paths:
                 $ref: '#/components/schemas/Problem'
   /workspace/{workspace}/{resource+}:
     post:
-      summary: Add content to resource
+      summary: Add content to a workspace-resource
       parameters:
         - name: workspace
           in: path
@@ -83,7 +84,7 @@ paths:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
         responses: { }
-        httpMethod: GET
+        httpMethod: POST
         type: AWS_PROXY
       responses:
         '200':
@@ -115,7 +116,7 @@ paths:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
         responses: { }
-        httpMethod: PUT
+        httpMethod: POST
         type: AWS_PROXY
       responses:
         '200':
@@ -151,7 +152,7 @@ paths:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
         responses: { }
-        httpMethod: HEAD
+        httpMethod: POST
         type: AWS_PROXY
       responses:
         '200':
@@ -183,7 +184,7 @@ paths:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
         responses: { }
-        httpMethod: DELETE
+        httpMethod: POST
         type: AWS_PROXY
       responses:
         '200':
