@@ -7,9 +7,9 @@ Globals:
   Function:
     Timeout: 60
     MemorySize: 1800
-#    Environment:
-#      Variables:
-#        COGNITO_URI: !Ref CognitoUri
+    Environment:
+      Variables:
+        COGNITO_URI: !Ref CognitoUri
   Api:
     Cors:
       AllowMethods: "'PUT, GET,OPTIONS,DELETE,POST'"
@@ -18,14 +18,14 @@ Globals:
 
 Parameters:
   #TODO: Comment this in when we're adding cognito
-  #CognitoUri:
-    #Type: AWS::SSM::Parameter::Value<String>
-    #Description: Reference to Cognito Auth URI
-    #Default: /SWS/CognitoUri
-  #CognitoAuthorizerArn:
-    #Type: AWS::SSM::Parameter::Value<String>
-    #Description: Reference to Cognito UserPool for the stage
-    #Default: CognitoAuthorizerArn
+  CognitoUri:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Reference to Cognito Auth URI
+    Default: /SWS/CognitoUri
+  CognitoAuthorizerArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Reference to Cognito UserPool for the stage
+    Default: CognitoAuthorizerArn
   #CustomDomain:
     #Type: AWS::SSM::Parameter::Value<String>
     #Description: Custom API to connect this lambda to
@@ -179,6 +179,72 @@ Resources:
           Name: 'AWS::Include'
           Parameters:
             Location: ./docs/openapi.yaml
+  #============================ Deploy API ============================================================================#
+  # This solves the problem described here:
+  # https://stackoverflow.com/questions/41423439/cloudformation-doesnt-deploy-to-api-gateway-stages-on-update
+  #====================================================================================================================#
+
+  ApiGatewayCreateDeploymentLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        - PolicyName: ApiGatewayAdmin
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - apigateway:POST
+                Resource: !Sub 'arn:aws:apigateway:${AWS::Region}::/restapis/${SWSApi}/deployments'
+
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-lambda-function-code-cfnresponsemodule.html
+  ApiGatewayCreateDeploymentLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.lambda_handler
+      Timeout: 30
+      Role: !GetAtt ApiGatewayCreateDeploymentLambdaRole.Arn
+      Runtime: python3.8
+      Code:
+        ZipFile: |
+          import json, boto3
+          import cfnresponse
+          client = boto3.client('apigateway')
+
+          def lambda_handler(event, context):
+            responseData = {}
+            responseStatus = cfnresponse.SUCCESS
+            if event['RequestType'] == 'Update':
+              try:
+                properties = event['ResourceProperties']
+                response = client.create_deployment(
+                  restApiId=properties['RestApiId'],
+                  stageName=properties['StageName'],
+                  description='Deployed from Custom Resource'
+                )
+              except:
+                responseStatus = cfnresponse.FAILED
+
+            cfnresponse.send(event, context, responseStatus, responseData)
+
+  ApiGatewayCreateDeploymentCustomResource:
+    Type: AWS::CloudFormation::CustomResource
+    Properties:
+      ServiceToken: !GetAtt ApiGatewayCreateDeploymentLambda.Arn
+      RestApiId: !Ref   SWSApi
+      StageName: !Ref   SWSApi.Stage
+      Timestamp: '${BUILD_TIMESTAMP}'
+      AuthorizerArn: !Ref CognitoAuthorizerArn
 
   CustomCodeDeployServiceRole:
     Type: AWS::IAM::Role
