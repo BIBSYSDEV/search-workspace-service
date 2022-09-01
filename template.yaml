@@ -319,6 +319,12 @@ Resources:
         CaseSensitive: true
       UserPoolName: "SWSUserPool"
 
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref UserPool
+      Domain: "sws-auth"
+
   ResourceServerScopes:
     Type: AWS::Cognito::UserPoolResourceServer
     Properties:
