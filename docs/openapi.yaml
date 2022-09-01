@@ -17,11 +17,15 @@ paths:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
         responses: { }
-        httpMethod: GET
+        httpMethod: POST
         type: AWS_PROXY
       responses:
         '200':
           description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenSearchResponse'
         '400':
           description: Bad Request
           content:
@@ -30,7 +34,7 @@ paths:
                 $ref: '#/components/schemas/Problem'
   /workspace/{workspace}/{resource+}:
     post:
-      summary: Add content to a workspace-resource
+      summary: Create workspace/resource and/or add  content to a workspace-resource
       parameters:
         - name: workspace
           in: path
@@ -61,6 +65,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpenSearchResponse'
+        '201':
+          description: Created
+        '204':
+          description: No content
         '400':
           description: Bad Request
           content:
@@ -100,7 +108,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
     put:
-      summary: Add content to a workspace-resource
+      summary: Add or modify content in a workspace-resource
       parameters:
         - name: workspace
           in: path
@@ -218,8 +226,8 @@ components:
           type: integer
         detail:
           type: string
-      OpenSearchResponse:
-        type: object
+    OpenSearchResponse:
+      type: object
     Workspace:
       description: A workspace is a private opensearch-partition
       type: object

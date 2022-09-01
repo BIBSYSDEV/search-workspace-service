@@ -71,15 +71,6 @@ checkstyle {
     showViolations = true
 }
 
-tasks.withType(Checkstyle) {
-    reports {
-        xml.required = false
-        html.required = true
-        html.stylesheet rootProject.resources.text.fromFile('config/checkstyle/checkstyle-simple.xsl')
-    }
-}
-
-
 //jacocoTestReport {
 //    reports {
 //        xml.required = true
@@ -102,18 +93,6 @@ test {
 //    finalizedBy jacocoTestReport
 }
 
-
-
-def getReportTasks(JacocoReport pRootTask) {
-    getProjectList().collect {
-        it.tasks.withType(JacocoReport).findAll { it != pRootTask }
-    }.flatten()
-}
-
-//check.dependsOn jacocoTestCoverageVerification
-//jacocoTestCoverageVerification.dependsOn(jacocoTestReport)
-
-
 //jacocoTestCoverageVerification {
 //    violationRules {
 //        rule {
@@ -133,7 +112,27 @@ def getReportTasks(JacocoReport pRootTask) {
 //        }
 //    }
 //}
-//
+
+//check.dependsOn jacocoTestCoverageVerification
+//jacocoTestCoverageVerification.dependsOn(jacocoTestReport)
+
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required = false
+        html.required = true
+        html.stylesheet rootProject.resources.text.fromFile('config/checkstyle/checkstyle-simple.xsl')
+    }
+}
+
+
+def getReportTasks(JacocoReport pRootTask) {
+    getProjectList().collect {
+        it.tasks.withType(JacocoReport).findAll { it != pRootTask }
+    }.flatten()
+}
+
+
 //task jacocoMerge(type: JacocoMerge) {
 //    group = LifecycleBasePlugin.VERIFICATION_GROUP
 //    description = 'Merge the JaCoCo data files from all subprojects into one'
@@ -161,7 +160,7 @@ def getReportTasks(JacocoReport pRootTask) {
 //        executionData = executionData.filter { it.canRead() }
 //    }
 //}
-//
+
 //task jacocoRootReport(type: JacocoReport, dependsOn: tasks.jacocoMerge) {
 //    group = LifecycleBasePlugin.VERIFICATION_GROUP
 //    description = 'Generates an aggregate report from all subprojects'
