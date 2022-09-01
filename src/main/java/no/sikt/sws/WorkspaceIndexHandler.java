@@ -7,7 +7,6 @@ import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
 
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
-import static no.sikt.sws.constants.ApplicationConstants.AWS_REGION;
 
 /**
  * Created for checking if external libraries have been imported properly.
@@ -28,12 +27,10 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
         var action = request.getPathParameter(RESOURCE_IDENTIFIER);
 
         var endpoint = OPENSEARCH_ENDPOINT_ADDRESS;
-        var region = AWS_REGION;
 
         var response = httpMethod + " " + endpoint + "/" + workspace + "/" + action;
 
         System.out.println(endpoint);
-        System.out.println(region);
 
         System.out.println(response);
         return new IndexResponse(response);
