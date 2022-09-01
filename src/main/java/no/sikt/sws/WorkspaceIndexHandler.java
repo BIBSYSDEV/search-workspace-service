@@ -26,11 +26,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
         var workspace = request.getPathParameter(WORKSPACE_IDENTIFIER);
         var action = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        var endpoint = OPENSEARCH_ENDPOINT_ADDRESS;
-
-        var response = httpMethod + " " + endpoint + "/" + workspace + "/" + action;
-
-        System.out.println(endpoint);
+        var response = httpMethod + " " + OPENSEARCH_ENDPOINT_ADDRESS + "/" + workspace + "/" + action;
 
         System.out.println(response);
         return new IndexResponse(response);

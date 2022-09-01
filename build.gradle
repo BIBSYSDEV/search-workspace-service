@@ -41,6 +41,8 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
 
+    implementation libs.opensearch.rest.client
+
     implementation libs.nva.json
     implementation libs.bundles.nva
     implementation libs.bundles.jackson
