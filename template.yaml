@@ -6,9 +6,6 @@ Globals:
   Function:
     Timeout: 60
     MemorySize: 1800
-    Environment:
-      Variables:
-        COGNITO_URI: !Ref CognitoUri
   Api:
     Cors:
       AllowMethods: "'PUT, GET,OPTIONS,DELETE,POST'"
@@ -16,15 +13,7 @@ Globals:
       AllowOrigin: "'*'"
 
 Parameters:
-  #TODO: Comment this in when we're adding cognito
-  CognitoUri:
-    Type: AWS::SSM::Parameter::Value<String>
-    Description: Reference to Cognito Auth URI
-    Default: /SWS/CognitoUri
-  CognitoAuthorizerArn:
-    Type: AWS::SSM::Parameter::Value<String>
-    Description: Reference to Cognito UserPool for the stage
-    Default: CognitoAuthorizerArn
+  #TODO: Uncomment this in when we're adding custom domain
   #CustomDomain:
     #Type: AWS::SSM::Parameter::Value<String>
     #Description: Custom API to connect this lambda to
@@ -33,10 +22,6 @@ Parameters:
     #Type: String
     #Description: Base path mapping in CustomDomain
     #Default: search
-  #ResourcesBucket:
-   #Type: AWS::SSM::Parameter::Value<String>
-    #Default: /NVA/Events/PersistedEntriesBucketName
-
 
   ElasticSearchSize:
     Type: String
@@ -240,7 +225,7 @@ Resources:
       RestApiId: !Ref   SWSApi
       StageName: !Ref   SWSApi.Stage
       Timestamp: '${BUILD_TIMESTAMP}'
-      AuthorizerArn: !Ref CognitoAuthorizerArn
+      AuthorizerArn: !GetAtt UserPool.Arn
 
   CustomCodeDeployServiceRole:
     Type: AWS::IAM::Role
@@ -339,7 +324,7 @@ Resources:
 
 
   BackendApplicationClient:
-    DependsOn:   ResourceServerScopes
+    DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
       UserPoolId: !Ref UserPool
