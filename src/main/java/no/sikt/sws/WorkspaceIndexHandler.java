@@ -30,10 +30,10 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
         var endpoint = OPENSEARCH_ENDPOINT_ADDRESS;
         var region = AWS_REGION;
 
-        var response = httpMethod + " opensearch/" + workspace + "/" + action
-                + " endpoint: " + endpoint + " region: " + region;
+        var response = httpMethod + " " + endpoint + "/" + workspace + "/" + action;
 
         System.out.println(endpoint);
+        System.out.println(region);
 
         System.out.println(response);
         return new IndexResponse(response);
