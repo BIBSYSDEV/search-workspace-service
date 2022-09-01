@@ -302,3 +302,58 @@ Resources:
       Handler: no.sikt.sws.WorkspaceIndexHandler::handleRequest
       Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn
+
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+      MfaConfiguration: "OFF"
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: true
+          Required: false
+      UsernameConfiguration:
+        CaseSensitive: true
+      UserPoolName: "SWSUserPool"
+
+  ResourceServerScopes:
+    Type: AWS::Cognito::UserPoolResourceServer
+    Properties:
+      Identifier: https://api.sws.unit.no/scopes
+      Name: Scopes for backend
+      Scopes:
+        - ScopeDescription: Necessary scope for backend authentication to work
+          ScopeName: backend
+        - ScopeDescription: Frontend scope
+          ScopeName: frontend
+      UserPoolId: !Ref UserPool
+
+
+  BackendApplicationClient:
+    DependsOn:   ResourceServerScopes
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      AllowedOAuthFlows:
+        - client_credentials
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - https://api.sws.unit.no/scopes/backend
+      ClientName: BackendApplicationClient
+      CallbackURLs:
+        - https://api.sws.unit.no/scopes # not necessary maybe.
+      DefaultRedirectURI: https://api.sws.unit.no/scopes
+      ExplicitAuthFlows:
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      GenerateSecret: true
+      IdTokenValidity: 15
+      AccessTokenValidity: 15
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
