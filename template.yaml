@@ -202,6 +202,8 @@ Resources:
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
+          OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
+          AWS_REGION: !Ref "AWS::Region"
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
