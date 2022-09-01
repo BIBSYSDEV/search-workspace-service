@@ -6,6 +6,9 @@ import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
 
+import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
+import static no.sikt.sws.constants.ApplicationConstants.AWS_REGION;
+
 /**
  * Created for checking if external libraries have been imported properly.
  */
@@ -24,10 +27,18 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
         var workspace = request.getPathParameter(WORKSPACE_IDENTIFIER);
         var action = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        var response = httpMethod + " opensearch/" +workspace + "/" + action;
+        var endpoint = OPENSEARCH_ENDPOINT_ADDRESS;
+        var region = AWS_REGION;
+
+        var response = httpMethod + " opensearch/" + workspace + "/" + action
+                + " endpoint: " + endpoint + " region: " + region;
+
+        System.out.println(endpoint);
+
         System.out.println(response);
         return new IndexResponse(response);
     }
+
 
     @Override
     protected Integer getSuccessStatusCode(Void input, IndexResponse output) {
