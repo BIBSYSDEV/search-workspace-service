@@ -16,10 +16,10 @@ public class RestClientOpenSearch {
 
     private static final String ELASTIC_SEARCH_SERVICE_NAME = "es";
 
-    public Response sendRequest(HttpMethod httpMethod, String url) throws IOException {
+    public Response sendRequest(HttpMethodName httpMethod, String url) throws IOException {
 
         Request<Void> request = new DefaultRequest<>("es"); //Request to ElasticSearch
-        request.setHttpMethod(HttpMethodName.GET);
+        request.setHttpMethod(httpMethod);
         request.setEndpoint(URI.create("https://" + url));
 
         var awsSigner = getAws4Signer();
@@ -32,25 +32,11 @@ public class RestClientOpenSearch {
         var httpResponseHandler = new HttpResponseHandler<String>() {
             @Override
             public String handle(HttpResponse response) throws Exception {
-                System.out.println("Handling response: " + response.toString());
-                return response.toString();
-            }
-
-            @Override
-            public boolean needsConnectionLeftOpen() {
-                return false;
-            }
-        };
-
-        var errorResponseHandler = new HttpResponseHandler<SdkBaseException>() {
-
-            @Override
-            public AmazonClientException handle(HttpResponse response) throws Exception {
                 var bytes = response.getContent().readAllBytes();
                 var responseCode = response.getStatusCode();
                 var bodyString = new String(bytes);
-                System.out.println("Handling error: " + responseCode + " " + bodyString);
-                return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
+                System.out.println("Handling response: " + responseCode + " " + bodyString);
+                return bodyString;
             }
 
             @Override
@@ -63,7 +49,6 @@ public class RestClientOpenSearch {
                 .requestExecutionBuilder()
                 .executionContext(new ExecutionContext(true))
                 .request(request)
-                .errorResponseHandler(errorResponseHandler)
                 .execute(httpResponseHandler);
 
         return rsp;

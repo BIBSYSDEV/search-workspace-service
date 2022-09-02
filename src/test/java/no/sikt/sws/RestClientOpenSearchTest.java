@@ -1,12 +1,11 @@
 package no.sikt.sws;
 
 import com.amazonaws.Response;
+import com.amazonaws.http.HttpMethodName;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
-import static com.amazonaws.HttpMethod.PUT;
 
 public class RestClientOpenSearchTest {
 
@@ -16,7 +15,7 @@ public class RestClientOpenSearchTest {
     void sendsRequestWithCorrectParams() throws IOException {
         RestClientOpenSearch restClientOpenSearch = new RestClientOpenSearch();
 
-        Response response = restClientOpenSearch.sendRequest(PUT, "fredrik-test");
+        Response response = restClientOpenSearch.sendRequest(HttpMethodName.PUT, "fredrik-test");
 
         assert (response.getHttpResponse().getStatusCode() == 200);
     }

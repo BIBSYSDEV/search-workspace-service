@@ -1,6 +1,6 @@
 package no.sikt.sws;
 
-import com.amazonaws.HttpMethod;
+import com.amazonaws.http.HttpMethodName;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.core.JacocoGenerated;
 
@@ -11,9 +11,9 @@ public class RequestUtil {
 
     public static final String HTTP_METHOD = "httpMethod";
 
-    public static HttpMethod getRequestHttpMethod(RequestInfo requestInfo) {
+    public static HttpMethodName getRequestHttpMethod(RequestInfo requestInfo) {
         return attempt(() ->
-                HttpMethod.valueOf(
+                HttpMethodName.valueOf(
                         requestInfo.getOtherProperties().get(HTTP_METHOD).toString()
                 )
         ).orElseThrow();
