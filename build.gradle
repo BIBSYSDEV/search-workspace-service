@@ -83,7 +83,7 @@ checkstyle {
 test {
     environment "ALLOWED_ORIGIN", "*"
     environment "COGNITO_HOST", "https://example.com"
-    environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost"
+    environment "OPENSEARCH_ENDPOINT_ADDRESS", "https://search-swsopensearch-tbhgnvnhfzpe-drjtksgvwafnkcmfhyz77qrcg4.eu-west-1.es.amazonaws.com"//"localhost"
 
     useJUnitPlatform {}
     failFast = false

@@ -3,11 +3,13 @@ package no.sikt.sws;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
 import junit.framework.TestCase;
+import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.stubs.FakeContext;
 import no.unit.nva.testutils.HandlerRequestBuilder;
 import nva.commons.apigateway.GatewayResponse;
-import nva.commons.apigateway.exceptions.ApiGatewayException;
-import no.unit.nva.commons.json.JsonUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,8 +21,6 @@ import static no.sikt.sws.WorkspaceIndexHandler.WORKSPACE_IDENTIFIER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 public class WorkspaceIndexHandlerTest extends TestCase {
 
@@ -35,6 +35,7 @@ public class WorkspaceIndexHandlerTest extends TestCase {
     }
 
     @Test
+    @Disabled("Disabled until we have mocking of opensearch")
     void shouldGiveResponse() throws IOException {
 
         var pathparams = Map.of(
