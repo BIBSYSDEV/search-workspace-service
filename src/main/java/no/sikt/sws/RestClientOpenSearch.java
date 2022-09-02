@@ -45,10 +45,12 @@ public class RestClientOpenSearch {
         var errorResponseHandler = new HttpResponseHandler<SdkBaseException>() {
 
             @Override
-            public SdkBaseException handle(HttpResponse response) throws Exception {
-                var body = response.getContent().toString();
-                System.out.println("Handling error: " + response.getStatusCode() + " " + body);
-                return new SdkBaseException("OpenSearchError: "+body);
+            public AmazonClientException handle(HttpResponse response) throws Exception {
+                var bytes = response.getContent().readAllBytes();
+                var responseCode = response.getStatusCode();
+                var bodyString = new String(bytes);
+                System.out.println("Handling error: " + responseCode + " " + bodyString);
+                return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
             }
 
             @Override
