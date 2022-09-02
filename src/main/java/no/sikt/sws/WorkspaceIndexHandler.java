@@ -34,8 +34,14 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
         var restClientOpenSearch = new RestClientOpenSearch();
         try {
             var response = restClientOpenSearch.sendRequest(httpMethod, url);
-            System.out.println(response);
-            return new IndexResponse(response.toString());
+            System.out.println(response.toString());
+
+            var bytes = response.getHttpResponse().getContent().readAllBytes();
+            var bodyString = new String(bytes);
+
+            System.out.println(bodyString);
+
+            return new IndexResponse(bodyString);
 
         } catch (IOException e) {
             e.printStackTrace();
