@@ -41,8 +41,6 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
 
-    implementation libs.opensearch.rest.client
-
     implementation libs.nva.json
     implementation libs.bundles.nva
     implementation libs.bundles.jackson
@@ -84,7 +82,6 @@ test {
     environment "ALLOWED_ORIGIN", "*"
     environment "COGNITO_HOST", "https://example.com"
     environment "ELASTICSEARCH_REGION", "eu-west-1"
-    environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost"
 
     useJUnitPlatform {}
     failFast = false
