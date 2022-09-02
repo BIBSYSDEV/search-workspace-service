@@ -9,7 +9,7 @@ import nva.commons.core.JacocoGenerated;
 import java.io.IOException;
 import java.net.URI;
 
-import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
+import static no.sikt.sws.constants.ApplicationConstants.ELASTICSEARCH_REGION;
 
 public class RestClientOpenSearch {
 
@@ -73,7 +73,7 @@ public class RestClientOpenSearch {
     private AWS4Signer getAws4Signer() {
         AWS4Signer signer = new AWS4Signer();
         signer.setServiceName(ELASTIC_SEARCH_SERVICE_NAME);
-        signer.setRegionName(OPENSEARCH_ENDPOINT_ADDRESS);
+        signer.setRegionName(ELASTICSEARCH_REGION);
         return signer;
     }
 }
