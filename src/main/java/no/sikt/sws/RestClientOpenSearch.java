@@ -4,12 +4,17 @@ import com.amazonaws.*;
 import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.http.*;
+import nva.commons.core.JacocoGenerated;
 
 import java.io.IOException;
 import java.net.URI;
 
+import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
+
 public class RestClientOpenSearch {
 
+
+    private static final String ELASTIC_SEARCH_SERVICE_NAME = "es";
 
     public Response sendRequest(HttpMethod httpMethod, String url) throws IOException {
 
@@ -17,7 +22,7 @@ public class RestClientOpenSearch {
         request.setHttpMethod(HttpMethodName.GET);
         request.setEndpoint(URI.create("https://" + url));
 
-        var awsSigner = new AWS4Signer();
+        var awsSigner = getAws4Signer();
         new DefaultAWSCredentialsProviderChain().getCredentials();
 
         var credentials = new DefaultAWSCredentialsProviderChain().getCredentials();
@@ -59,5 +64,13 @@ public class RestClientOpenSearch {
                 .execute(httpResponseHandler);
 
         return rsp;
+    }
+
+    @JacocoGenerated
+    private AWS4Signer getAws4Signer() {
+        AWS4Signer signer = new AWS4Signer();
+        signer.setServiceName(ELASTIC_SEARCH_SERVICE_NAME);
+        signer.setRegionName(OPENSEARCH_ENDPOINT_ADDRESS);
+        return signer;
     }
 }
