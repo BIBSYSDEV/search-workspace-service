@@ -16,7 +16,7 @@ public class RestClientOpenSearch {
 
     private static final String ELASTIC_SEARCH_SERVICE_NAME = "es";
 
-    public Response sendRequest(HttpMethodName httpMethod, String url) throws IOException {
+    public Response<String> sendRequest(HttpMethodName httpMethod, String url) throws IOException {
 
         Request<Void> request = new DefaultRequest<>("es"); //Request to ElasticSearch
         request.setHttpMethod(httpMethod);
@@ -45,14 +45,37 @@ public class RestClientOpenSearch {
             }
         };
 
+        var errorResponseHandler = new HttpResponseHandler<SdkBaseException>() {
+
+            @Override
+            public AmazonClientException handle(HttpResponse response) throws Exception {
+                var bytes = response.getContent().readAllBytes();
+                var responseCode = response.getStatusCode();
+                var bodyString = new String(bytes);
+                System.out.println("Handling error: " + responseCode + " " + bodyString);
+                return null;
+                // return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
+            }
+
+            @Override
+            public boolean needsConnectionLeftOpen() {
+                return false;
+            }
+        };
+
+
+
         Response<String> rsp = new AmazonHttpClient(new ClientConfiguration())
                 .requestExecutionBuilder()
                 .executionContext(new ExecutionContext(true))
+                .errorResponseHandler(errorResponseHandler)
                 .request(request)
                 .execute(httpResponseHandler);
 
         return rsp;
     }
+
+
 
     @JacocoGenerated
     private AWS4Signer getAws4Signer() {
