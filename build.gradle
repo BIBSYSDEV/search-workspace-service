@@ -41,6 +41,8 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
 
+    implementation libs.opensearch.rest.client
+
     implementation libs.nva.json
     implementation libs.bundles.nva
     implementation libs.bundles.jackson
@@ -81,7 +83,7 @@ checkstyle {
 test {
     environment "ALLOWED_ORIGIN", "*"
     environment "COGNITO_HOST", "https://example.com"
-    environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost"
+    environment "OPENSEARCH_ENDPOINT_ADDRESS", "https://search-swsopensearch-tbhgnvnhfzpe-drjtksgvwafnkcmfhyz77qrcg4.eu-west-1.es.amazonaws.com"//"localhost"
 
     useJUnitPlatform {}
     failFast = false

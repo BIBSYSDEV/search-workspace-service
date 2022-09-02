@@ -11,6 +11,7 @@ jackson         = { strictly = '2.13.0' }
 junit           = { strictly = '5.8.2' }
 log4j           = { strictly = '2.17.2' }
 nvaCommons      = { strictly = '1.25.2'}
+opensearchRestClient = { strictly = '2.2.0'}
 slf4j           = { strictly = '1.8.0-beta4' }
 zalandoProblem  = { strictly = '0.27.1' }
 
@@ -55,6 +56,9 @@ nva-json                        = { group = 'com.github.bibsysdev',     name = '
 nva-logutils                    = { group = 'com.github.bibsysdev',     name = 'logutils',                  version.ref = 'nvaCommons' }
 nva-s3                          = { group = 'com.github.bibsysdev',     name = 's3',                        version.ref = 'nvaCommons' }
 nva-testutils                   = { group = 'com.github.bibsysdev',     name = 'nvatestutils',              version.ref = 'nvaCommons' }
+
+opensearch-rest-client          = { group = 'org.opensearch.client',    name = 'opensearch-rest-high-level-client', version.ref = 'opensearchRestClient' }
+
 
 slf4j-api                       = { group = 'org.slf4j',                name = 'slf4j-api',                 version.ref = 'slf4j' }
 zalando                         = { group = 'org.zalando',              name = 'problem',                   version.ref = 'zalandoProblem' }

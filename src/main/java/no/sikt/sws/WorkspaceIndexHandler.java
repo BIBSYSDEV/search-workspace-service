@@ -2,9 +2,12 @@ package no.sikt.sws;
 
 
 import com.amazonaws.services.lambda.runtime.Context;
+import no.sikt.sws.exception.SearchException;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
+
+import java.io.IOException;
 
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 
@@ -24,16 +27,20 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
     protected IndexResponse processInput(Void input, RequestInfo request, Context context) throws ApiGatewayException {
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = request.getPathParameter(WORKSPACE_IDENTIFIER);
-        var action = request.getPathParameter(RESOURCE_IDENTIFIER);
+        var index = request.getPathParameter(RESOURCE_IDENTIFIER);
+        var url = OPENSEARCH_ENDPOINT_ADDRESS + "/" + workspace + "-" + index;
 
-        var endpoint = OPENSEARCH_ENDPOINT_ADDRESS;
 
-        var response = httpMethod + " " + endpoint + "/" + workspace + "/" + action;
+        var restClientOpenSearch = new RestClientOpenSearch();
+        try {
+            var response = restClientOpenSearch.sendRequest(httpMethod, url);
+            System.out.println(response);
+            return new IndexResponse(response.toString());
 
-        System.out.println(endpoint);
-
-        System.out.println(response);
-        return new IndexResponse(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new SearchException(e.getMessage(), e);
+        }
     }
 
 
