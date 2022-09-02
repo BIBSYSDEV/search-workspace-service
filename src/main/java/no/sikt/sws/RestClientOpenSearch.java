@@ -46,8 +46,9 @@ public class RestClientOpenSearch {
 
             @Override
             public SdkBaseException handle(HttpResponse response) throws Exception {
-                System.out.println("Handling error: " + response.toString());
-                return null;
+                var body = response.getContent().toString();
+                System.out.println("Handling error: " + response.getStatusCode() + " " + body);
+                return new SdkBaseException("OpenSearchError: "+body);
             }
 
             @Override
