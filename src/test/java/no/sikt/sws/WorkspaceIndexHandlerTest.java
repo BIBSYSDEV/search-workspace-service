@@ -17,7 +17,6 @@ import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.WorkspaceIndexHandler.RESOURCE_IDENTIFIER;
-import static no.sikt.sws.WorkspaceIndexHandler.WORKSPACE_IDENTIFIER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -39,7 +38,6 @@ public class WorkspaceIndexHandlerTest extends TestCase {
     void shouldGiveResponse() throws IOException {
 
         var pathparams = Map.of(
-                WORKSPACE_IDENTIFIER, "sondre",
                 RESOURCE_IDENTIFIER, "index1/_mapping"
         );
 
