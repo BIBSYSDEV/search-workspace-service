@@ -7,7 +7,7 @@ paths:
     get:
       summary: Collection of indexes
       security:
-        - CognitoUserPool: [ 'sondre', 'fredrik', 'stig', 'marina' ]
+        - CognitoUserPool: [ 'workspace-sondre', 'workspace-fredrik', 'workspace-stig', 'workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -40,7 +40,7 @@ paths:
         content:
           application/json
       security:
-        - CognitoUserPool: [ 'sondre', 'fredrik', 'stig', 'marina' ]
+        - CognitoUserPool: [ 'workspace-sondre', 'workspace-fredrik', 'workspace-stig', 'workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -72,7 +72,7 @@ paths:
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       security:
-        - CognitoUserPool: [ 'sondre', 'fredrik', 'stig', 'marina' ]
+        - CognitoUserPool: [ 'workspace-sondre', 'workspace-fredrik', 'workspace-stig', 'workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -100,7 +100,7 @@ paths:
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       security:
-        - CognitoUserPool: [ 'sondre', 'fredrik', 'stig', 'marina' ]
+        - CognitoUserPool: [ 'workspace-sondre', 'workspace-fredrik', 'workspace-stig', 'workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -132,7 +132,7 @@ paths:
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       security:
-        - CognitoUserPool: [ 'sondre', 'fredrik', 'stig', 'marina' ]
+        - CognitoUserPool: [ 'workspace-sondre', 'workspace-fredrik', 'workspace-stig', 'workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -160,7 +160,7 @@ paths:
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       security:
-        - CognitoUserPool: [ 'sondre', 'fredrik', 'stig', 'marina' ]
+        - CognitoUserPool: [ 'workspace-sondre', 'workspace-fredrik', 'workspace-stig', 'workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
