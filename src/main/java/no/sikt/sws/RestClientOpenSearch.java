@@ -5,6 +5,8 @@ import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.http.*;
 import nva.commons.core.JacocoGenerated;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,6 +17,8 @@ public class RestClientOpenSearch {
 
 
     private static final String ELASTIC_SEARCH_SERVICE_NAME = "es";
+
+    private static final Logger logger = LoggerFactory.getLogger(RestClientOpenSearch.class);
 
     public Response<String> sendRequest(HttpMethodName httpMethod, String url) throws IOException {
 
@@ -35,7 +39,7 @@ public class RestClientOpenSearch {
                 var bytes = response.getContent().readAllBytes();
                 var responseCode = response.getStatusCode();
                 var bodyString = new String(bytes);
-                System.out.println("Handling response: " + responseCode + " " + bodyString);
+                logger.info("Handling response: " + responseCode + " " + bodyString);
                 return bodyString;
             }
 
@@ -52,7 +56,7 @@ public class RestClientOpenSearch {
                 var bytes = response.getContent().readAllBytes();
                 var responseCode = response.getStatusCode();
                 var bodyString = new String(bytes);
-                System.out.println("Handling error: " + responseCode + " " + bodyString);
+                logger.error("Handling error: " + responseCode + " " + bodyString);
                 return null;
                 // return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
             }

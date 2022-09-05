@@ -267,8 +267,7 @@ Resources:
           ScopeName: frontend
       UserPoolId: !Ref UserPool
 
-
-  BackendApplicationClient:
+  UserApplicationClient:
     DependsOn:   ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -277,7 +276,61 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/backend
+        - https://api.sws.unit.no/scopes/admin
+      ClientName: BackendApplicationClient
+      CallbackURLs:
+        - https://api.sws.unit.no/scopes # not necessary maybe.
+      DefaultRedirectURI: https://api.sws.unit.no/scopes
+      ExplicitAuthFlows:
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+      IdTokenValidity: 15
+      AccessTokenValidity: 15
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+
+  BackendApplicationSondreClient:
+    DependsOn:   ResourceServerScopes
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      AllowedOAuthFlows:
+        - client_credentials
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - https://api.sws.unit.no/scopes/workspace
+        - https://api.sws.unit.no/scopes/workspace/sondre
+      ClientName: BackendApplicationClient
+      CallbackURLs:
+        - https://api.sws.unit.no/scopes # not necessary maybe.
+      DefaultRedirectURI: https://api.sws.unit.no/scopes
+      ExplicitAuthFlows:
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      GenerateSecret: true
+      IdTokenValidity: 15
+      AccessTokenValidity: 15
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+
+  BackendApplicationFredrikClient:
+    DependsOn:   ResourceServerScopes
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      AllowedOAuthFlows:
+        - client_credentials
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - https://api.sws.unit.no/scopes/workspace
+        - https://api.sws.unit.no/scopes/workspace/fredrik
       ClientName: BackendApplicationClient
       CallbackURLs:
         - https://api.sws.unit.no/scopes # not necessary maybe.
