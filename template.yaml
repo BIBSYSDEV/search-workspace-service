@@ -261,10 +261,14 @@ Resources:
       Identifier: https://api.sws.unit.no/scopes
       Name: Scopes for backend
       Scopes:
-        - ScopeDescription: Necessary scope for backend authentication to work
-          ScopeName: backend
-        - ScopeDescription: Frontend scope
-          ScopeName: frontend
+        - ScopeDescription: Scope for accessing sondres workspace
+          ScopeName: workspace/sondre
+        - ScopeDescription: Scope for accessing fredriks workspace
+          ScopeName: workspace/fredrik
+        - ScopeDescription: Scope for accessing workspaces
+          ScopeName: workspace
+        - ScopeDescription: Admin scope
+          ScopeName: admin
       UserPoolId: !Ref UserPool
 
   UserApplicationClient:
@@ -273,7 +277,7 @@ Resources:
     Properties:
       UserPoolId: !Ref UserPool
       AllowedOAuthFlows:
-        - client_credentials
+        - implicit
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
         - https://api.sws.unit.no/scopes/admin
