@@ -16,7 +16,6 @@ import static nva.commons.apigateway.RequestInfoConstants.SCOPES_CLAIM;
  */
 public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse> {
 
-    public static final String WORKSPACE_IDENTIFIER = "workspace";
     public static final String RESOURCE_IDENTIFIER = "resource";
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceIndexHandler.class);
@@ -28,21 +27,14 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
     @Override
     protected IndexResponse processInput(Void input, RequestInfo request, Context context) throws ApiGatewayException {
 
-        try {
-            var scope = request.getRequestContextParameterOpt(SCOPES_CLAIM);
-            logger.info("Scope is:" + scope);
-        } catch (Exception e) {
-            logger.error("Error during scope-check:" + e.getMessage(), e);
-        }
-
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
-        var workspace = request.getPathParameter(WORKSPACE_IDENTIFIER);
+        var workspace = request.getRequestContextParameter(SCOPES_CLAIM);
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
-
 
         var restClientOpenSearch = new RestClientOpenSearch();
         try {
             var url = OPENSEARCH_ENDPOINT_ADDRESS + "/" + workspace + "-" + index;
+            logger.info("URL: "+url);
             var response = restClientOpenSearch.sendRequest(httpMethod, url);
             logger.info("response-object:" + response.toString());
             logger.info("response value:" + response.getAwsResponse());
