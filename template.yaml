@@ -281,7 +281,7 @@ Resources:
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
         - https://api.sws.unit.no/scopes/admin
-      ClientName: BackendApplicationClient
+      ClientName:   UserApplicationClient
       CallbackURLs:
         - https://api.sws.unit.no/scopes # not necessary maybe.
       DefaultRedirectURI: https://api.sws.unit.no/scopes
@@ -308,7 +308,7 @@ Resources:
       AllowedOAuthScopes:
         - https://api.sws.unit.no/scopes/workspace
         - https://api.sws.unit.no/scopes/workspace-sondre
-      ClientName: BackendApplicationClient
+      ClientName:   BackendApplicationSondreClient
       CallbackURLs:
         - https://api.sws.unit.no/scopes # not necessary maybe.
       DefaultRedirectURI: https://api.sws.unit.no/scopes
@@ -335,7 +335,7 @@ Resources:
       AllowedOAuthScopes:
         - https://api.sws.unit.no/scopes/workspace
         - https://api.sws.unit.no/scopes/workspace-fredrik
-      ClientName: BackendApplicationClient
+      ClientName:   BackendApplicationFredrikClient
       CallbackURLs:
         - https://api.sws.unit.no/scopes # not necessary maybe.
       DefaultRedirectURI: https://api.sws.unit.no/scopes

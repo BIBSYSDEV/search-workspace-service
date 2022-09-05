@@ -1,6 +1,5 @@
 package no.sikt.sws;
 
-
 import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.exception.SearchException;
 import nva.commons.apigateway.ApiGatewayHandler;
@@ -8,8 +7,6 @@ import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 import static nva.commons.apigateway.RequestInfoConstants.SCOPES_CLAIM;
@@ -35,25 +32,24 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
             var scope = request.getRequestContextParameterOpt(SCOPES_CLAIM);
             logger.info("Scope is:" + scope);
         } catch (Exception e) {
-            logger.error(e.toString());
+            logger.error("Error during scope-check:" + e.getMessage(), e);
         }
 
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = request.getPathParameter(WORKSPACE_IDENTIFIER);
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
-        var url = OPENSEARCH_ENDPOINT_ADDRESS + "/" + workspace + "-" + index;
 
 
         var restClientOpenSearch = new RestClientOpenSearch();
         try {
+            var url = OPENSEARCH_ENDPOINT_ADDRESS + "/" + workspace + "-" + index;
             var response = restClientOpenSearch.sendRequest(httpMethod, url);
             logger.info("response-object:" + response.toString());
             logger.info("response value:" + response.getAwsResponse());
 
             return new IndexResponse(response.getAwsResponse());
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
     }
