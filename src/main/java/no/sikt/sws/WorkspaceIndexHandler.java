@@ -8,6 +8,8 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 
 /**
@@ -30,7 +32,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
         var workspace = RequestUtil.getWorkspace(request);
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        var restClientOpenSearch = new RestClientOpenSearch();
+        var restClientOpenSearch = new OpenSearchClient();
         try {
             var url = OPENSEARCH_ENDPOINT_ADDRESS + "/" + workspace + "-" + index;
             logger.info("URL: "+url);
@@ -38,9 +40,10 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
             logger.info("response-object:" + response.toString());
             logger.info("response value:" + response.getAwsResponse());
 
-            return new IndexResponse(response.getAwsResponse());
-        } catch (Exception e) {
-            logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
+            return new IndexResponse(response.getAwsResponse().toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new SearchException(e.getMessage(), e);
         }
     }
