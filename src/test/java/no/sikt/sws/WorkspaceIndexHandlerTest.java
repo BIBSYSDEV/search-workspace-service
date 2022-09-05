@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.WorkspaceIndexHandler.RESOURCE_IDENTIFIER;
+import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -44,6 +45,7 @@ public class WorkspaceIndexHandlerTest extends TestCase {
         var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
                 .withHttpMethod(HttpMethod.PUT.toString())
                 .withPathParameters(pathparams)
+                .withAuthorizerClaim(SCOPE_CLAIM,"https://api.sws.unit.no/scopes/workspace-sondre")
                 .build();
 
         handler.handleRequest(request, output, CONTEXT);

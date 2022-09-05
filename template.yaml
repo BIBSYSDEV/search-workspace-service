@@ -9,6 +9,7 @@ Globals:
     Environment:
       Variables:
         ELASTICSEARCH_REGION: "eu-west-1"
+        SCOPE_IDENTIFIER: "https://api.sws.unit.no/scopes"
 
   Api:
     Cors:
@@ -306,7 +307,7 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - workspace-sondre
+        - https://api.sws.unit.no/scopes/workspace-sondre
       ClientName: BackendApplicationSondreClient
       CallbackURLs:
         - https://api.sws.unit.no/scopes # not necessary maybe.
@@ -332,7 +333,7 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - workspace-fredrik
+        - https://api.sws.unit.no/scopes/workspace-fredrik
       ClientName:   BackendApplicationFredrikClient
       CallbackURLs:
         - https://api.sws.unit.no/scopes # not necessary maybe.
@@ -359,7 +360,7 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - workspace-stig
+        - https://api.sws.unit.no/scopes/workspace-stig
       ClientName: BackendApplicationStigClient
       CallbackURLs:
         - https://api.sws.unit.no/scopes # not necessary maybe.
@@ -385,7 +386,7 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - workspace-marina
+        - https://api.sws.unit.no/scopes/workspace-marina
       ClientName: BackendApplicationMarinaClient
       CallbackURLs:
         - https://api.sws.unit.no/scopes # not necessary maybe.

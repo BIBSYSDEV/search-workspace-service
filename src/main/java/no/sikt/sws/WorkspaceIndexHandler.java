@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
-import static nva.commons.apigateway.RequestInfoConstants.SCOPES_CLAIM;
 
 /**
  * Created for checking if external libraries have been imported properly.
@@ -28,7 +27,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
     protected IndexResponse processInput(Void input, RequestInfo request, Context context) throws ApiGatewayException {
 
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
-        var workspace = request.getRequestContextParameter(SCOPES_CLAIM);
+        var workspace = RequestUtil.getWorkspace(request);
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
 
         var restClientOpenSearch = new RestClientOpenSearch();
@@ -45,6 +44,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
             throw new SearchException(e.getMessage(), e);
         }
     }
+
 
 
     @Override

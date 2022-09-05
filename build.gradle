@@ -82,6 +82,7 @@ test {
     environment "COGNITO_HOST", "https://example.com"
     environment "ELASTICSEARCH_REGION", "eu-west-1"
     environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost:3000"
+    environment "SCOPE_IDENTIFIER", "https://api.sws.unit.no/scopes"
 
     useJUnitPlatform {}
     failFast = false
