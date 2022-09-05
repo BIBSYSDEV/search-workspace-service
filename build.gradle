@@ -12,7 +12,6 @@ plugins {
     id 'java-library'
     id 'checkstyle'
     id 'pmd'
-    id 'groovy-gradle-plugin'
 }
 
 repositories {
