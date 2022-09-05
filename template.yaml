@@ -262,9 +262,9 @@ Resources:
       Name: Scopes for backend
       Scopes:
         - ScopeDescription: Scope for accessing sondres workspace
-          ScopeName: workspace/sondre
+          ScopeName: workspace-sondre
         - ScopeDescription: Scope for accessing fredriks workspace
-          ScopeName: workspace/fredrik
+          ScopeName: workspace-fredrik
         - ScopeDescription: Scope for accessing workspaces
           ScopeName: workspace
         - ScopeDescription: Admin scope
