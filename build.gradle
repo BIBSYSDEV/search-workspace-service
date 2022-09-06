@@ -28,6 +28,8 @@ dependencies {
     implementation group: 'org.jacoco', name: 'org.jacoco.core', version: '0.8.7'
     implementation group: 'org.jacoco', name: 'org.jacoco.report', version: '0.8.7'
 
+    implementation libs.aws.java.sdk.core
+
     implementation libs.aws.sdk2.eventbridge
     implementation libs.aws.sdk2.regions
     implementation libs.aws.sdk2.s3
@@ -40,11 +42,9 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
 
-    implementation libs.nva.json
-    implementation libs.bundles.nva
-    implementation libs.bundles.jackson
+    implementation libs.mockito.core
 
-    implementation libs.aws.java.sdk.core
+    implementation libs.nva.json
 
     testImplementation libs.bundles.testing
 }
