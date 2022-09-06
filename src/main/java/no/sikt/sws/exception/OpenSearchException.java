@@ -12,5 +12,6 @@ public class OpenSearchException extends AmazonClientException {
 
     public OpenSearchException(HttpResponse response ) {
         super(response.getStatusCode() + " " + response.getStatusText());
+        this.response = response;
     }
 }
