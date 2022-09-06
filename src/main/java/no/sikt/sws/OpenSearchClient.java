@@ -17,6 +17,7 @@ import java.util.List;
 import static no.sikt.sws.constants.ApplicationConstants.ELASTICSEARCH_REGION;
 import static software.amazon.awssdk.http.HttpStatusCode.BAD_REQUEST;
 import static software.amazon.awssdk.http.HttpStatusCode.NOT_FOUND;
+import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 
 public class OpenSearchClient {
 
@@ -65,11 +66,11 @@ public class OpenSearchClient {
         }
     };
 
-    public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String url) throws IOException {
+    public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path) throws IOException {
 
         Request<Void> request = new DefaultRequest<>("es"); //Request to ElasticSearch
         request.setHttpMethod(httpMethod);
-        request.setEndpoint(URI.create("https://" + url));
+        request.setEndpoint(URI.create("https://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path));
 
         var awsSigner = getAws4Signer();
         new DefaultAWSCredentialsProviderChain().getCredentials();
