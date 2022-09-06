@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse> {
 
     public static final String RESOURCE_IDENTIFIER = "resource";
-    public OpenSearchClient openSearchClient;
+    public OpenSearchClient openSearchClient = new OpenSearchClient();
 
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceIndexHandler.class);
