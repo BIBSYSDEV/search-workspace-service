@@ -2,10 +2,14 @@ package no.sikt.sws;
 
 import com.amazonaws.http.HttpResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class OpenSearchResponse {
+
+    private static final Logger logger = LoggerFactory.getLogger(OpenSearchResponse.class);
     @JsonProperty("body")
     private final String body;
 
@@ -18,6 +22,7 @@ public class OpenSearchResponse {
     }
 
     public OpenSearchResponse(HttpResponse httpResponse) throws IOException {
+        logger.info("httpResponse "+httpResponse.toString());
         var bytes = httpResponse.getContent().readAllBytes();
 
         this.status = httpResponse.getStatusCode();

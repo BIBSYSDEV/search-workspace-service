@@ -26,10 +26,14 @@ public class OpenSearchClient {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
 
-    HttpResponseHandler<HttpResponse> httpResponseHandler = new HttpResponseHandler() {
+    HttpResponseHandler<String> httpResponseHandler = new HttpResponseHandler() {
         @Override
-        public HttpResponse handle(HttpResponse response) throws Exception {
-            return response;
+        public String handle(HttpResponse response) throws Exception {
+            var bytes = response.getContent().readAllBytes();
+            var responseCode = response.getStatusCode();
+            var bodyString = new String(bytes);
+            logger.info("Handling response: " + responseCode + " " + bodyString);
+            return bodyString;
         }
 
         @Override
@@ -81,7 +85,7 @@ public class OpenSearchClient {
                     .errorResponseHandler(errorResponseHandler)
                     .request(request)
                     .execute(httpResponseHandler);
-            return new OpenSearchResponse(response.getAwsResponse());
+            return new OpenSearchResponse(response.getHttpResponse().getStatusCode(), response.getAwsResponse());
 
         } catch (OpenSearchException e) {
             return new OpenSearchResponse(e.getResponse());
