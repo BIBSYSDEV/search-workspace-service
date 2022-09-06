@@ -30,7 +30,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
         var workspace = RequestUtil.getWorkspace(request);
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        var restClientOpenSearch = new RestClientOpenSearch();
+        var restClientOpenSearch = new OpenSearchClient();
         try {
             var url = OPENSEARCH_ENDPOINT_ADDRESS + "/" + workspace + "-" + index;
             logger.info("URL: "+url);
