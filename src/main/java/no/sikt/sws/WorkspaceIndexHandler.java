@@ -35,10 +35,10 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
             var url = OPENSEARCH_ENDPOINT_ADDRESS + "/" + workspace + "-" + index;
             logger.info("URL: "+url);
             var response = restClientOpenSearch.sendRequest(httpMethod, url);
-            logger.info("response-object:" + response.toString());
-            logger.info("response value:" + response.getAwsResponse());
+            logger.info("response-code:" + response.getStatus());
+            logger.info("response-body:" + response.getBody());
 
-            return new IndexResponse(response.getAwsResponse());
+            return new IndexResponse(response.getBody());
         } catch (Exception e) {
             logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);

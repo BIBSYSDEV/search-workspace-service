@@ -5,6 +5,7 @@ import com.amazonaws.http.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import static com.amazonaws.http.HttpMethodName.PUT;
@@ -24,18 +25,20 @@ public class OpenSearchClientTest {
         final HttpResponse mockHttpResponse = mock(HttpResponse.class);
         when(mockHttpResponse.getStatusCode())
                 .thenReturn(200);
+        when(mockHttpResponse.getContent())
+                .thenReturn(new ByteArrayInputStream("".getBytes()));
 
-        final Response<String> mockResponse = new Response("MockResponse", mockHttpResponse);
+        final OpenSearchResponse response = new OpenSearchResponse(mockHttpResponse);
 
         when(mockOpenSearchClient.sendRequest(PUT, "fredrik-test"))
-                .thenReturn(mockResponse);
+                .thenReturn(response);
     }
 
     @Test
     void testMockingOfOpenSearchClient() throws IOException {
-        Response response = mockOpenSearchClient.sendRequest(PUT, "fredrik-test");
+        OpenSearchResponse response = mockOpenSearchClient.sendRequest(PUT, "fredrik-test");
 
-        assertEquals (200, response.getHttpResponse().getStatusCode());
+        assertEquals (200, response.getStatus());
     }
 
 }
