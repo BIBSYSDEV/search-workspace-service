@@ -48,13 +48,14 @@ public class OpenSearchClient {
         @Override
         public AmazonClientException handle(HttpResponse response) throws Exception {
             var responseCode = response.getStatusCode();
-
-            if (FORWARDED_ES_ERROR_CODES.contains(responseCode)) {
-                return new OpenSearchException(response);
-            }
-
             var bytes = response.getContent().readAllBytes();
             var bodyString = new String(bytes);
+
+            if (FORWARDED_ES_ERROR_CODES.contains(responseCode)) {
+                return new OpenSearchException(responseCode, bodyString);
+            }
+
+
             logger.error("Handling error: " + responseCode + " " + bodyString);
 
             return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
@@ -89,7 +90,9 @@ public class OpenSearchClient {
             return new OpenSearchResponse(response.getHttpResponse().getStatusCode(), response.getAwsResponse());
 
         } catch (OpenSearchException e) {
-            return new OpenSearchResponse(e.getResponse());
+            logger.info(e.getMessage());
+            logger.info("Creating OpenSearchResponse"+ e.getStatus()+ " "+e.getBody());
+            return new OpenSearchResponse(e.getStatus(), e.getBody());
         }
 
 
