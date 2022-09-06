@@ -26,7 +26,7 @@ public class OpenSearchClient {
             var bytes = response.getContent().readAllBytes();
             var responseCode = response.getStatusCode();
             var bodyString = new String(bytes);
-            System.out.println("Handling response: " + responseCode + " " + bodyString);
+            logger.info("Handling response: " + responseCode + " " + bodyString);
             return bodyString;
         }
 
@@ -42,7 +42,7 @@ public class OpenSearchClient {
             var bytes = response.getContent().readAllBytes();
             var responseCode = response.getStatusCode();
             var bodyString = new String(bytes);
-            System.out.println("Handling error: " + responseCode + " " + bodyString);
+            logger.error("Handling error: " + responseCode + " " + bodyString);
             return null;
             // return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
         }
@@ -54,7 +54,7 @@ public class OpenSearchClient {
     };
 
 
-    public Response sendRequest(HttpMethodName httpMethod, String url) throws IOException {
+    public Response<String> sendRequest(HttpMethodName httpMethod, String url) throws IOException {
 
         Request<Void> request = new DefaultRequest<>("es"); //Request to ElasticSearch
         request.setHttpMethod(httpMethod);
