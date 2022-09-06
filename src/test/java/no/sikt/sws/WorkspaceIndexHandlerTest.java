@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -41,28 +42,30 @@ public class WorkspaceIndexHandlerTest extends TestCase {
     @Mock
     OpenSearchClient openSearchClient;
 
-    @BeforeAll
-    public void setup() throws IOException {
+    @BeforeEach
+    public void beforeEach() throws IOException {
         MockitoAnnotations.openMocks(this);
 
-        final HttpResponse mockHttpResponse = mock(HttpResponse.class);
-        when(mockHttpResponse.getStatusCode())
-                .thenReturn(200);
-
-        final OpenSearchResponse response = new OpenSearchResponse(mockHttpResponse);
-
-        when(openSearchClient.sendRequest(PUT, "localhost:3000/workspace-sondre-index1/_mapping"))
-                .thenReturn(response);
-    }
-
-    @BeforeEach
-    public void beforeEach() {
         this.output = new ByteArrayOutputStream();
     }
 
+    private void setup() throws IOException {
+        final HttpResponse mockHttpResponse = mock(HttpResponse.class);
+        when(mockHttpResponse.getStatusCode())
+                .thenReturn(200);
+        when(mockHttpResponse.getContent())
+                .thenReturn(new ByteArrayInputStream("".getBytes()));
+
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(mockHttpResponse);
+
+        when(openSearchClient.sendRequest(PUT, "workspace-sondre-index1/_mapping"))
+                .thenReturn(mockResponse);
+    }
 
     @Test
     void shouldGiveResponse() throws IOException {
+
+        setup();
 
         var pathparams = Map.of(
                 RESOURCE_IDENTIFIER, "index1/_mapping"
