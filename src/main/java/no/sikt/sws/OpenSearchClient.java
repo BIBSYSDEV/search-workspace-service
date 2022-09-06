@@ -4,30 +4,32 @@ import com.amazonaws.*;
 import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.http.*;
+import no.sikt.sws.exception.OpenSearchException;
 import nva.commons.core.JacocoGenerated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import static no.sikt.sws.constants.ApplicationConstants.ELASTICSEARCH_REGION;
+import static software.amazon.awssdk.http.HttpStatusCode.BAD_REQUEST;
+import static software.amazon.awssdk.http.HttpStatusCode.NOT_FOUND;
 
 public class OpenSearchClient {
 
 
     private static final String ELASTIC_SEARCH_SERVICE_NAME = "es";
+    private static final List<Integer> FORWARDED_ES_ERROR_CODES = Arrays.asList(BAD_REQUEST, NOT_FOUND);
 
     private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
 
-    HttpResponseHandler<String> httpResponseHandler = new HttpResponseHandler() {
+    HttpResponseHandler<HttpResponse> httpResponseHandler = new HttpResponseHandler() {
         @Override
-        public String handle(HttpResponse response) throws Exception {
-            var bytes = response.getContent().readAllBytes();
-            var responseCode = response.getStatusCode();
-            var bodyString = new String(bytes);
-            logger.info("Handling response: " + responseCode + " " + bodyString);
-            return bodyString;
+        public HttpResponse handle(HttpResponse response) throws Exception {
+            return response;
         }
 
         @Override
@@ -40,12 +42,17 @@ public class OpenSearchClient {
 
         @Override
         public AmazonClientException handle(HttpResponse response) throws Exception {
-            var bytes = response.getContent().readAllBytes();
             var responseCode = response.getStatusCode();
+
+            if (FORWARDED_ES_ERROR_CODES.contains(responseCode)) {
+                return new OpenSearchException(response);
+            }
+
+            var bytes = response.getContent().readAllBytes();
             var bodyString = new String(bytes);
             logger.error("Handling error: " + responseCode + " " + bodyString);
-            return null;
-            // return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
+
+            return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
         }
 
         @Override
@@ -54,7 +61,7 @@ public class OpenSearchClient {
         }
     };
 
-    public Response<String> sendRequest(HttpMethodName httpMethod, String url) throws IOException {
+    public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String url) throws IOException {
 
         Request<Void> request = new DefaultRequest<>("es"); //Request to ElasticSearch
         request.setHttpMethod(httpMethod);
@@ -67,12 +74,20 @@ public class OpenSearchClient {
 
         awsSigner.sign(request, credentials);
 
-        return new AmazonHttpClient(new ClientConfiguration())
-                .requestExecutionBuilder()
-                .executionContext(new ExecutionContext(true))
-                .errorResponseHandler(errorResponseHandler)
-                .request(request)
-                .execute(httpResponseHandler);
+        try {
+            var response = new AmazonHttpClient(new ClientConfiguration())
+                    .requestExecutionBuilder()
+                    .executionContext(new ExecutionContext(true))
+                    .errorResponseHandler(errorResponseHandler)
+                    .request(request)
+                    .execute(httpResponseHandler);
+            return new OpenSearchResponse(response.getAwsResponse());
+
+        } catch (OpenSearchException e) {
+            return new OpenSearchResponse(e.getResponse());
+        }
+
+
     }
 
 
