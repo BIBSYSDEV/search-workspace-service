@@ -1,9 +1,17 @@
 package no.sikt.sws;
 
-import com.amazonaws.*;
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.DefaultRequest;
+import com.amazonaws.Request;
+import com.amazonaws.SdkBaseException;
 import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.http.*;
+import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.ExecutionContext;
+import com.amazonaws.http.HttpMethodName;
+import com.amazonaws.http.HttpResponse;
+import com.amazonaws.http.HttpResponseHandler;
 import no.sikt.sws.exception.OpenSearchException;
 import nva.commons.core.JacocoGenerated;
 import org.slf4j.Logger;
@@ -58,7 +66,7 @@ public class OpenSearchClient {
 
             logger.error("Handling error: " + responseCode + " " + bodyString);
 
-            return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
+            return new AmazonClientException("OpenSearchError: " + " " + responseCode + " " + bodyString);
         }
 
         @Override
@@ -91,7 +99,7 @@ public class OpenSearchClient {
 
         } catch (OpenSearchException e) {
             logger.info(e.getMessage());
-            logger.info("Creating OpenSearchResponse"+ e.getStatus()+ " "+e.getBody());
+            logger.info("Creating OpenSearchResponse" + e.getStatus() + " " + e.getBody());
             return new OpenSearchResponse(e.getStatus(), e.getBody());
         }
 

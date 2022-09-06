@@ -16,13 +16,13 @@ public class OpenSearchResponse {
     @JsonProperty("status")
     private final int status;
 
-    public OpenSearchResponse(int status ,String body) {
+    public OpenSearchResponse(int status, String body) {
         this.status = status;
         this.body = body;
     }
 
     public OpenSearchResponse(HttpResponse httpResponse) throws IOException {
-        logger.info("httpResponse "+httpResponse.toString());
+        logger.info("httpResponse " + httpResponse.toString());
         var bytes = httpResponse.getContent().readAllBytes();
 
         this.status = httpResponse.getStatusCode();
@@ -39,9 +39,9 @@ public class OpenSearchResponse {
 
     @Override
     public String toString() {
-        return "OpenSearchResponse{" +
-                "status='" + status + '\'' +
-                ", body=" + body +
-                '}';
+        return "OpenSearchResponse{"
+                + "status='" + status + '\''
+                + ", body=" + body
+                + '}';
     }
 }

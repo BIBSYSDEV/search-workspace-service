@@ -32,7 +32,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
 
         try {
             var url = workspace + "-" + index;
-            logger.info("URL: "+url);
+            logger.info("URL: " + url);
             var response = openSearchClient.sendRequest(httpMethod, url);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());

@@ -17,6 +17,7 @@ public final class ApplicationConstants {
     private static String readElasticSearchRegion() {
         return ENVIRONMENT.readEnv("ELASTICSEARCH_REGION");
     }
+
     private static String readScopeIdentifier() {
         return ENVIRONMENT.readEnv("SCOPE_IDENTIFIER");
     }
