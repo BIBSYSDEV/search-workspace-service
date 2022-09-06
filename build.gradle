@@ -24,9 +24,6 @@ repositories {
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
-    implementation group: 'nebula.lint', name: 'nebula.lint.gradle.plugin', version: '16.23.0'
-    implementation group: 'org.jacoco', name: 'org.jacoco.core', version: '0.8.7'
-    implementation group: 'org.jacoco', name: 'org.jacoco.report', version: '0.8.7'
 
     implementation libs.aws.java.sdk.core
 
