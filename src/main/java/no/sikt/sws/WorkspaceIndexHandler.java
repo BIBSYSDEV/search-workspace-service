@@ -8,6 +8,8 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.AuthenticationException;
+
 /**
  * Created for checking if external libraries have been imported properly.
  */
@@ -16,6 +18,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
     public static final String RESOURCE_IDENTIFIER = "resource";
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
+    public WorkspaceAuthorizer workspaceAuthorizer = new WorkspaceAuthorizer();
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceIndexHandler.class);
 
@@ -30,9 +33,16 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
         var workspace = RequestUtil.getWorkspace(request);
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
 
+
         try {
+            var isAuthorized = workspaceAuthorizer.authorized(request,context);
+
             var url = workspace + "-" + index;
             logger.info("URL: " + url);
+
+            if (!isAuthorized)
+                throw  new AuthenticationException("Not Authenticated");
+
             var response = openSearchClient.sendRequest(httpMethod, url);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());

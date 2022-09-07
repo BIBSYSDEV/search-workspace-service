@@ -1,31 +1,26 @@
 package no.sikt.sws;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.DefaultRequest;
-import com.amazonaws.Request;
-import com.amazonaws.SdkBaseException;
+import com.amazonaws.*;
 import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.http.AmazonHttpClient;
-import com.amazonaws.http.ExecutionContext;
-import com.amazonaws.http.HttpMethodName;
-import com.amazonaws.http.HttpResponse;
-import com.amazonaws.http.HttpResponseHandler;
+import com.amazonaws.http.*;
+import no.sikt.sws.builders.OpenSearchRequestBuilder;
 import no.sikt.sws.exception.OpenSearchException;
 import nva.commons.core.JacocoGenerated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static no.sikt.sws.constants.ApplicationConstants.ELASTICSEARCH_REGION;
+import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 import static software.amazon.awssdk.http.HttpStatusCode.BAD_REQUEST;
 import static software.amazon.awssdk.http.HttpStatusCode.NOT_FOUND;
-import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 
 public class OpenSearchClient {
 
@@ -78,6 +73,7 @@ public class OpenSearchClient {
     public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path) throws IOException {
 
         Request<Void> request = new DefaultRequest<>("es"); //Request to ElasticSearch
+
         request.setHttpMethod(httpMethod);
         request.setEndpoint(URI.create("https://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path));
 
@@ -94,6 +90,7 @@ public class OpenSearchClient {
                     .executionContext(new ExecutionContext(true))
                     .errorResponseHandler(errorResponseHandler)
                     .request(request)
+
                     .execute(httpResponseHandler);
             return new OpenSearchResponse(response.getHttpResponse().getStatusCode(), response.getAwsResponse());
 
@@ -106,6 +103,41 @@ public class OpenSearchClient {
 
     }
 
+    public OpenSearchResponse execute(OpenSearchRequest request) {
+        try {
+            var awsSigner = getAws4Signer();
+            var credentials = new DefaultAWSCredentialsProviderChain().getCredentials();
+
+            awsSigner.sign(request, credentials);
+
+            var response = new AmazonHttpClient(new ClientConfiguration())
+                    .requestExecutionBuilder()
+                    .request(request)
+                    .executionContext(new ExecutionContext(true))
+                    .errorResponseHandler(errorResponseHandler)
+                    .execute(httpResponseHandler);
+            return new OpenSearchResponse(response.getHttpResponse().getStatusCode(), response.getAwsResponse());
+
+        } catch (OpenSearchException e) {
+            logger.info(e.getMessage());
+            logger.info("Creating OpenSearchResponse" + e.getStatus() + " " + e.getBody());
+            return new OpenSearchResponse(e.getStatus(), e.getBody());
+        }
+    }
+
+    public OpenSearchResponse execute(HttpMethodName method, String path, Map<String, String> headers, Map<String,List<String>> parameters, InputStream content) {
+
+        String apiKey = "wert";
+        var request = new OpenSearchRequestBuilder()
+                .withHttpMethod(method)
+                .withResourcePath(path)
+                .withHeaders(headers, apiKey)
+                .withParameters(parameters)
+                .withBody(content)
+                .build();
+
+        return execute(request);
+    }
 
 
     @JacocoGenerated
