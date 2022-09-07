@@ -12,7 +12,6 @@ plugins {
     id 'java-library'
     id 'checkstyle'
     id 'pmd'
-    id 'groovy-gradle-plugin'
 }
 
 repositories {
@@ -25,9 +24,8 @@ repositories {
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
-    implementation group: 'nebula.lint', name: 'nebula.lint.gradle.plugin', version: '16.23.0'
-    implementation group: 'org.jacoco', name: 'org.jacoco.core', version: '0.8.7'
-    implementation group: 'org.jacoco', name: 'org.jacoco.report', version: '0.8.7'
+
+    implementation libs.aws.java.sdk.core
 
     implementation libs.aws.sdk2.eventbridge
     implementation libs.aws.sdk2.regions
@@ -41,11 +39,9 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
 
-    implementation libs.nva.json
-    implementation libs.bundles.nva
-    implementation libs.bundles.jackson
+    implementation libs.mockito.core
 
-    implementation libs.aws.java.sdk.core
+    implementation libs.nva.json
 
     testImplementation libs.bundles.testing
 }
@@ -81,7 +77,9 @@ checkstyle {
 test {
     environment "ALLOWED_ORIGIN", "*"
     environment "COGNITO_HOST", "https://example.com"
-    environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost"
+    environment "ELASTICSEARCH_REGION", "eu-west-1"
+    environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost:3000"
+    environment "SCOPE_IDENTIFIER", "https://api.sws.unit.no/scopes"
 
     useJUnitPlatform {}
     failFast = false

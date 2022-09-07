@@ -8,9 +8,12 @@ guava           = { strictly = '31.0.1-jre' }
 hamcrest        = { strictly = '2.2' }
 hamcrestJackson = { strictly = '1.2.0' }
 jackson         = { strictly = '2.13.0' }
+jacoco          = { strictly = '0.8.7' }
 junit           = { strictly = '5.8.2' }
 log4j           = { strictly = '2.17.2' }
-nvaCommons      = { strictly = '1.25.2'}
+mockito         = { strictly = '3.12.4' }
+nvaCommons      = { strictly = '1.25.2' }
+nebula          = { strictly = '16.23.0' }
 slf4j           = { strictly = '1.8.0-beta4' }
 zalandoProblem  = { strictly = '0.27.1' }
 
@@ -39,6 +42,8 @@ jackson-datatype-jsr310         = { group = 'com.fasterxml.jackson.datatype', na
 jackson-datatype-problem        = { group = 'org.zalando',              name = 'jackson-datatype-problem',  version.ref = 'zalandoProblem' }
 jackson-module-parameter-names  = { group = 'com.fasterxml.jackson.module', name = 'jackson-module-parameter-names', version.ref = 'jackson' }
 
+jacoco-core                     = { group = 'org.jacoco',               name= 'org.jacoco.core',            version.ref = 'jacoco'}
+jacoco-report                   = { group = 'org.jacoco',               name= 'org.jacoco.report',          version.ref = 'jacoco'}
 
 junit-jupiter-api               = { group = 'org.junit.jupiter',        name = 'junit-jupiter-api',         version.ref = 'junit' }
 junit-jupiter-engine            = { group = 'org.junit.jupiter',        name = 'junit-jupiter-engine',      version.ref = 'junit' }
@@ -48,6 +53,10 @@ log4j-api                       = { group = 'org.apache.logging.log4j', name = '
 log4j-core                      = { group = 'org.apache.logging.log4j', name = 'log4j-core',                version.ref = 'log4j' }
 log4j-slf4j18-impl              = { group = 'org.apache.logging.log4j', name = 'log4j-slf4j18-impl',        version.ref = 'log4j' }
 
+mockito-core                    = { group = 'org.mockito',              name = 'mockito-core',              version.ref = 'mockito' }
+
+nebula-lint                     = { group = 'nebula.lint',              name = 'nebula.lint.gradle.plugin', version.ref = 'nebula' }
+
 nva-apigateway                  = { group = 'com.github.bibsysdev',     name = 'apigateway',                version.ref = 'nvaCommons' }
 nva-core                        = { group = 'com.github.bibsysdev',     name = 'core',                      version.ref = 'nvaCommons' }
 nva-eventhandlers               = { group = 'com.github.bibsysdev',     name = 'eventhandlers',             version.ref = 'nvaCommons' }
@@ -55,6 +64,7 @@ nva-json                        = { group = 'com.github.bibsysdev',     name = '
 nva-logutils                    = { group = 'com.github.bibsysdev',     name = 'logutils',                  version.ref = 'nvaCommons' }
 nva-s3                          = { group = 'com.github.bibsysdev',     name = 's3',                        version.ref = 'nvaCommons' }
 nva-testutils                   = { group = 'com.github.bibsysdev',     name = 'nvatestutils',              version.ref = 'nvaCommons' }
+
 
 slf4j-api                       = { group = 'org.slf4j',                name = 'slf4j-api',                 version.ref = 'slf4j' }
 zalando                         = { group = 'org.zalando',              name = 'problem',                   version.ref = 'zalandoProblem' }

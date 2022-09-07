@@ -3,16 +3,11 @@ info:
   title: SWS Demo API
   version: 1.0.0
 paths:
-  /workspace/{workspace}:
+  /:
     get:
-      description: Collection of workspace-resources (indexes)
-      parameters:
-        - name: workspace
-          in: path
-          required: true
-          description: The name of the workspace to perform the index operation on
+      summary: Collection of indexes
       security:
-        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/backend' ]
+        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -32,14 +27,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Problem'
-  /workspace/{workspace}/{resource+}:
+  /{resource+}:
     post:
-      description: Create workspace/resource and/or add  content to a workspace-resource
+      summary: Create workspace/resource and/or add  content to a workspace-resource
       parameters:
-        - name: workspace
-          in: path
-          required: true
-          description: The name of the workspace to perform the index operation on
         - name: resource+
           in: path
           required: true
@@ -47,11 +38,9 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Workspace'
+          application/json
       security:
-        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/backend' ]
+        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -76,18 +65,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
     get:
-      description: Access a workspace-resource
+      summary: Access a workspace-resource
       parameters:
-        - name: workspace
-          in: path
-          required: true
-          description: The name of the workspace to perform the index operation on
         - name: resource+
           in: path
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       security:
-        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/backend' ]
+        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -108,18 +93,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
     put:
-      description: Add or modify content in a workspace-resource
+      summary: Add or modify content in a workspace-resource
       parameters:
-        - name: workspace
-          in: path
-          required: true
-          description: The name of the workspace to perform the index operation on
         - name: resource+
           in: path
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       security:
-        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/backend' ]
+        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -144,18 +125,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
     head:
-      description: workspace-resource
+      summary: workspace-resource
       parameters:
-        - name: workspace
-          in: path
-          required: true
-          description: The name of the workspace to perform the index operation on
         - name: resource+
           in: path
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       security:
-        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/backend' ]
+        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -176,18 +153,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
     delete:
-      description:  Deletes a workspace-resource (index)
+      summary:  Deletes a workspace-resource (index)
       parameters:
-        - name: workspace
-          in: path
-          required: true
-          description: The name of the workspace to perform the index operation on
         - name: resource+
           in: path
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
       security:
-        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/backend' ]
+        - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
@@ -228,16 +201,11 @@ components:
           type: string
     OpenSearchResponse:
       type: object
-    Workspace:
-      description: A workspace is a private opensearch-partition
-      type: object
-      properties:
-        text:
-          type: string
   securitySchemes:
     CognitoUserPool:
-      type: http
-      scheme: bearer
+      type: apiKey
+      name: Authorization
+      in: header
       x-amazon-apigateway-authtype: cognito_user_pools
       x-amazon-apigateway-authorizer:
         type: cognito_user_pools
