@@ -3,6 +3,7 @@ package no.sikt.sws;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.StringJoiner;
 
 public class AuthorizerResponse implements Serializable {
 
@@ -20,9 +21,9 @@ public class AuthorizerResponse implements Serializable {
 
     @Override
     public String toString() {
-        return "{\"AuthorizerResponse\":{"
-                + "\"workspace\":\"" + workspace + "\""
-                + ",\"userid\":\"" + userid + "\""
-                + "}}";
+        return new StringJoiner(", ", AuthorizerResponse.class.getSimpleName() + ": {", "}")
+                .add("\"workspace\":\"" + workspace + "\"")
+                .add("\"userid\":\"" + userid + "\"")
+                .toString();
     }
 }
