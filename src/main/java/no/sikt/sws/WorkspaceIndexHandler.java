@@ -10,14 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.json.JSONObject;
 
-import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
-
 /**
  * Created for checking if external libraries have been imported properly.
  */
 public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse> {
 
     public static final String RESOURCE_IDENTIFIER = "resource";
+    public OpenSearchClient openSearchClient = new OpenSearchClient();
+
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceIndexHandler.class);
 
@@ -32,11 +32,10 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
         var workspace = RequestUtil.getWorkspace(request);
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        var restClientOpenSearch = new OpenSearchClient();
         try {
-            var url = OPENSEARCH_ENDPOINT_ADDRESS + "/" + workspace + "-" + index;
-            logger.info("URL: "+url);
-            var response = restClientOpenSearch.sendRequest(httpMethod, url);
+            var url = workspace + "-" + index;
+            logger.info("URL: " + url);
+            var response = openSearchClient.sendRequest(httpMethod, url);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
             var jsonResult = new JSONObject(response.getBody());
