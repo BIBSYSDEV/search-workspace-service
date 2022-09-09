@@ -3,6 +3,7 @@ package no.sikt.sws;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.http.HttpResponse;
 import com.amazonaws.services.lambda.runtime.Context;
+import org.json.JSONObject;
 import junit.framework.TestCase;
 import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.stubs.FakeContext;
