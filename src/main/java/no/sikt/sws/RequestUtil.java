@@ -24,10 +24,8 @@ public class RequestUtil {
 
     public static String getWorkspace(RequestInfo request) {
         return attempt(() -> {
-                    var fullScope = request.getRequestContextParameter(SCOPES_CLAIM);
-                    return fullScope.replaceFirst(SCOPE_IDENTIFIER + "/", "");
-                }
-        ).orElseThrow();
-
+            var fullScope = request.getRequestContextParameter(SCOPES_CLAIM);
+            return fullScope.replaceFirst(SCOPE_IDENTIFIER + "/", "");
+        }).orElseThrow();
     }
 }

@@ -1,9 +1,17 @@
 package no.sikt.sws;
 
-import com.amazonaws.*;
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.DefaultRequest;
+import com.amazonaws.Request;
+import com.amazonaws.SdkBaseException;
 import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.http.*;
+import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.ExecutionContext;
+import com.amazonaws.http.HttpMethodName;
+import com.amazonaws.http.HttpResponse;
+import com.amazonaws.http.HttpResponseHandler;
 import no.sikt.sws.exception.OpenSearchException;
 import nva.commons.core.JacocoGenerated;
 import org.slf4j.Logger;
@@ -17,6 +25,7 @@ import java.util.List;
 import static no.sikt.sws.constants.ApplicationConstants.ELASTICSEARCH_REGION;
 import static software.amazon.awssdk.http.HttpStatusCode.BAD_REQUEST;
 import static software.amazon.awssdk.http.HttpStatusCode.NOT_FOUND;
+import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 
 public class OpenSearchClient {
 
@@ -47,16 +56,17 @@ public class OpenSearchClient {
         @Override
         public AmazonClientException handle(HttpResponse response) throws Exception {
             var responseCode = response.getStatusCode();
-
-            if (FORWARDED_ES_ERROR_CODES.contains(responseCode)) {
-                return new OpenSearchException(response);
-            }
-
             var bytes = response.getContent().readAllBytes();
             var bodyString = new String(bytes);
+
+            if (FORWARDED_ES_ERROR_CODES.contains(responseCode)) {
+                return new OpenSearchException(responseCode, bodyString);
+            }
+
+
             logger.error("Handling error: " + responseCode + " " + bodyString);
 
-            return new AmazonClientException("OpenSearchError: "+ " " + responseCode +" " +bodyString);
+            return new AmazonClientException("OpenSearchError: " + " " + responseCode + " " + bodyString);
         }
 
         @Override
@@ -65,11 +75,11 @@ public class OpenSearchClient {
         }
     };
 
-    public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String url) throws IOException {
+    public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path) throws IOException {
 
         Request<Void> request = new DefaultRequest<>("es"); //Request to ElasticSearch
         request.setHttpMethod(httpMethod);
-        request.setEndpoint(URI.create("https://" + url));
+        request.setEndpoint(URI.create("https://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path));
 
         var awsSigner = getAws4Signer();
         new DefaultAWSCredentialsProviderChain().getCredentials();
@@ -88,7 +98,9 @@ public class OpenSearchClient {
             return new OpenSearchResponse(response.getHttpResponse().getStatusCode(), response.getAwsResponse());
 
         } catch (OpenSearchException e) {
-            return new OpenSearchResponse(e.getResponse());
+            logger.info(e.getMessage());
+            logger.info("Creating OpenSearchResponse" + e.getStatus() + " " + e.getBody());
+            return new OpenSearchResponse(e.getStatus(), e.getBody());
         }
 
 
