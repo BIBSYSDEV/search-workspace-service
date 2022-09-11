@@ -1,7 +1,6 @@
 package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.fasterxml.jackson.databind.util.JSONWrappedObject;
 import no.sikt.sws.exception.SearchException;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
@@ -13,7 +12,7 @@ import org.json.JSONObject;
 /**
  * Created for checking if external libraries have been imported properly.
  */
-public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse> {
+public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexResponse> {
 
     public static final String RESOURCE_IDENTIFIER = "resource";
     public OpenSearchClient openSearchClient = new OpenSearchClient();
@@ -22,20 +21,20 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceIndexHandler.class);
 
     public WorkspaceIndexHandler() {
-        super(Void.class);
+        super(String.class);
     }
 
     @Override
-    protected IndexResponse processInput(Void input, RequestInfo request, Context context) throws ApiGatewayException {
+    protected IndexResponse processInput(String input, RequestInfo request, Context context) throws ApiGatewayException {
 
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
-        var workspace = RequestUtil.getWorkspace(request);
+        var workspace = "workspace-sondre";
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
 
         try {
             var url = workspace + "-" + index;
             logger.info("URL: " + url);
-            var response = openSearchClient.sendRequest(httpMethod, url);
+            var response = openSearchClient.sendRequest(httpMethod, url, input);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
             var jsonResult = new JSONObject();
@@ -56,7 +55,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<Void, IndexResponse
 
 
     @Override
-    protected Integer getSuccessStatusCode(Void input, IndexResponse output) {
+    protected Integer getSuccessStatusCode(String input, IndexResponse output) {
         return 200;
     }
 }

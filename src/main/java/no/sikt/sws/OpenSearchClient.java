@@ -17,21 +17,24 @@ import nva.commons.core.JacocoGenerated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static no.sikt.sws.constants.ApplicationConstants.ELASTICSEARCH_REGION;
-import static software.amazon.awssdk.http.HttpStatusCode.BAD_REQUEST;
-import static software.amazon.awssdk.http.HttpStatusCode.NOT_FOUND;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
+import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_PROTOCOL;
+import static software.amazon.awssdk.http.HttpStatusCode.*;
 
 public class OpenSearchClient {
 
 
     private static final String ELASTIC_SEARCH_SERVICE_NAME = "es";
-    private static final List<Integer> FORWARDED_ES_ERROR_CODES = Arrays.asList(BAD_REQUEST, NOT_FOUND);
+    private static final List<Integer> FORWARDED_ES_ERROR_CODES = Arrays.asList(BAD_REQUEST, NOT_FOUND, NOT_ACCEPTABLE );
 
     private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
 
@@ -75,18 +78,22 @@ public class OpenSearchClient {
         }
     };
 
-    public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path) throws IOException {
+    public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path, String data) throws IOException {
 
-        Request<Void> request = new DefaultRequest<>("es"); //Request to ElasticSearch
+        Request<Void> request = new DefaultRequest<>("es");
         request.setHttpMethod(httpMethod);
-        request.setEndpoint(URI.create("https://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path));
+        request.setEndpoint(buildUri(path));
 
-        var awsSigner = getAws4Signer();
-        new DefaultAWSCredentialsProviderChain().getCredentials();
+        if (data != null) {
+            InputStream inputStream = new ByteArrayInputStream(data.getBytes());
+            request.setContent(inputStream);
 
-        var credentials = new DefaultAWSCredentialsProviderChain().getCredentials();
+            var headers = new HashMap<String, String>();
+            headers.put("Content-Type", "application/json");
+            request.setHeaders(headers);
+        }
 
-        awsSigner.sign(request, credentials);
+        signAwsRequest(request);
 
         try {
             var response = new AmazonHttpClient(new ClientConfiguration())
@@ -106,6 +113,15 @@ public class OpenSearchClient {
 
     }
 
+    private void signAwsRequest(Request<Void> request) {
+        var awsSigner = getAws4Signer();
+        var credentials = new DefaultAWSCredentialsProviderChain().getCredentials();
+        awsSigner.sign(request, credentials);
+    }
+
+    private URI buildUri(String path) {
+        return URI.create(OPENSEARCH_ENDPOINT_PROTOCOL + "://" +OPENSEARCH_ENDPOINT_ADDRESS + "/" + path);
+    }
 
 
     @JacocoGenerated

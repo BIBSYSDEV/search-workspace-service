@@ -5,7 +5,9 @@
 build
 
 # Idea
-.idea
+/.idea/*
+!/.idea/runConfigurations
 
 # sam
 .aws-sam
+sam-enviorment.json
