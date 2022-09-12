@@ -6,6 +6,6 @@ import nva.commons.core.JacocoGenerated;
 public class ResponseUtil {
 
     public static String stripWorkspace(String body, String workspace) {
-        return body.replaceAll(workspace+'-',null);
+        return body.replaceAll(workspace + "-","");
     }
 }

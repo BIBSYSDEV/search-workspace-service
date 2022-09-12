@@ -34,17 +34,19 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexRespon
         try {
             var url = workspace + "-" + index;
             logger.info("URL: " + url);
-            var response = openSearchClient.sendRequest(httpMethod, url, input);
-            var body = ResponseUtil.stripWorkspace(response.getBody(), workspace);
-            logger.info("response-code:" + response.getStatus());
-            logger.info("response-body:" + body);
-            var jsonResult = new JSONObject();
 
-            if (body instanceof String)             {
-                jsonResult.put("message", body);
-            } else {
-                jsonResult = new JSONObject(body);
-            }
+            var response = openSearchClient.sendRequest(
+                    httpMethod,
+                    url,
+                    RequestUtil.addWorkspace(input, workspace, index));
+            logger.info("response-code:" + response.getStatus());
+
+            var body = ResponseUtil.stripWorkspace(response.getBody(), workspace);
+            logger.info("response-body:" + body);
+
+            var jsonResult = new JSONObject();
+            jsonResult.put("message", body);
+
             return new IndexResponse(jsonResult);
         } catch (Exception e) {
             logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
