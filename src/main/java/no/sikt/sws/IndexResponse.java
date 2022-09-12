@@ -1,6 +1,7 @@
 package no.sikt.sws;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import org.json.JSONObject;
 
 public class IndexResponse {
