@@ -25,7 +25,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexRespon
     }
 
     @Override
-    protected IndexResponse processInput(String input, RequestInfo request, Context context) throws ApiGatewayException {
+    protected IndexResponse processInput(String body, RequestInfo request, Context context) throws ApiGatewayException {
 
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
@@ -34,18 +34,19 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexRespon
         try {
             var url = workspace + "-" + index;
             logger.info("URL: " + url);
+//            var response = openSearchClient.sendRequest(httpMethod, url, body);
 
             var response = openSearchClient.sendRequest(
                     httpMethod,
                     url,
-                    RequestUtil.addWorkspace(input, workspace, index));
+                    RequestUtil.addWorkspace(body, workspace, index));
             logger.info("response-code:" + response.getStatus());
 
-            var body = ResponseUtil.stripWorkspace(response.getBody(), workspace);
-            logger.info("response-body:" + body);
+            var responseBody = ResponseUtil.stripWorkspace(response.getBody(), workspace);
+            logger.info("response-body:" + responseBody);
 
             var jsonResult = new JSONObject();
-            jsonResult.put("message", body);
+            jsonResult.put("message", responseBody);
 
             return new IndexResponse(jsonResult);
         } catch (Exception e) {
