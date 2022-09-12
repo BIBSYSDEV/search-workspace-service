@@ -62,6 +62,7 @@ testing {
 }
 
 pmd {
+    consoleOutput = true
     ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/ruleset.xml')
     ruleSets = []
     ignoreFailures = false
