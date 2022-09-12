@@ -28,7 +28,7 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexRespon
     protected IndexResponse processInput(String input, RequestInfo request, Context context) throws ApiGatewayException {
 
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
-        var workspace = "workspace-sondre";
+        var workspace = RequestUtil.getWorkspace(request);
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
 
         try {
