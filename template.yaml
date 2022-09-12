@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   Search Workspace Service API and Handlers
-Globals:
+Globalssds:
   Function:
     Timeout: 60
     MemorySize: 1800
