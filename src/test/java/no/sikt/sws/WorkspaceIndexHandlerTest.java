@@ -104,6 +104,6 @@ public class WorkspaceIndexHandlerTest extends TestCase {
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, IndexResponse.class);
 
-        assertThat(response.getStatusCode(), is(equalTo(123)));
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
 }
