@@ -1,4 +1,4 @@
-package no.sikt.sws.testUtils;
+package no.sikt.sws.testutils;
 
 public final class TestConstants {
 

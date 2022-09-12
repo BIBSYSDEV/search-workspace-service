@@ -1,4 +1,4 @@
-package no.sikt.sws.testUtils;
+package no.sikt.sws.testutils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import no.unit.nva.commons.json.JsonUtils;
