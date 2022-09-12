@@ -34,7 +34,6 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexRespon
         try {
             var url = workspace + "-" + index;
             logger.info("URL: " + url);
-//            var response = openSearchClient.sendRequest(httpMethod, url, body);
 
             var response = openSearchClient.sendRequest(
                     httpMethod,
