@@ -34,7 +34,7 @@ public class OpenSearchClient {
 
 
     private static final String ELASTIC_SEARCH_SERVICE_NAME = "es";
-    private static final List<Integer> FORWARDED_ES_ERROR_CODES = Arrays.asList(BAD_REQUEST, NOT_FOUND, NOT_ACCEPTABLE );
+    private static final List<Integer> FORWARDED_ES_ERROR_CODES = Arrays.asList(BAD_REQUEST, NOT_FOUND, NOT_ACCEPTABLE);
 
     private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
 
@@ -120,7 +120,7 @@ public class OpenSearchClient {
     }
 
     private URI buildUri(String path) {
-        return URI.create(OPENSEARCH_ENDPOINT_PROTOCOL + "://" +OPENSEARCH_ENDPOINT_ADDRESS + "/" + path);
+        return URI.create(OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path);
     }
 
 

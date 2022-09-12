@@ -28,22 +28,22 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexRespon
     protected IndexResponse processInput(String input, RequestInfo request, Context context) throws ApiGatewayException {
 
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
-        var workspace = "workspace-sondre";
+        var workspace = RequestUtil.getWorkspace(request);
         var index = request.getPathParameter(RESOURCE_IDENTIFIER);
 
         try {
             var url = workspace + "-" + index;
             logger.info("URL: " + url);
             var response = openSearchClient.sendRequest(httpMethod, url, input);
+            var body = ResponseUtil.stripWorkspace(response.getBody(), workspace);
             logger.info("response-code:" + response.getStatus());
-            logger.info("response-body:" + response.getBody());
+            logger.info("response-body:" + body);
             var jsonResult = new JSONObject();
-            if (response.getBody() instanceof String)
-            {
-                jsonResult.put("message", response.getBody());
-            }
-            else {
-                jsonResult = new JSONObject(response.getBody());
+
+            if (body instanceof String)             {
+                jsonResult.put("message", body);
+            } else {
+                jsonResult = new JSONObject(body);
             }
             return new IndexResponse(jsonResult);
         } catch (Exception e) {

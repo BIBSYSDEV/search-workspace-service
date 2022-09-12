@@ -4,7 +4,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.JsonNode;
 import junit.framework.TestCase;
-import no.sikt.sws.testUtils.JsonStringMatcher;
+import no.sikt.sws.testutils.JsonStringMatcher;
 import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.stubs.FakeContext;
 import no.unit.nva.testutils.HandlerRequestBuilder;
@@ -22,13 +22,14 @@ import java.util.Map;
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static no.sikt.sws.testUtils.TestConstants.*;
 import static no.sikt.sws.WorkspaceIndexHandler.RESOURCE_IDENTIFIER;
+import static no.sikt.sws.testutils.TestConstants.*;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class WorkspaceIndexHandlerTest extends TestCase {
