@@ -2,6 +2,7 @@ package no.sikt.sws;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import junit.framework.TestCase;
 import no.sikt.sws.testutils.JsonStringMatcher;
@@ -107,4 +108,16 @@ public class WorkspaceIndexHandlerTest extends TestCase {
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
+
+    @Test
+    void shouldReplaceWorkspaceIndexNameFromLambdaToOpenSearch() throws IOException {
+
+
+    }
+
+    @Test
+    void shouldReplaceWorkspaceIndexNameFromOpenSearchToLambdaResponse() {
+
+    }
+
 }
