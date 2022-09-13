@@ -1,6 +1,5 @@
 package no.sikt.sws;
 
-import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.exception.SearchException;
 import nva.commons.apigateway.ApiGatewayHandler;
