@@ -239,7 +239,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
-      Description: Workspace-index handler
+      Description: List indeces handler
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -255,7 +255,7 @@ Resources:
             Method: get
             Path: /
             RestApiId: !Ref SWSApi
-      Handler: no.sikt.sws.WorkspaceIndexHandler::handleRequest
+      Handler: no.sikt.sws.ListIndecesHandler::handleRequest
       Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn
 
