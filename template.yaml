@@ -235,6 +235,30 @@ Resources:
       Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn
 
+  ListIndecesHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Description: List indeces handler
+      Environment:
+        Variables:
+          ALLOWED_ORIGIN: '*'
+          OPENSEARCH_ENDPOINT_PROTOCOL: "https"
+          OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+      Events:
+        GetEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /
+            RestApiId: !Ref SWSApi
+      Handler: no.sikt.sws.ListIndecesHandler::handleRequest
+      Runtime: java11
+      Role: !GetAtt SWSLambdaTriggerRole.Arn
+
 
   UserPool:
     Type: AWS::Cognito::UserPool

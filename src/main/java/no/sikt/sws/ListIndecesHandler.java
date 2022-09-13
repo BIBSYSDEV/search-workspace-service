@@ -8,32 +8,33 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Created for checking if external libraries have been imported properly.
- */
-public class WorkspaceIndexHandler extends ApiGatewayHandler<String, String> {
+import static com.amazonaws.http.HttpMethodName.GET;
 
-    public static final String RESOURCE_IDENTIFIER = "resource";
+public class ListIndecesHandler extends ApiGatewayHandler<String, String> {
+
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
 
-    private static final Logger logger = LoggerFactory.getLogger(WorkspaceIndexHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ListIndecesHandler.class);
 
-    public WorkspaceIndexHandler() {
+    public ListIndecesHandler() {
         super(String.class);
     }
 
     @Override
-    protected String processInput(String body, RequestInfo request, Context context) throws ApiGatewayException {
+    protected String processInput(
+            String body,
+            RequestInfo request,
+            Context context
+    ) throws ApiGatewayException {
 
-        var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
-        var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
+
 
         try {
-            var url = workspace + "-" + resourceIdentifier;
+            var url = workspace + "-*";
             logger.info("URL: " + url);
-            var response = openSearchClient.sendRequest(httpMethod, url, body);
+            var response = openSearchClient.sendRequest(GET, url, body);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
             return response.getBody();
@@ -43,10 +44,9 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<String, String> {
         }
     }
 
-
-
     @Override
     protected Integer getSuccessStatusCode(String input, String output) {
         return 200;
     }
 }
+
