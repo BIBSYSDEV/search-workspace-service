@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 
 import static com.amazonaws.http.HttpMethodName.POST;
@@ -28,6 +29,7 @@ import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
 import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE;
 import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
+import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -109,7 +111,35 @@ public class WorkspaceIndexHandlerTest extends TestCase {
     }
 
     @Test
-    void shouldReplaceWorkspaceIndexNameFromLambdaToOpenSearch() throws IOException {
+    void runBulkRequest() {
+
+        try {
+            URL resource = getClass().getClassLoader().getResource("requests-bulk.json");
+            JsonUtils.dtoObjectMapper.readTree(resource).elements()
+                .forEachRemaining(testcase -> {
+                    var result = testcase.toString();
+//                    System.out.println(result);
+                    try {
+
+                        var obj1 = objectMapper.readValue(result, TestQuery.class);
+                        System.out.println(obj1);
+                    } catch (JsonProcessingException e) {
+//                        System.out.println(e.getMessage());
+                    }
+//                    try {
+//                        var request = testcase.get("request").toString();
+//                        var object2 =  objectMapper.readValue(request, Request.class);
+//                        System.out.println("body: " + object2.getBody());
+//                    } catch (JsonProcessingException e) {
+//                        throw new RuntimeException(e);
+//                    }
+
+//                    testcase.get("request").asText() .elements().forEachRemaining( cmd -> cmd.  System.out.println(cmd));
+                });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
