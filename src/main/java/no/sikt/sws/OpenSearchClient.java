@@ -28,7 +28,9 @@ import java.util.List;
 import static no.sikt.sws.constants.ApplicationConstants.ELASTICSEARCH_REGION;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_PROTOCOL;
-import static software.amazon.awssdk.http.HttpStatusCode.*;
+import static software.amazon.awssdk.http.HttpStatusCode.BAD_REQUEST;
+import static software.amazon.awssdk.http.HttpStatusCode.NOT_ACCEPTABLE;
+import static software.amazon.awssdk.http.HttpStatusCode.NOT_FOUND;
 
 public class OpenSearchClient {
 
@@ -85,8 +87,6 @@ public class OpenSearchClient {
         Request<Void> request = new DefaultRequest<>("es");
         request.setHttpMethod(httpMethod);
         request.setEndpoint(buildUri(path));
-
-        logger.info("Body received: '" + data + "'");
 
         if (data != null && !NULL_STRING.equals(data)) {
             InputStream inputStream = new ByteArrayInputStream(data.getBytes());

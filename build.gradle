@@ -31,12 +31,6 @@ dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
 
-    implementation group: 'nebula.lint', name: 'nebula.lint.gradle.plugin', version: '16.23.0'
-    implementation group: 'org.jacoco', name: 'org.jacoco.core', version: '0.8.7'
-    implementation group: 'org.jacoco', name: 'org.jacoco.report', version: '0.8.7'
-    implementation group: 'org.json', name: 'json', version: '20220320'
-
-
     implementation libs.aws.java.sdk.core
 
     implementation libs.aws.sdk2.eventbridge
@@ -48,11 +42,16 @@ dependencies {
     implementation libs.bundles.logging
     implementation libs.bundles.nva
 
+    implementation libs.jacoco.core
+    implementation libs.jacoco.report
+    implementation libs.json
+
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
 
     implementation libs.mockito.core
 
+    implementation libs.nebula.lint
     implementation libs.nva.json
     testImplementation libs.bundles.testing
 }

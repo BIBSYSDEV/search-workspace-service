@@ -2,17 +2,16 @@ package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.exception.SearchException;
-import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.json.JSONObject;
+import software.amazon.awssdk.utils.Pair;
 
 /**
  * Created for checking if external libraries have been imported properly.
  */
-public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexResponse> {
+public class WorkspaceIndexHandler extends OpenSearchProxyHandler<String, String> {
 
     public static final String RESOURCE_IDENTIFIER = "resource";
     public OpenSearchClient openSearchClient = new OpenSearchClient();
@@ -25,34 +24,28 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexRespon
     }
 
     @Override
-    protected IndexResponse processInput(String body, RequestInfo request, Context context) throws ApiGatewayException {
-
+    Pair<String, Integer> inputToOutputWithStatus(String body, RequestInfo request, Context context)
+            throws ApiGatewayException {
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
-        var index = request.getPathParameter(RESOURCE_IDENTIFIER);
+        var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
 
         try {
-            var url = workspace + "-" + index;
+            var url = workspace + "-" + resourceIdentifier;
             logger.info("URL: " + url);
 
             var response = openSearchClient.sendRequest(
                     httpMethod,
                     url,
-                    RequestUtil.addWorkspace(body, workspace, index));
+                    RequestUtil.addWorkspace(body, workspace, resourceIdentifier));
             logger.info("response-code:" + response.getStatus());
+            logger.info("response-body:" + response.getBody());
+
 
             var responseBody = ResponseUtil.stripWorkspace(response.getBody(), workspace);
             logger.info("response-body:" + responseBody);
 
-            var jsonResult = new JSONObject();
-
-            if (response.getBody() instanceof String)             {
-                jsonResult.put("message", response.getBody());
-            } else {
-                jsonResult = new JSONObject(response.getBody());
-            }
-
-            return new IndexResponse(jsonResult);
+            return Pair.of(responseBody, response.getStatus());
         } catch (Exception e) {
             logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
@@ -60,9 +53,4 @@ public class WorkspaceIndexHandler extends ApiGatewayHandler<String, IndexRespon
     }
 
 
-
-    @Override
-    protected Integer getSuccessStatusCode(String input, IndexResponse output) {
-        return 200;
-    }
 }
