@@ -1,5 +1,6 @@
 package no.sikt.sws;
 
+import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.exception.SearchException;
 import nva.commons.apigateway.ApiGatewayHandler;
@@ -8,9 +9,10 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.amazonaws.http.HttpMethodName.GET;
+
 public class ListIndecesHandler extends ApiGatewayHandler<String, String> {
 
-    public static final String RESOURCE_IDENTIFIER = "resource";
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
 
@@ -27,14 +29,13 @@ public class ListIndecesHandler extends ApiGatewayHandler<String, String> {
             Context context
     ) throws ApiGatewayException {
 
-        var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
 
 
         try {
             var url = workspace + "-*";
             logger.info("URL: " + url);
-            var response = openSearchClient.sendRequest(httpMethod, url, body);
+            var response = openSearchClient.sendRequest(GET, url, body);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
             return response.getBody();
