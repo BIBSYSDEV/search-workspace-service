@@ -28,10 +28,10 @@ public class WorkspaceIndexHandler extends OpenSearchProxyHandler<String, String
             throws ApiGatewayException {
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
-        var index = request.getPathParameter(RESOURCE_IDENTIFIER);
+        var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
 
         try {
-            var url = workspace + "-" + index;
+            var url = workspace + "-" + resourceIdentifier;
             logger.info("URL: " + url);
             var response = openSearchClient.sendRequest(httpMethod, url, body);
             logger.info("response-code:" + response.getStatus());
