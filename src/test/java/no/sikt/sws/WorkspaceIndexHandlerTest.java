@@ -4,8 +4,8 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.JsonNode;
 import junit.framework.TestCase;
-import no.sikt.sws.testutils.JsonStringMatcher;
 import no.unit.nva.commons.json.JsonUtils;
+import no.sikt.sws.testutils.JsonStringMatcher;
 import no.unit.nva.stubs.FakeContext;
 import no.unit.nva.testutils.HandlerRequestBuilder;
 import nva.commons.apigateway.GatewayResponse;
@@ -22,13 +22,16 @@ import java.util.Map;
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static no.sikt.sws.testutils.TestConstants.*;
 import static no.sikt.sws.WorkspaceIndexHandler.RESOURCE_IDENTIFIER;
+import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
+import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE;
+import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class WorkspaceIndexHandlerTest extends TestCase {
@@ -49,17 +52,14 @@ public class WorkspaceIndexHandlerTest extends TestCase {
         this.output = new ByteArrayOutputStream();
     }
 
-    private void setup() throws IOException {
+    @Test
+    void shouldGiveResponse() throws IOException {
+
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
 
         when(openSearchClient.sendRequest(PUT, TEST_WORKSPACE_PREFIX + TEST_INDEX_1 + "/_mapping", null))
                 .thenReturn(mockResponse);
-    }
 
-    @Test
-    void shouldGiveResponse() throws IOException {
-
-        setup();
 
         var pathparams = Map.of(
                 RESOURCE_IDENTIFIER, TEST_INDEX_1 + "/_mapping"
