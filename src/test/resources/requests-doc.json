@@ -1,0 +1,149 @@
+{
+  "tests": [
+    {
+      "name": "Doc GET without id, failed",
+      "request": {
+        "method": "GET",
+        "url": "/test1-index1/_doc",
+        "body":null
+      },
+      "response":{
+        "error": "Incorrect HTTP method for uri [/test1-index1/_doc] and method [GET], allowed: [POST]",
+        "status": 405
+      }
+    },
+    {
+      "name": "Doc DELETE with id",
+      "request": {
+        "method": "DELETE",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body": null
+      },
+      "response": {
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 8,
+        "result": "deleted",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 10,
+        "_primary_term": 2
+      }
+    },
+    {
+      "name": "Doc DELETE with invalid id",
+      "request": {
+        "method": "DELETE",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":null
+      },
+      "response": {
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 9,
+        "result": "not_found",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 11,
+        "_primary_term": 2
+      }
+    },
+    {
+      "name": "Doc GET with id",
+      "request": {
+        "method": "GET",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":null
+      },
+      "response": {
+        "_index": "test1-index1",
+        "_id": "wA2eMYMB7qJ3vkuEet4E",
+        "_version": 2,
+        "_seq_no": 5,
+        "_primary_term": 1,
+        "found": true,
+        "_source": {
+          "navn": "Test-2",
+          "age": 333
+        }
+      }
+    },
+    {
+      "name": "Doc PUT with id",
+      "request": {
+        "method": "PUT",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":null
+      },
+      "response": {
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "found": false
+      }
+    },
+    {
+      "name": "Doc PATCH with id, failed",
+      "request": {
+        "method": "PATCH",
+        "url": "test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":{ "age":224}
+      },
+      "response":{
+        "error": "Incorrect HTTP method for uri [/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j] and method [PATCH], allowed: [PUT, GET, POST, HEAD, DELETE]",
+        "status": 405
+      }
+    },
+    {
+      "name": "Doc POST with id",
+      "request": {
+        "method": "POST",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body": {
+          "navn": "Test-2",
+          "age": 223,
+          "test": "nytt navn 2"
+        }
+      },
+      "response":{
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 7,
+        "result": "updated",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 9,
+        "_primary_term": 2
+      }
+    },
+    {
+      "name": "Doc PUT with id",
+      "request": {
+        "method": "PUT",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":{ "navn": "Test-2", "age":222, "test":"nytt navn"}
+      },
+      "response":  {
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 6,
+        "result": "updated",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 8,
+        "_primary_term": 2
+      }
+    }
+  ]
+}

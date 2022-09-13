@@ -1,0 +1,81 @@
+{
+  "tests": [
+    {
+      "name": "GET index",
+      "request": {
+        "method": "GET",
+        "url": "/test1-index1",
+        "body": null
+      },
+      "response": {
+        "test1-index1": {
+          "aliases": {
+            "sample-alias1": {}
+          },
+          "mappings": {
+            "properties": {
+              "age": {
+                "type": "integer"
+              },
+              "navn": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "test": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "settings": {
+            "index": {
+              "creation_date": "1662982493727",
+              "number_of_shards": "2",
+              "number_of_replicas": "1",
+              "uuid": "nXsprbMMTHuvByW3rG3u8Q",
+              "version": {
+                "created": "136217927"
+              },
+              "provided_name": "test1-index1"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Post index, failed",
+      "request": {
+        "method": "POST",
+        "url": "/test1-index2",
+        "body": null
+      },
+      "response":{
+        "error": "Incorrect HTTP method for uri [/test1-index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
+        "status": 405
+      }
+    },
+    {
+      "name": "Put index, without template",
+      "request": {
+        "method": "PUT",
+        "url": "/test1-index2",
+        "body": null
+      },
+      "response":{
+        "acknowledged": true,
+        "shards_acknowledged": true,
+        "index": "test1-index2"
+      }
+    }
+  ],
+}
