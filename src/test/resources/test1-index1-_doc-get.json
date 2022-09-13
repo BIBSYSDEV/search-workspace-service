@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "PUT",
+    "url": "/test1-index1/_doc"
+  },
+  "body":{} ,
+  "response":{
+    "error": "Incorrect HTTP method for uri [/test1-index1/_doc] and method [GET], allowed: [POST]",
+    "status": 405
+  }
+}
+

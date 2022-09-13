@@ -1,0 +1,37 @@
+{
+  "collection": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j"
+      },
+      "body": {},
+      "response": {
+        "_index": "test1-index1",
+        "_id": "wA2eMYMB7qJ3vkuEet4E",
+        "_version": 2,
+        "_seq_no": 5,
+        "_primary_term": 1,
+        "found": true,
+        "_source": {
+          "navn": "Test-2",
+          "age": 333
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j"
+      },
+      "body": {},
+      "response": {
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "found": false
+      }
+    }
+  ]
+}
+
+

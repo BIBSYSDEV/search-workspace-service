@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "PATCH",
+    "url": "test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j"
+  },
+  "body":{ "age":224} ,
+  "response":{
+    "error": "Incorrect HTTP method for uri [/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j] and method [PATCH], allowed: [PUT, GET, POST, HEAD, DELETE]",
+    "status": 405
+  }
+}
+
+
+

@@ -1,0 +1,64 @@
+{
+  "request": {
+    "method": "PUT",
+    "url": "_bulk"
+  },
+  "body": "{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}",
+  "response":{
+    "took": 212,
+    "errors": false,
+    "items": [
+      {
+        "index": {
+          "_index": "test1-index-3",
+          "_id": "1",
+          "_version": 2,
+          "result": "updated",
+          "_shards": {
+            "total": 2,
+            "successful": 1,
+            "failed": 0
+          },
+          "_seq_no": 3,
+          "_primary_term": 1,
+          "status": 200
+        }
+      },
+      {
+        "index": {
+          "_index": "test1-index-3",
+          "_id": "2",
+          "_version": 2,
+          "result": "updated",
+          "_shards": {
+            "total": 2,
+            "successful": 1,
+            "failed": 0
+          },
+          "_seq_no": 4,
+          "_primary_term": 1,
+          "status": 200
+        }
+      },
+      {
+        "index": {
+          "_index": "test1-index-3",
+          "_id": "3",
+          "_version": 2,
+          "result": "updated",
+          "_shards": {
+            "total": 2,
+            "successful": 1,
+            "failed": 0
+          },
+          "_seq_no": 5,
+          "_primary_term": 1,
+          "status": 200
+        }
+      }
+    ]
+  }
+}
+
+
+

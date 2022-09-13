@@ -1,0 +1,45 @@
+{
+  "collection": [
+    {
+      "request": {
+        "method": "DELETE",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j"
+      },
+      "body": "{ \"age\":224}",
+      "response": {
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 8,
+        "result": "deleted",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 10,
+        "_primary_term": 2
+      }
+    },
+    {
+      "request": {
+        "method": "DELETE",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j"
+      },
+      "body": "{ \"age\":224}",
+      "response": {
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 9,
+        "result": "not_found",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 11,
+        "_primary_term": 2
+      }
+    }
+  ]
+}
+
