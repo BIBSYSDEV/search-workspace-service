@@ -10,7 +10,7 @@ paths:
         - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ListIndecesHandler.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceHandler.Arn}/invocations
         responses: { }
         httpMethod: POST
         type: AWS_PROXY
@@ -43,7 +43,7 @@ paths:
         - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
         responses: { }
         httpMethod: POST
         type: AWS_PROXY
@@ -75,7 +75,7 @@ paths:
         - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
         responses: { }
         httpMethod: POST
         type: AWS_PROXY
@@ -103,7 +103,7 @@ paths:
         - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
         responses: { }
         httpMethod: POST
         type: AWS_PROXY
@@ -135,7 +135,7 @@ paths:
         - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
         responses: { }
         httpMethod: POST
         type: AWS_PROXY
@@ -163,7 +163,7 @@ paths:
         - CognitoUserPool: [ 'https://api.sws.unit.no/scopes/workspace-sondre', 'https://api.sws.unit.no/scopes/workspace-fredrik', 'https://api.sws.unit.no/scopes/workspace-stig', 'https://api.sws.unit.no/scopes/workspace-marina' ]
       x-amazon-apigateway-integration:
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceIndexHandler.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
         responses: { }
         httpMethod: POST
         type: AWS_PROXY

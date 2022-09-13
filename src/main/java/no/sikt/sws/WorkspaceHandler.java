@@ -10,14 +10,14 @@ import org.slf4j.LoggerFactory;
 
 import static com.amazonaws.http.HttpMethodName.GET;
 
-public class ListIndecesHandler extends ApiGatewayHandler<String, String> {
+public class WorkspaceHandler extends ApiGatewayHandler<String, String> {
 
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
 
-    private static final Logger logger = LoggerFactory.getLogger(ListIndecesHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkspaceHandler.class);
 
-    public ListIndecesHandler() {
+    public WorkspaceHandler() {
         super(String.class);
     }
 
