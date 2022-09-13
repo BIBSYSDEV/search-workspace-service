@@ -86,8 +86,6 @@ public class OpenSearchClient {
         request.setHttpMethod(httpMethod);
         request.setEndpoint(buildUri(path));
 
-        logger.info("Body received: '" + data + "'");
-
         if (data != null && !NULL_STRING.equals(data)) {
             InputStream inputStream = new ByteArrayInputStream(data.getBytes());
             request.setContent(inputStream);
