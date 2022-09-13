@@ -22,7 +22,7 @@ import java.util.Map;
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static no.sikt.sws.WorkspaceIndexHandler.RESOURCE_IDENTIFIER;
+import static no.sikt.sws.IndexHandler.RESOURCE_IDENTIFIER;
 import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
 import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE;
 import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
@@ -34,13 +34,13 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-public class WorkspaceIndexHandlerTest extends TestCase {
+public class IndexHandlerTest extends TestCase {
 
     private static final Context CONTEXT = new FakeContext();
     private ByteArrayOutputStream output;
 
     @InjectMocks
-    WorkspaceIndexHandler handler = new WorkspaceIndexHandler();
+    IndexHandler handler = new IndexHandler();
 
     @Mock
     OpenSearchClient openSearchClient;

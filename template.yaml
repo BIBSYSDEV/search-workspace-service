@@ -187,11 +187,11 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda
 
-  WorkspaceIndexHandler:
+  IndexHandler:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
-      Description: Workspace-index handler
+      Description: Index handler for indeces within a workspace
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -231,15 +231,15 @@ Resources:
             Method: post
             Path: /{resource+}
             RestApiId: !Ref SWSApi
-      Handler: no.sikt.sws.WorkspaceIndexHandler::handleRequest
+      Handler: no.sikt.sws.IndexHandler::handleRequest
       Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn
 
-  ListIndecesHandler:
+  WorkspaceHandler:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
-      Description: List indeces handler
+      Description: Handler for workspace - listing indeces and showing account identifier
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -255,7 +255,7 @@ Resources:
             Method: get
             Path: /
             RestApiId: !Ref SWSApi
-      Handler: no.sikt.sws.ListIndecesHandler::handleRequest
+      Handler: no.sikt.sws.WorkspaceHandler::handleRequest
       Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn
 

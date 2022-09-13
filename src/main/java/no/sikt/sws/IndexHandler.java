@@ -11,15 +11,15 @@ import software.amazon.awssdk.utils.Pair;
 /**
  * Created for checking if external libraries have been imported properly.
  */
-public class WorkspaceIndexHandler extends OpenSearchProxyHandler<String, String> {
+public class IndexHandler extends OpenSearchProxyHandler<String, String> {
 
     public static final String RESOURCE_IDENTIFIER = "resource";
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
 
-    private static final Logger logger = LoggerFactory.getLogger(WorkspaceIndexHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(IndexHandler.class);
 
-    public WorkspaceIndexHandler() {
+    public IndexHandler() {
         super(String.class);
     }
 

@@ -26,14 +26,14 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.when;
 
-public class ListIndecesHandlerTest extends TestCase {
+public class WorkspaceHandlerTest extends TestCase {
 
 
     private static final Context CONTEXT = new FakeContext();
     private ByteArrayOutputStream output;
 
     @InjectMocks
-    ListIndecesHandler handler = new ListIndecesHandler();
+    WorkspaceHandler handler = new WorkspaceHandler();
 
     @Mock
     OpenSearchClient openSearchClient;
