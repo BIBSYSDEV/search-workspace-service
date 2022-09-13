@@ -72,7 +72,7 @@ public class WorkspaceIndexHandlerTest extends TestCase {
                 .build();
 
         handler.handleRequest(request, output, CONTEXT);
-        var response = GatewayResponse.fromOutputStream(output, IndexResponse.class);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
@@ -102,7 +102,7 @@ public class WorkspaceIndexHandlerTest extends TestCase {
                 .build();
 
         handler.handleRequest(request, output, CONTEXT);
-        var response = GatewayResponse.fromOutputStream(output, IndexResponse.class);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
