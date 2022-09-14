@@ -21,11 +21,12 @@ public class WorkspaceResponse {
         this.indexList = indexList;
     }
 
-    public WorkspaceResponse(String workspace, String indexList) throws JsonProcessingException {
+    public static WorkspaceResponse fromValues(String workspace, String indexList) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        this.accountIdentifier = workspace;
-        this.indexList = objectMapper.readTree(indexList);
+        var indexListJson = objectMapper.readTree(indexList);
+
+        return new WorkspaceResponse(workspace, indexListJson);
     }
 
 }

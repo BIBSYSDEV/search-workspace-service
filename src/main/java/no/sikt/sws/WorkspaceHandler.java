@@ -33,7 +33,7 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
         String indexList = getIndexList(workspace);
 
         try {
-            return new WorkspaceResponse(workspace, indexList);
+            return WorkspaceResponse.fromValues(workspace, indexList);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             throw new SearchException(e.getMessage(), e);
