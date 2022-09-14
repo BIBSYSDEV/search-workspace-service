@@ -9,7 +9,7 @@ Globals:
     Environment:
       Variables:
         ELASTICSEARCH_REGION: "eu-west-1"
-        SCOPE_IDENTIFIER: "https://api.sws.unit.no/scopes"
+        SCOPE_IDENTIFIER: !Sub 'https://api.${CustomDomain}/scopes'
 
   Api:
     Cors:
@@ -18,19 +18,14 @@ Globals:
       AllowOrigin: "'*'"
 
 Parameters:
-  #TODO: Comment this in when we're adding cognito
-  #CustomDomain:
-    #Type: AWS::SSM::Parameter::Value<String>
-    #Description: Custom API to connect this lambda to
-    #Default: CustomDomain
-  #CustomDomainBasePath:
-    #Type: String
-    #Description: Base path mapping in CustomDomain
-    #Default: search
-  #ResourcesBucket:
-   #Type: AWS::SSM::Parameter::Value<String>
-    #Default: /NVA/Events/PersistedEntriesBucketName
-
+  ApiDomain:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Description: The Api domain
+    Default: /SWS/ApiDomain
+  CustomDomain:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Custom API to connect this lambda to
+    Default: CustomDomain
 
   ElasticSearchSize:
     Type: String
@@ -284,7 +279,7 @@ Resources:
   ResourceServerScopes:
     Type: AWS::Cognito::UserPoolResourceServer
     Properties:
-      Identifier: https://api.sws.unit.no/scopes
+      Identifier: !Sub 'https://api.${CustomDomain}/scopes'
       Name: Scopes for backend
       Scopes:
         - ScopeDescription: Scope for accessing sondres workspace
@@ -297,32 +292,6 @@ Resources:
           ScopeName: workspace-marina
       UserPoolId: !Ref UserPool
 
-  UserApplicationClient:
-    DependsOn:   ResourceServerScopes
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      UserPoolId: !Ref UserPool
-      AllowedOAuthFlows:
-        - implicit
-      AllowedOAuthFlowsUserPoolClient: true
-      AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/admin
-      ClientName:   UserApplicationClient
-      CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
-      ExplicitAuthFlows:
-        - ALLOW_CUSTOM_AUTH
-        - ALLOW_USER_SRP_AUTH
-        - ALLOW_ADMIN_USER_PASSWORD_AUTH
-        - ALLOW_REFRESH_TOKEN_AUTH
-        - ALLOW_USER_PASSWORD_AUTH
-      IdTokenValidity: 15
-      AccessTokenValidity: 15
-      TokenValidityUnits:
-        AccessToken: minutes
-        IdToken: minutes
-
   BackendApplicationSondreClient:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
@@ -332,11 +301,11 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/workspace-sondre
+        - !Sub 'https://api.${CustomDomain}/scopes/workspace-sondre'
       ClientName: BackendApplicationSondreClient
       CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
+        - !Sub 'https://api.${CustomDomain}/scopes' # not necessary maybe.
+      DefaultRedirectURI: !Sub 'https://api.${CustomDomain}/scopes'
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -358,11 +327,11 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/workspace-fredrik
+        - !Sub 'https://api.${CustomDomain}/scopes/workspace-fredrik'
       ClientName:   BackendApplicationFredrikClient
       CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
+        - !Sub 'https://api.${CustomDomain}/scopes' # not necessary maybe.
+      DefaultRedirectURI: !Sub 'https://api.${CustomDomain}/scopes'
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -385,11 +354,11 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/workspace-stig
+        - !Sub 'https://api.${CustomDomain}/scopes/workspace-stig'
       ClientName: BackendApplicationStigClient
       CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
+        - !Sub 'https://api.${CustomDomain}/scopes' # not necessary maybe.
+      DefaultRedirectURI: !Sub 'https://api.${CustomDomain}/scopes'
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -411,11 +380,11 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/workspace-marina
+        - !Sub 'https://api.${CustomDomain}/scopes/workspace-marina'
       ClientName: BackendApplicationMarinaClient
       CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
+        - !Sub 'https://api.${CustomDomain}/scopes' # not necessary maybe.
+      DefaultRedirectURI: !Sub 'https://api.${CustomDomain}/scopes'
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
