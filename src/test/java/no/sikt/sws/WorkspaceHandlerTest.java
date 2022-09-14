@@ -75,18 +75,4 @@ public class WorkspaceHandlerTest extends TestCase {
         Assertions.assertNotNull(workspaceResponse.accountIdentifier);
 
     }
-
-    @Test
-    void workspaceResponseMapsCorrectly() throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        String mockJson =
-                "{\"account_identifier\":\"hei\",\"index_list\":{\"hallo\":{\"hade\":\"somevalue\"}}}";
-
-        WorkspaceResponse workspaceObject = objectMapper.readValue(mockJson, WorkspaceResponse.class);
-        String mappedString = objectMapper.valueToTree(workspaceObject).toString();
-        assertThat(mappedString, is(equalTo(mockJson)));
-    }
-
-
 }
