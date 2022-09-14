@@ -2,11 +2,15 @@ package no.sikt.sws;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.stubs.FakeContext;
 import no.unit.nva.testutils.HandlerRequestBuilder;
 import nva.commons.apigateway.GatewayResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -39,15 +43,17 @@ public class WorkspaceHandlerTest extends TestCase {
     OpenSearchClient openSearchClient;
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    public void beforeEach() {
         MockitoAnnotations.openMocks(this);
 
         this.output = new ByteArrayOutputStream();
     }
 
     @Test
-    void sendsCallToOpenSearch() throws IOException {
-        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
+    void callToOpenSearchMapsToCorrectResponse() throws IOException {
+        String mockJson = "{\"hallo\": {\"field1\": \"somevalue\"}}";
+
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, mockJson);
 
         when(openSearchClient.sendRequest(GET, TEST_WORKSPACE_PREFIX + "*", null))
                 .thenReturn(mockResponse);
@@ -59,10 +65,27 @@ public class WorkspaceHandlerTest extends TestCase {
                 .build();
 
         handler.handleRequest(request, output, CONTEXT);
-        var response = GatewayResponse.fromOutputStream(output, String.class);
+        var response = GatewayResponse.fromOutputStream(output, WorkspaceResponse.class);
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
 
+        WorkspaceResponse workspaceResponse = response.getBodyObject(WorkspaceResponse.class);
+
+        Assertions.assertNotNull(workspaceResponse.indexList);
+        Assertions.assertNotNull(workspaceResponse.accountIdentifier);
+
+    }
+
+    @Test
+    void workspaceResponseMapsCorrectly() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String mockJson =
+                "{\"account_identifier\":\"hei\",\"index_list\":{\"hallo\":{\"hade\":\"somevalue\"}}}";
+
+        WorkspaceResponse workspaceObject = objectMapper.readValue(mockJson, WorkspaceResponse.class);
+        String mappedString = objectMapper.valueToTree(workspaceObject).toString();
+        assertThat(mappedString, is(equalTo(mockJson)));
     }
 
 
