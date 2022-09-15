@@ -9,7 +9,7 @@ Globals:
     Environment:
       Variables:
         ELASTICSEARCH_REGION: "eu-west-1"
-        SCOPE_IDENTIFIER: !Sub 'https://api.sws.unit.no/scopes'
+        SCOPE_IDENTIFIER: 'https://api.sws.unit.no/scopes'
 
   Api:
     Cors:
@@ -18,10 +18,6 @@ Globals:
       AllowOrigin: "'*'"
 
 Parameters:
-  CustomDomain:
-    Type: AWS::SSM::Parameter::Value<String>
-    Description: Custom API to connect this lambda to
-    Default: /SWS/CustomDomain
   ElasticSearchSize:
     Type: String
     Default: small
