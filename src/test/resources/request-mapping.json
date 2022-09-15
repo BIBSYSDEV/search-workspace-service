@@ -1,5 +1,12 @@
 [
-    {
-      "name": "Mapping"
-    }
+  {
+    "name": "Mapping",
+    "request": {
+      "method": null,
+      "url": null,
+      "body": ""
+    },
+    "response": {},
+    "responseStripped": {}
+  }
 ]

@@ -186,7 +186,7 @@
         "_primary_term": 2
       },
       "responseStripped": {
-        "_index": "test1-index1",
+        "_index": "index1",
         "_id": "vw2ZMYMB7qJ3vkuEHt6j",
         "_version": 9,
         "result": "not_found",
