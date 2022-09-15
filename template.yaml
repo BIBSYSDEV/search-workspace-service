@@ -21,10 +21,11 @@ Parameters:
   CustomDomain:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Custom API to connect this lambda to
-    Default: CustomDomain
+    Default: /SWS/CustomDomain
 
   ElasticSearchSize:
     Type: String
+    Default: small
     AllowedValues:
       - small
       - large
