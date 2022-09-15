@@ -3,7 +3,7 @@
       "name": "Bulk POST create index",
       "request": {
         "method": "POST",
-        "url": "_bulk",
+        "url": "/_bulk",
         "body": "{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
       },
       "response": {

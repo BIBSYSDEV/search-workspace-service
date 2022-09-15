@@ -102,7 +102,7 @@
           "age": 333
         }
       },
-      "response-strippe": {
+      "responseStripped": {
         "_index": "index1",
         "_id": "wA2eMYMB7qJ3vkuEet4E",
         "_version": 2,
@@ -137,8 +137,8 @@
       "name": "Doc PATCH with id, failed",
       "request": {
         "method": "PATCH",
-        "url": "test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":{ "age":224}
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":"{ \"age\":224}"
       },
       "response":{
         "error": "Incorrect HTTP method for uri [/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j] and method [PATCH], allowed: [PUT, GET, POST, HEAD, DELETE]",
@@ -154,11 +154,7 @@
       "request": {
         "method": "POST",
         "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body": {
-          "navn": "Test-2",
-          "age": 223,
-          "test": "nytt navn 2"
-        }
+        "body": "{ \"navn\": \"Test-2\",\"age\": 223,\"test\": \"nytt navn 2\" }"
       },
       "response":{
         "_index": "test1-index1",
@@ -192,7 +188,7 @@
       "request": {
         "method": "PUT",
         "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":{ "navn": "Test-2", "age":222, "test":"nytt navn"}
+        "body":"{ \"navn\": \"Test-2\", \"age\":222, \"test\":\"nytt navn\"}"
       },
       "response":  {
         "_index": "test1-index1",
