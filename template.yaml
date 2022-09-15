@@ -18,10 +18,6 @@ Globals:
       AllowOrigin: "'*'"
 
 Parameters:
-  ApiDomain:
-    Type: 'AWS::SSM::Parameter::Value<String>'
-    Description: The Api domain
-    Default: /SWS/ApiDomain
   CustomDomain:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Custom API to connect this lambda to
