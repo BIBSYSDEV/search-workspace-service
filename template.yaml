@@ -323,7 +323,7 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.sikt.no/scopesworkspace-fredrik
+        - https://api.sws.sikt.no/scopes/workspace-fredrik
       ClientName:   BackendApplicationFredrikClient
       CallbackURLs:
         - https://api.sws.sikt.no/scopes # not necessary maybe.
