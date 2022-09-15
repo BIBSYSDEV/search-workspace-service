@@ -9,7 +9,7 @@ Globals:
     Environment:
       Variables:
         ELASTICSEARCH_REGION: "eu-west-1"
-        SCOPE_IDENTIFIER: 'https://api.sws.unit.no/scopes'
+        SCOPE_IDENTIFIER: 'https://api.sws.sikt.no/scopes'
 
   Api:
     Cors:
