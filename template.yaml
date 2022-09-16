@@ -35,7 +35,7 @@ Parameters:
   CustomDomainBasePath:
     Type: String
     Description: Base path mapping in CustomDomain
-    Default: api
+    Default: sws
   CustomDomain:
     Type: String
     Description: Custom API to connect this lambda to
@@ -372,7 +372,7 @@ Resources:
         - WithSuffix
         - !Sub ${CustomDomainBasePath}-${Suffix}
         - !Sub ${CustomDomainBasePath}
-      DomainName: !Sub ${CustomDomain}
+      DomainName: !Sub api.${CustomDomain}
       RestApiId: !Ref SWSApi
       Stage: !Ref SWSApi.Stage
 
