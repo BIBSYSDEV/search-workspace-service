@@ -32,16 +32,11 @@ Parameters:
     Type: String
     Default: ''
     Description: Suffix used for naming resources for feature branches to avoid conflicts.
-  CustomDomainBasePath:
-    Type: String
-    Description: Base path mapping in CustomDomain
-    Default: sws
   CustomDomain:
     Type: String
     Description: Custom API to connect this lambda to
 
 Conditions:
-  WithSuffix: !Not [ !Equals [ !Ref Suffix, '' ] ]
   LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
 
 
@@ -367,11 +362,6 @@ Resources:
   SwsBasePathMapping:
     Type: AWS::ApiGateway::BasePathMapping
     Properties:
-      BasePath:
-        !If
-        - WithSuffix
-        - !Sub ${CustomDomainBasePath}-${Suffix}
-        - !Sub ${CustomDomainBasePath}
       DomainName: !Sub api.${CustomDomain}
       RestApiId: !Ref SWSApi
       Stage: !Ref SWSApi.Stage
