@@ -35,7 +35,7 @@ Parameters:
   CustomDomainBasePath:
     Type: String
     Description: Base path mapping in CustomDomain
-    Default: sws
+    Default: api
   CustomDomain:
     Type: String
     Description: Custom API to connect this lambda to
@@ -121,45 +121,6 @@ Resources:
                 Action:
                   - lambda:InvokeFunction
                 Resource: "*"
-
-  SWSOpenSearch:
-    Type: AWS::OpenSearchService::Domain
-    Properties:
-      AccessPolicies:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !GetAtt ReadOnlyAccessElasticSearchRole.Arn
-            Action:
-              - es:ESHttpPost
-              - es:ESHttpGet
-              - es:ESHttpPut
-              - es:ESHttpHead
-            Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
-      ClusterConfig: !If [ LargeElasticSearch,
-        {
-            DedicatedMasterEnabled: true,
-            DedicatedMasterType: t2.medium.search,
-            DedicatedMasterCount: 3,
-            InstanceCount: 2,
-            ZoneAwarenessEnabled: false,
-            InstanceType: t2.medium.search
-        },
-        {
-          DedicatedMasterEnabled: false,
-          InstanceCount: 1,
-          ZoneAwarenessEnabled: false,
-          InstanceType: t2.medium.search
-        }
-      ]
-      EngineVersion: "OpenSearch_1.3"
-      EBSOptions:
-        EBSEnabled: true
-        VolumeSize: 10
-        VolumeType: gp2
-      CognitoOptions:
-        Enabled: false
 
   SWSApi:
     Type: AWS::Serverless::Api
@@ -411,6 +372,45 @@ Resources:
         - WithSuffix
         - !Sub ${CustomDomainBasePath}-${Suffix}
         - !Sub ${CustomDomainBasePath}
-      DomainName: !Sub api.${CustomDomain}
-      RestApiId: !Ref   SWSApi
+      DomainName: !Sub ${CustomDomain}
+      RestApiId: !Ref SWSApi
       Stage: !Ref SWSApi.Stage
+
+  SWSOpenSearch:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      AccessPolicies:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !GetAtt ReadOnlyAccessElasticSearchRole.Arn
+            Action:
+              - es:ESHttpPost
+              - es:ESHttpGet
+              - es:ESHttpPut
+              - es:ESHttpHead
+            Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
+      ClusterConfig: !If [ LargeElasticSearch,
+        {
+          DedicatedMasterEnabled: true,
+          DedicatedMasterType: t2.medium.search,
+          DedicatedMasterCount: 3,
+          InstanceCount: 2,
+          ZoneAwarenessEnabled: false,
+          InstanceType: t2.medium.search
+        },
+        {
+          DedicatedMasterEnabled: false,
+          InstanceCount: 1,
+          ZoneAwarenessEnabled: false,
+          InstanceType: t2.medium.search
+        }
+      ]
+      EngineVersion: "OpenSearch_1.3"
+      EBSOptions:
+        EBSEnabled: true
+        VolumeSize: 10
+        VolumeType: gp2
+      CognitoOptions:
+        Enabled: false
