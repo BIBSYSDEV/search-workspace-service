@@ -28,10 +28,6 @@ Parameters:
     Type: String
     Default: sws-auth-dev
     Description: The prefix for the Cognito domain that hosts the sign-up and sign-in pages for your application.
-  Suffix:
-    Type: String
-    Default: ''
-    Description: Suffix used for naming resources for feature branches to avoid conflicts.
   CustomDomain:
     Type: String
     Description: Custom API to connect this lambda to
