@@ -9,7 +9,7 @@ Globals:
     Environment:
       Variables:
         ELASTICSEARCH_REGION: "eu-west-1"
-        SCOPE_IDENTIFIER: 'https://api.sws.sikt.no/scopes'
+        SCOPE_IDENTIFIER: 'https://api.sws.aws.sikt.no/scopes'
 
   Api:
     Cors:
@@ -242,7 +242,7 @@ Resources:
   ResourceServerScopes:
     Type: AWS::Cognito::UserPoolResourceServer
     Properties:
-      Identifier: https://api.sws.sikt.no/scopes
+      Identifier: https://api.sws.aws.sikt.no/scopes
       Name: Scopes for backend
       Scopes:
         - ScopeDescription: Scope for accessing sondres workspace
@@ -264,11 +264,8 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.sikt.no/scopes/workspace-sondre
+        - https://api.sws.aws.sikt.no/scopes/workspace-sondre
       ClientName: BackendApplicationSondreClient
-      CallbackURLs:
-        - https://api.sws.sikt.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.sikt.no/scopes
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -290,11 +287,8 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.sikt.no/scopes/workspace-fredrik
+        - https://api.sws.aws.sikt.no/scopes/workspace-fredrik
       ClientName:   BackendApplicationFredrikClient
-      CallbackURLs:
-        - https://api.sws.sikt.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.sikt.no/scopes
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -317,11 +311,8 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.sikt.no/scopes/workspace-stig
+        - https://api.sws.aws.sikt.no/scopes/workspace-stig
       ClientName: BackendApplicationStigClient
-      CallbackURLs:
-        - https://api.sws.sikt.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.sikt.no/scopes
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -343,11 +334,8 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.sikt.no/scopes/workspace-marina
+        - https://api.sws.aws.sikt.no/scopes/workspace-marina
       ClientName: BackendApplicationMarinaClient
-      CallbackURLs:
-        - https://api.sws.sikt.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.sikt.no/scopes
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
