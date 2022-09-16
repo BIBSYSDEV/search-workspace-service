@@ -37,10 +37,8 @@ Parameters:
     Description: Base path mapping in CustomDomain
     Default: sws
   CustomDomain:
-    Type: AWS::SSM::Parameter::Value<String>
+    Type: String
     Description: Custom API to connect this lambda to
-    Default: CustomDomain
-
 
 Conditions:
   WithSuffix: !Not [ !Equals [ !Ref Suffix, '' ] ]
