@@ -28,9 +28,22 @@ Parameters:
     Type: String
     Default: sws-auth-dev
     Description: The prefix for the Cognito domain that hosts the sign-up and sign-in pages for your application.
+  Suffix:
+    Type: String
+    Default: ''
+    Description: Suffix used for naming resources for feature branches to avoid conflicts.
+  CustomDomainBasePath:
+    Type: String
+    Description: Base path mapping in CustomDomain
+    Default: sws
+  CustomDomain:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Custom API to connect this lambda to
+    Default: CustomDomain
 
 
 Conditions:
+  WithSuffix: !Not [ !Equals [ !Ref Suffix, '' ] ]
   LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
 
 
@@ -392,3 +405,14 @@ Resources:
       TokenValidityUnits:
         AccessToken: minutes
         IdToken: minutes
+  SwsBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath:
+        !If
+        - WithSuffix
+        - !Sub ${CustomDomainBasePath}-${Suffix}
+        - !Sub ${CustomDomainBasePath}
+      DomainName: !Sub api.${CustomDomain}
+      RestApiId: !Ref   SWSApi
+      Stage: !Ref SWSApi.Stage
