@@ -9,7 +9,7 @@ Globals:
     Environment:
       Variables:
         ELASTICSEARCH_REGION: "eu-west-1"
-        SCOPE_IDENTIFIER: "https://api.sws.unit.no/scopes"
+        SCOPE_IDENTIFIER: 'https://api.sws.aws.sikt.no/scopes'
 
   Api:
     Cors:
@@ -18,26 +18,19 @@ Globals:
       AllowOrigin: "'*'"
 
 Parameters:
-  #TODO: Comment this in when we're adding cognito
-  #CustomDomain:
-    #Type: AWS::SSM::Parameter::Value<String>
-    #Description: Custom API to connect this lambda to
-    #Default: CustomDomain
-  #CustomDomainBasePath:
-    #Type: String
-    #Description: Base path mapping in CustomDomain
-    #Default: search
-  #ResourcesBucket:
-   #Type: AWS::SSM::Parameter::Value<String>
-    #Default: /NVA/Events/PersistedEntriesBucketName
-
-
   ElasticSearchSize:
     Type: String
+    Default: small
     AllowedValues:
       - small
       - large
-
+  UserPoolDomainPrefix:
+    Type: String
+    Default: sws-auth-dev
+    Description: The prefix for the Cognito domain that hosts the sign-up and sign-in pages for your application.
+  CustomDomain:
+    Type: String
+    Description: Custom API to connect this lambda to
 
 Conditions:
   LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
@@ -119,45 +112,6 @@ Resources:
                 Action:
                   - lambda:InvokeFunction
                 Resource: "*"
-
-  SWSOpenSearch:
-    Type: AWS::OpenSearchService::Domain
-    Properties:
-      AccessPolicies:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !GetAtt ReadOnlyAccessElasticSearchRole.Arn
-            Action:
-              - es:ESHttpPost
-              - es:ESHttpGet
-              - es:ESHttpPut
-              - es:ESHttpHead
-            Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
-      ClusterConfig: !If [ LargeElasticSearch,
-        {
-            DedicatedMasterEnabled: true,
-            DedicatedMasterType: t2.medium.search,
-            DedicatedMasterCount: 3,
-            InstanceCount: 2,
-            ZoneAwarenessEnabled: false,
-            InstanceType: t2.medium.search
-        },
-        {
-          DedicatedMasterEnabled: false,
-          InstanceCount: 1,
-          ZoneAwarenessEnabled: false,
-          InstanceType: t2.medium.search
-        }
-      ]
-      EngineVersion: "OpenSearch_1.3"
-      EBSOptions:
-        EBSEnabled: true
-        VolumeSize: 10
-        VolumeType: gp2
-      CognitoOptions:
-        Enabled: false
 
   SWSApi:
     Type: AWS::Serverless::Api
@@ -279,12 +233,12 @@ Resources:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       UserPoolId: !Ref UserPool
-      Domain: "sws-auth"
+      Domain: !Ref UserPoolDomainPrefix
 
   ResourceServerScopes:
     Type: AWS::Cognito::UserPoolResourceServer
     Properties:
-      Identifier: https://api.sws.unit.no/scopes
+      Identifier: https://api.sws.aws.sikt.no/scopes
       Name: Scopes for backend
       Scopes:
         - ScopeDescription: Scope for accessing sondres workspace
@@ -297,32 +251,6 @@ Resources:
           ScopeName: workspace-marina
       UserPoolId: !Ref UserPool
 
-  UserApplicationClient:
-    DependsOn:   ResourceServerScopes
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      UserPoolId: !Ref UserPool
-      AllowedOAuthFlows:
-        - implicit
-      AllowedOAuthFlowsUserPoolClient: true
-      AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/admin
-      ClientName:   UserApplicationClient
-      CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
-      ExplicitAuthFlows:
-        - ALLOW_CUSTOM_AUTH
-        - ALLOW_USER_SRP_AUTH
-        - ALLOW_ADMIN_USER_PASSWORD_AUTH
-        - ALLOW_REFRESH_TOKEN_AUTH
-        - ALLOW_USER_PASSWORD_AUTH
-      IdTokenValidity: 15
-      AccessTokenValidity: 15
-      TokenValidityUnits:
-        AccessToken: minutes
-        IdToken: minutes
-
   BackendApplicationSondreClient:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
@@ -332,11 +260,8 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/workspace-sondre
+        - https://api.sws.aws.sikt.no/scopes/workspace-sondre
       ClientName: BackendApplicationSondreClient
-      CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -358,11 +283,8 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/workspace-fredrik
+        - https://api.sws.aws.sikt.no/scopes/workspace-fredrik
       ClientName:   BackendApplicationFredrikClient
-      CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -385,11 +307,8 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/workspace-stig
+        - https://api.sws.aws.sikt.no/scopes/workspace-stig
       ClientName: BackendApplicationStigClient
-      CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -411,11 +330,8 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
-        - https://api.sws.unit.no/scopes/workspace-marina
+        - https://api.sws.aws.sikt.no/scopes/workspace-marina
       ClientName: BackendApplicationMarinaClient
-      CallbackURLs:
-        - https://api.sws.unit.no/scopes # not necessary maybe.
-      DefaultRedirectURI: https://api.sws.unit.no/scopes
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -427,3 +343,48 @@ Resources:
       TokenValidityUnits:
         AccessToken: minutes
         IdToken: minutes
+  SwsBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !Sub api.${CustomDomain}
+      RestApiId: !Ref SWSApi
+      Stage: !Ref SWSApi.Stage
+
+  SWSOpenSearch:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      AccessPolicies:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !GetAtt ReadOnlyAccessElasticSearchRole.Arn
+            Action:
+              - es:ESHttpPost
+              - es:ESHttpGet
+              - es:ESHttpPut
+              - es:ESHttpHead
+            Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
+      ClusterConfig: !If [ LargeElasticSearch,
+        {
+          DedicatedMasterEnabled: true,
+          DedicatedMasterType: t2.medium.search,
+          DedicatedMasterCount: 3,
+          InstanceCount: 2,
+          ZoneAwarenessEnabled: false,
+          InstanceType: t2.medium.search
+        },
+        {
+          DedicatedMasterEnabled: false,
+          InstanceCount: 1,
+          ZoneAwarenessEnabled: false,
+          InstanceType: t2.medium.search
+        }
+      ]
+      EngineVersion: "OpenSearch_1.3"
+      EBSOptions:
+        EBSEnabled: true
+        VolumeSize: 10
+        VolumeType: gp2
+      CognitoOptions:
+        Enabled: false
