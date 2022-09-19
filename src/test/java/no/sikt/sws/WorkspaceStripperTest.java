@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WorkspaceStripperTest {
 
+    private static final String WORKSPACENAME = "test1";
+
     // Merge all testcases into one stream.
     static Stream<TestCaseSws> allRequestArguments() {
         var sbuilder = Stream.<TestCaseSws>builder();
@@ -46,7 +48,7 @@ public class WorkspaceStripperTest {
     }
 
     @TestFactory
-    @DisplayName("AssertEquals ")
+    @DisplayName("AssertEquals")
     Stream<DynamicTest> testStripperFactory() {
 
         Function<TestCaseSws, String> displayNameGenerator = (input) -> "AssertEqual -> " + input.toString();
@@ -54,7 +56,7 @@ public class WorkspaceStripperTest {
         // Executes tests based on the current input value.
         ThrowingConsumer<TestCaseSws> testExecutor = (testCase) -> assertEquals(
             testCase.getResponseStripped(),
-            WorkspaceStripper.remove(testCase.getResponse(),"test1"));
+            WorkspaceStripper.remove(testCase.getResponse(),WORKSPACENAME));
 
         // Returns a stream of dynamic tests.
         return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
