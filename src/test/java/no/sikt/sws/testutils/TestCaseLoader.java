@@ -8,10 +8,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TestCaseCollection {
+public class TestCaseLoader {
     private final Iterator<JsonNode> elements;
 
-    public TestCaseCollection(String  resourceFileName) {
+    public TestCaseLoader(String  resourceFileName) {
         URL resource = getClass().getClassLoader().getResource(resourceFileName);
         try {
             this.elements = JsonUtils.dtoObjectMapper.readTree(resource).elements();

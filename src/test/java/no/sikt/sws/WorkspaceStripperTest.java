@@ -1,6 +1,6 @@
 package no.sikt.sws;
 
-import no.sikt.sws.testutils.TestCaseCollection;
+import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -18,39 +18,40 @@ public class WorkspaceStripperTest {
 
     // Merge all testcases into one stream.
     static Stream<TestCaseSws> allRequestArguments() {
-        var sbuilder = Stream.<TestCaseSws>builder();
+        var streamBuilder = Stream.<TestCaseSws>builder();
 
-        new TestCaseCollection("request-search.json")
+        new TestCaseLoader("request-search.json")
             .getElements()
-            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
+            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
 
-        new TestCaseCollection("request-search.json")
+        new TestCaseLoader("request-search.json")
             .getElements()
-            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
+            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
 
-        new TestCaseCollection("requests-bulk.json")
+        new TestCaseLoader("requests-bulk.json")
             .getElements()
-            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
+            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
 
-        new TestCaseCollection("requests-doc.json")
+        new TestCaseLoader("requests-doc.json")
             .getElements()
-            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
+            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
 
-        new TestCaseCollection("requests-indexes.json")
+        new TestCaseLoader("requests-indexes.json")
             .getElements()
-            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
+            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
 
-        new TestCaseCollection("requests-root.json")
+        new TestCaseLoader("requests-root.json")
             .getElements()
-            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
+            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
 
-        return sbuilder.build();
+        return streamBuilder.build();
     }
 
     @TestFactory
     @DisplayName("AssertEquals")
     Stream<DynamicTest> testStripperFactory() {
 
+        // TestCase in TestName out
         Function<TestCaseSws, String> displayNameGenerator = (input) -> "AssertEqual -> " + input.toString();
 
         // Executes tests based on the current input value.
