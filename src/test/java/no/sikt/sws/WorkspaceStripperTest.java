@@ -6,7 +6,6 @@ import no.sikt.sws.testutils.TestCaseSws;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +53,7 @@ public class WorkspaceStripperTest extends TestCase {
         logger.info("Expecting" + testCase.getResponseStripped());
         assertEquals(
                 testCase.getResponseStripped(),
-                ResponseUtil.stripWorkspace(testCase.getResponse(), "test1")
+                WorkspaceStripper.remove(testCase.getResponse(), "test1")
         );
     }
 }

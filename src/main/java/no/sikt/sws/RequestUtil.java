@@ -4,8 +4,6 @@ import com.amazonaws.http.HttpMethodName;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.core.JacocoGenerated;
 
-import java.util.Arrays;
-
 import static no.sikt.sws.constants.ApplicationConstants.SCOPE_IDENTIFIER;
 import static nva.commons.apigateway.RequestInfoConstants.SCOPES_CLAIM;
 import static nva.commons.core.attempt.Try.attempt;
@@ -31,15 +29,6 @@ public class RequestUtil {
         }).orElseThrow();
     }
 
-    public static String addWorkspace(String body, String workspace, String index) {
-        if (body == null) {
-            return null;
-        }
 
-        return attempt(() -> {
-            var strippedIndex = Arrays.stream(index.split("/")).findFirst();
-            return body.replaceAll(index, workspace + "-" + strippedIndex);
-        }).orElseThrow();
-    }
 
 }
