@@ -15,7 +15,7 @@
     </option>
     <option name="handler" />
     <option name="image" value="false" />
-    <option name="logicalFunctionName" value="WorkspaceIndexHandler" />
+    <option name="logicalFunctionName" value="IndexHandler" />
     <option name="memorySize" value="128" />
     <option name="pathMappings">
       <list />

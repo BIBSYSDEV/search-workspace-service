@@ -2,11 +2,15 @@ package no.sikt.sws;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.stubs.FakeContext;
 import no.unit.nva.testutils.HandlerRequestBuilder;
 import nva.commons.apigateway.GatewayResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,28 +30,30 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.when;
 
-public class ListIndecesHandlerTest extends TestCase {
+public class WorkspaceHandlerTest extends TestCase {
 
 
     private static final Context CONTEXT = new FakeContext();
     private ByteArrayOutputStream output;
 
     @InjectMocks
-    ListIndecesHandler handler = new ListIndecesHandler();
+    WorkspaceHandler handler = new WorkspaceHandler();
 
     @Mock
     OpenSearchClient openSearchClient;
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    public void beforeEach() {
         MockitoAnnotations.openMocks(this);
 
         this.output = new ByteArrayOutputStream();
     }
 
     @Test
-    void sendsCallToOpenSearch() throws IOException {
-        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
+    void callToOpenSearchMapsToCorrectResponse() throws IOException {
+        String mockJson = "{\"hallo\": {\"field1\": \"somevalue\"}}";
+
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, mockJson);
 
         when(openSearchClient.sendRequest(GET, TEST_WORKSPACE_PREFIX + "*", null))
                 .thenReturn(mockResponse);
@@ -59,11 +65,14 @@ public class ListIndecesHandlerTest extends TestCase {
                 .build();
 
         handler.handleRequest(request, output, CONTEXT);
-        var response = GatewayResponse.fromOutputStream(output, String.class);
+        var response = GatewayResponse.fromOutputStream(output, WorkspaceResponse.class);
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
 
+        WorkspaceResponse workspaceResponse = response.getBodyObject(WorkspaceResponse.class);
+
+        Assertions.assertNotNull(workspaceResponse.indexList);
+        Assertions.assertNotNull(workspaceResponse.accountIdentifier);
+
     }
-
-
 }

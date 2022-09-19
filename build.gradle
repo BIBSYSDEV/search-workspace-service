@@ -93,7 +93,7 @@ test {
     environment "ELASTICSEARCH_REGION", "eu-west-1"
     environment "OPENSEARCH_ENDPOINT_PROTOCOL", "http"
     environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost:3000"
-    environment "SCOPE_IDENTIFIER", "https://api.sws.unit.no/scopes"
+    environment "SCOPE_IDENTIFIER", "https://api.sws.aws.sikt.no/scopes"
 
     useJUnitPlatform {}
     failFast = false
