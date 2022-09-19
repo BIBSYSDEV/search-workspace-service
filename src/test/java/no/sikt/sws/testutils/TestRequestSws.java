@@ -8,13 +8,12 @@ import java.io.Serializable;
 import java.util.StringJoiner;
 
 public class TestRequestSws implements Serializable {
+
     private final String method;
 
     private final String url;
 
     private final JsonNode body;
-
-
 
     public TestRequestSws(JsonNode request) {
         this.method = request.get("method").textValue();
@@ -30,7 +29,6 @@ public class TestRequestSws implements Serializable {
         return url;
     }
 
-
     public String getBody() {
         return body.textValue();
     }
@@ -38,9 +36,6 @@ public class TestRequestSws implements Serializable {
     public JsonNode getBodyNode() {
         return body;
     }
-
-
-
 
     @Override
     public String toString() {
