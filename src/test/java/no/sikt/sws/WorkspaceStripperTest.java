@@ -1,59 +1,62 @@
 package no.sikt.sws;
 
-import junit.framework.TestCase;
 import no.sikt.sws.testutils.TestCaseCollection;
 import no.sikt.sws.testutils.TestCaseSws;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
-public class WorkspaceStripperTest extends TestCase {
-    private static final Logger logger = LoggerFactory.getLogger(WorkspaceStripperTest.class);
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-    @Test
-    void runBulkRequests() {
-        logger.info("Bulk requests");
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class WorkspaceStripperTest {
+
+    // Merge all testcases into one stream.
+    static Stream<TestCaseSws> allRequestArguments() {
+        var sbuilder = Stream.<TestCaseSws>builder();
+
+        new TestCaseCollection("request-search.json")
+            .getElements()
+            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
+
+        new TestCaseCollection("request-search.json")
+            .getElements()
+            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
 
         new TestCaseCollection("requests-bulk.json")
-                .getTestCases()
-                .forEach(this::assertTestCase);
-    }
+            .getElements()
+            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
 
-    @Test
-    void runDocRequests() {
-        logger.info("Doc requests");
         new TestCaseCollection("requests-doc.json")
-                .getTestCases()
-                .forEach(this::assertTestCase);
-    }
+            .getElements()
+            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
 
-    @Test
-    void runIndexesRequests() {
-        logger.info("Index requests");
         new TestCaseCollection("requests-indexes.json")
-                .getTestCases()
-                .forEach(this::assertTestCase);
-    }
+            .getElements()
+            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
 
-    @Test
-    void runRootRequests() {
-        logger.info("Root requests");
         new TestCaseCollection("requests-root.json")
-                .getTestCases()
-                .forEach(this::assertTestCase);
+            .getElements()
+            .forEachRemaining(action ->  sbuilder.add(new TestCaseSws(action)));
+
+        return sbuilder.build();
     }
 
+    @TestFactory
+    @DisplayName("AssertEquals ")
+    Stream<DynamicTest> testStripperFactory() {
 
-    @ParameterizedTest
-    @ArgumentsSource( new TestCaseCollection("requests-root.json").getTestCases())
-    void assertTestCase(TestCaseSws testCase) {
-        logger.info("Asserting "+ testCase.getName());
-        logger.info("Expecting" + testCase.getResponseStripped());
-        assertEquals(
-                testCase.getResponseStripped(),
-                WorkspaceStripper.remove(testCase.getResponse(), "test1")
-        );
+        Function<TestCaseSws, String> displayNameGenerator = (input) -> "AssertEqual -> " + input.toString();
+
+        // Executes tests based on the current input value.
+        ThrowingConsumer<TestCaseSws> testExecutor = (testCase) -> assertEquals(
+            testCase.getResponseStripped(),
+            WorkspaceStripper.remove(testCase.getResponse(),"test1"));
+
+        // Returns a stream of dynamic tests.
+        return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
     }
 }

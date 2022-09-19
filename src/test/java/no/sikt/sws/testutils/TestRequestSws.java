@@ -45,7 +45,7 @@ public class TestRequestSws implements Serializable {
     @Override
     public String toString() {
         return new StringJoiner("\n\t",  "{\n\t", "\n}")
-                .add("method: " + method )
+                .add("method: " + method)
                 .add("url: " + url)
                 .add("body: " + body)
                 .toString();

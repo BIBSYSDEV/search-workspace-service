@@ -1,5 +1,102 @@
 [
-    {
-      "name": "Search"
+  {
+    "name": "Search q=test",
+    "request": {
+      "method": "GET",
+      "url": "/test1-index1/_search?q=test",
+      "body": null
+    },
+    "response": {
+      "took": 3,
+      "timed_out": false,
+      "_shards": {
+        "total": 2,
+        "successful": 2,
+        "skipped": 0,
+        "failed": 0
+      },
+      "hits": {
+        "total": {
+          "value": 3,
+          "relation": "eq"
+        },
+        "max_score": 0.2876821,
+        "hits": [
+          {
+            "_index": "test1-index1",
+            "_id": "vg2YMYMB7qJ3vkuE-t7B",
+            "_score": 0.2876821,
+            "_source": {
+              "navn": "Test-1",
+              "age": 111
+            }
+          },
+          {
+            "_index": "test1-index1",
+            "_id": "wQ2jMYMB7qJ3vkuEVt4X",
+            "_score": 0.18232156,
+            "_source": {
+              "navn": "Test-222",
+              "age": 222
+            }
+          },
+          {
+            "_index": "test1-index1",
+            "_id": "wA2eMYMB7qJ3vkuEet4E",
+            "_score": 0.18232156,
+            "_source": {
+              "navn": "Test-2",
+              "age": 333
+            }
+          }
+        ]
+      }
+    },
+    "responseStripped": {
+      "took": 3,
+      "timed_out": false,
+      "_shards": {
+        "total": 2,
+        "successful": 2,
+        "skipped": 0,
+        "failed": 0
+      },
+      "hits": {
+        "total": {
+          "value": 3,
+          "relation": "eq"
+        },
+        "max_score": 0.2876821,
+        "hits": [
+          {
+            "_index": "index1",
+            "_id": "vg2YMYMB7qJ3vkuE-t7B",
+            "_score": 0.2876821,
+            "_source": {
+              "navn": "Test-1",
+              "age": 111
+            }
+          },
+          {
+            "_index": "index1",
+            "_id": "wQ2jMYMB7qJ3vkuEVt4X",
+            "_score": 0.18232156,
+            "_source": {
+              "navn": "Test-222",
+              "age": 222
+            }
+          },
+          {
+            "_index": "index1",
+            "_id": "wA2eMYMB7qJ3vkuEet4E",
+            "_score": 0.18232156,
+            "_source": {
+              "navn": "Test-2",
+              "age": 333
+            }
+          }
+        ]
+      }
     }
+  }
 ]

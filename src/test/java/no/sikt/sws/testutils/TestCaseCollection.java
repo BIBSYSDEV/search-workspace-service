@@ -8,8 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TestCaseCollection
-{
+public class TestCaseCollection {
     private final Iterator<JsonNode> elements;
 
     public TestCaseCollection(String  resourceFileName) {
@@ -28,7 +27,8 @@ public class TestCaseCollection
 
     public ArrayList<TestCaseSws> getTestCases() {
         var retvalues = new ArrayList<TestCaseSws>();
-        getElements().forEachRemaining( action -> retvalues.add(new TestCaseSws(action)));
+        getElements().forEachRemaining(action -> retvalues.add(new TestCaseSws(action)));
         return retvalues;
     }
+
 }

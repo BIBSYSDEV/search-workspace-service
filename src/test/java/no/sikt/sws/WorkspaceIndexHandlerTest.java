@@ -148,7 +148,7 @@ public class WorkspaceIndexHandlerTest extends TestCase {
     void shouldGiveResponseTestCase(TestCaseSws testCase) {
         assertEquals(
                 testCase.getResponseStripped(),
-                ResponseUtil.stripWorkspace(testCase.getResponse(), "test1")
+                WorkspaceStripper.remove(testCase.getResponse(), "test1")
         );
 
         /*

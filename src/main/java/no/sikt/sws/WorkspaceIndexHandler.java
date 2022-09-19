@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.utils.Pair;
 
+
 /**
  * Created for checking if external libraries have been imported properly.
  */
@@ -37,12 +38,12 @@ public class WorkspaceIndexHandler extends OpenSearchProxyHandler<String, String
             var response = openSearchClient.sendRequest(
                     httpMethod,
                     url,
-                    RequestUtil.addWorkspace(body, workspace, resourceIdentifier));
+                    WorkspaceStripper.add(body, workspace, resourceIdentifier));
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
 
 
-            var responseBody = ResponseUtil.stripWorkspace(response.getBody(), workspace);
+            var responseBody = WorkspaceStripper.remove(response.getBody(), workspace);
             logger.info("response-body:" + responseBody);
 
             return Pair.of(responseBody, response.getStatus());
