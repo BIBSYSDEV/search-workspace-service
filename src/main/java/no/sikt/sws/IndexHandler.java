@@ -38,7 +38,9 @@ public class IndexHandler extends OpenSearchProxyHandler<String, String> {
             var response = openSearchClient.sendRequest(
                     httpMethod,
                     url,
-                    WorkspaceStripper.add(body, workspace, resourceIdentifier));
+                    body);
+            //out of scope
+            //WorkspaceStripper.add(body, workspace, resourceIdentifier));
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
 
