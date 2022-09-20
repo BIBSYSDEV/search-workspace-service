@@ -42,6 +42,8 @@ public class OpenSearchClient {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
 
+    private boolean passError;
+
     HttpResponseHandler<String> httpResponseHandler = new HttpResponseHandler() {
         @Override
         public String handle(HttpResponse response) throws Exception {
@@ -62,11 +64,12 @@ public class OpenSearchClient {
 
         @Override
         public AmazonClientException handle(HttpResponse response) throws Exception {
+
             var responseCode = response.getStatusCode();
             var bytes = response.getContent().readAllBytes();
             var bodyString = new String(bytes);
 
-            if (FORWARDED_ES_ERROR_CODES.contains(responseCode)) {
+            if (passError && FORWARDED_ES_ERROR_CODES.contains(responseCode)) {
                 return new OpenSearchException(responseCode, bodyString);
             }
 
@@ -110,7 +113,7 @@ public class OpenSearchClient {
 
         } catch (OpenSearchException e) {
             logger.info(e.getMessage());
-            logger.info("Creating OpenSearchResponse" + e.getStatus() + " " + e.getBody());
+            logger.info("Creating OpenSearchResponse " + e.getStatus() + " " + e.getBody());
             return new OpenSearchResponse(e.getStatus(), e.getBody());
         }
 
@@ -134,5 +137,16 @@ public class OpenSearchClient {
         signer.setServiceName(ELASTIC_SEARCH_SERVICE_NAME);
         signer.setRegionName(ELASTICSEARCH_REGION);
         return signer;
+    }
+
+    @JacocoGenerated
+    public void setPassError(boolean passError) {
+        this.passError = passError;
+    }
+
+    public static OpenSearchClient passthroughClient() {
+        var client = new OpenSearchClient();
+        client.setPassError(true);
+        return client;
     }
 }
