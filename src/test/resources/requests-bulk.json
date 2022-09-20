@@ -1,0 +1,202 @@
+[
+    {
+      "name": "Bulk POST create index",
+      "request": {
+        "method": "POST",
+        "url": "/_bulk",
+        "body": "{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
+      },
+      "response": {
+        "took": 470,
+        "errors": false,
+        "items": [
+          {
+            "index": {
+              "_index": "test1-index-3",
+              "_id": "1",
+              "_version": 1,
+              "result": "created",
+              "_shards": {
+                "total": 2,
+                "successful": 1,
+                "failed": 0
+              },
+              "_seq_no": 0,
+              "_primary_term": 1,
+              "status": 201
+            }
+          },
+          {
+            "index": {
+              "_index": "test1-index-3",
+              "_id": "2",
+              "_version": 1,
+              "result": "created",
+              "_shards": {
+                "total": 2,
+                "successful": 1,
+                "failed": 0
+              },
+              "_seq_no": 1,
+              "_primary_term": 1,
+              "status": 201
+            }
+          },
+          {
+            "index": {
+              "_index": "test1-index-3",
+              "_id": "3",
+              "_version": 1,
+              "result": "created",
+              "_shards": {
+                "total": 2,
+                "successful": 1,
+                "failed": 0
+              },
+              "_seq_no": 2,
+              "_primary_term": 1,
+              "status": 201
+            }
+          }
+        ]
+      },
+      "responseStripped": {
+        "took": 470,
+        "errors": false,
+        "items": [
+          {
+            "index": {
+              "_index": "index-3",
+              "_id": "1",
+              "_version": 1,
+              "result": "created",
+              "_shards": {
+                "total": 2,
+                "successful": 1,
+                "failed": 0
+              },
+              "_seq_no": 0,
+              "_primary_term": 1,
+              "status": 201
+            }
+          },
+          {
+            "index": {
+              "_index": "index-3",
+              "_id": "2",
+              "_version": 1,
+              "result": "created",
+              "_shards": {
+                "total": 2,
+                "successful": 1,
+                "failed": 0
+              },
+              "_seq_no": 1,
+              "_primary_term": 1,
+              "status": 201
+            }
+          },
+          {
+            "index": {
+              "_index": "index-3",
+              "_id": "3",
+              "_version": 1,
+              "result": "created",
+              "_shards": {
+                "total": 2,
+                "successful": 1,
+                "failed": 0
+              },
+              "_seq_no": 2,
+              "_primary_term": 1,
+              "status": 201
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bulk PUT create index, fail",
+      "request": {
+        "method": "PUT",
+        "url": "/test1-index1/_doc",
+        "body":null
+      },
+      "response":{
+        "error": "Incorrect HTTP method for uri [/test1-index1/_doc] and method [GET], allowed: [POST]",
+        "status": 405
+      },
+      "responseStripped":{
+        "error": "Incorrect HTTP method for uri [/index1/_doc] and method [GET], allowed: [POST]",
+        "status": 405
+      }
+    },
+    {
+      "name": "Bulk DELETE create index",
+      "request": {
+        "method": "DELETE",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body": "{ \"age\":224}"
+      },
+      "response": {
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 8,
+        "result": "deleted",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 10,
+        "_primary_term": 2
+      },
+      "responseStripped": {
+        "_index": "index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 8,
+        "result": "deleted",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 10,
+        "_primary_term": 2
+      }
+    },
+    {
+      "name": "Bulk DELETE create index",
+      "request": {
+        "method": "DELETE",
+        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body": "{ \"age\":224}"
+      },
+      "response": {
+        "_index": "test1-index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 9,
+        "result": "not_found",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 11,
+        "_primary_term": 2
+      },
+      "responseStripped": {
+        "_index": "index1",
+        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+        "_version": 9,
+        "result": "not_found",
+        "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+        },
+        "_seq_no": 11,
+        "_primary_term": 2
+      }
+    }
+]
