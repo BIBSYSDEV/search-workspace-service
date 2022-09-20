@@ -4,7 +4,7 @@
       "request": {
         "method": "POST",
         "url": "/_bulk",
-        "body": "{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
+        "body": "{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
       },
       "response": {
         "took": 470,
@@ -12,7 +12,7 @@
         "items": [
           {
             "index": {
-              "_index": "test1-index-3",
+              "_index": "workspace-mockname-index-3",
               "_id": "1",
               "_version": 1,
               "result": "created",
@@ -28,7 +28,7 @@
           },
           {
             "index": {
-              "_index": "test1-index-3",
+              "_index": "workspace-mockname-index-3",
               "_id": "2",
               "_version": 1,
               "result": "created",
@@ -44,7 +44,7 @@
           },
           {
             "index": {
-              "_index": "test1-index-3",
+              "_index": "workspace-mockname-index-3",
               "_id": "3",
               "_version": 1,
               "result": "created",
@@ -119,11 +119,11 @@
       "name": "Bulk PUT create index, fail",
       "request": {
         "method": "PUT",
-        "url": "/test1-index1/_doc",
+        "url": "/workspace-mockname-index1/_doc",
         "body":null
       },
       "response":{
-        "error": "Incorrect HTTP method for uri [/test1-index1/_doc] and method [GET], allowed: [POST]",
+        "error": "Incorrect HTTP method for uri [/workspace-mockname-index1/_doc] and method [GET], allowed: [POST]",
         "status": 405
       },
       "responseStripped":{
@@ -135,11 +135,11 @@
       "name": "Bulk DELETE create index",
       "request": {
         "method": "DELETE",
-        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body": "{ \"age\":224}"
       },
       "response": {
-        "_index": "test1-index1",
+        "_index": "workspace-mockname-index1",
         "_id": "vw2ZMYMB7qJ3vkuEHt6j",
         "_version": 8,
         "result": "deleted",
@@ -169,11 +169,11 @@
       "name": "Bulk DELETE create index",
       "request": {
         "method": "DELETE",
-        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body": "{ \"age\":224}"
       },
       "response": {
-        "_index": "test1-index1",
+        "_index": "workspace-mockname-index1",
         "_id": "vw2ZMYMB7qJ3vkuEHt6j",
         "_version": 9,
         "result": "not_found",

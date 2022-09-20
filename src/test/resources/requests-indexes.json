@@ -3,11 +3,11 @@
       "name": "GET index",
       "request": {
         "method": "GET",
-        "url": "/test1-index1",
+        "url": "/workspace-mockname-index1",
         "body": null
       },
       "response": {
-        "test1-index1": {
+        "workspace-mockname-index1": {
           "aliases": {
             "sample-alias1": {}
           },
@@ -45,7 +45,7 @@
               "version": {
                 "created": "136217927"
               },
-              "provided_name": "test1-index1"
+              "provided_name": "workspace-mockname-index1"
             }
           }
         }
@@ -99,11 +99,11 @@
       "name": "Post index, failed",
       "request": {
         "method": "POST",
-        "url": "/test1-index2",
+        "url": "/workspace-mockname-index2",
         "body": null
       },
       "response":{
-        "error": "Incorrect HTTP method for uri [/test1-index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
+        "error": "Incorrect HTTP method for uri [/workspace-mockname-index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
         "status": 405
       },
       "responseStripped":{
@@ -115,13 +115,13 @@
       "name": "Put index, without template",
       "request": {
         "method": "PUT",
-        "url": "/test1-index2",
+        "url": "/workspace-mockname-index2",
         "body": null
       },
       "response":{
         "acknowledged": true,
         "shards_acknowledged": true,
-        "index": "test1-index2"
+        "index": "workspace-mockname-index2"
       },
       "responseStripped":{
         "acknowledged": true,
