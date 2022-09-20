@@ -45,6 +45,7 @@ dependencies {
     implementation libs.jacoco.core
     implementation libs.jacoco.report
     implementation libs.json
+    implementation libs.jsonld
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
@@ -94,6 +95,7 @@ test {
     environment "OPENSEARCH_ENDPOINT_PROTOCOL", "http"
     environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost:3000"
     environment "SCOPE_IDENTIFIER", "https://api.sws.aws.sikt.no/scopes"
+    environment "API_GATEWAY_URL", "localhost:8080"
 
     useJUnitPlatform {}
     failFast = false
