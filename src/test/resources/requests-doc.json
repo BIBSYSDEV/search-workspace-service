@@ -3,11 +3,11 @@
       "name": "Doc GET without id, failed",
       "request": {
         "method": "GET",
-        "url": "/test1-index1/_doc",
+        "url": "/workspace-mockname-index1/_doc",
         "body":null
       },
       "response":{
-        "error": "Incorrect HTTP method for uri [/test1-index1/_doc] and method [GET], allowed: [POST]",
+        "error": "Incorrect HTTP method for uri [/workspace-mockname-index1/_doc] and method [GET], allowed: [POST]",
         "status": 405
       },
       "responseStripped":{
@@ -19,11 +19,11 @@
       "name": "Doc DELETE with id",
       "request": {
         "method": "DELETE",
-        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body": null
       },
       "response": {
-        "_index": "test1-index1",
+        "_index": "workspace-mockname-index1",
         "_id": "vw2ZMYMB7qJ3vkuEHt6j",
         "_version": 8,
         "result": "deleted",
@@ -53,11 +53,11 @@
       "name": "Doc DELETE with invalid id",
       "request": {
         "method": "DELETE",
-        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":null
       },
       "response": {
-        "_index": "test1-index1",
+        "_index": "workspace-mockname-index1",
         "_id": "vw2ZMYMB7qJ3vkuEHt6j",
         "_version": 9,
         "result": "not_found",
@@ -87,11 +87,11 @@
       "name": "Doc GET with id",
       "request": {
         "method": "GET",
-        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":null
       },
       "response": {
-        "_index": "test1-index1",
+        "_index": "workspace-mockname-index1",
         "_id": "wA2eMYMB7qJ3vkuEet4E",
         "_version": 2,
         "_seq_no": 5,
@@ -119,11 +119,11 @@
       "name": "Doc PUT with id",
       "request": {
         "method": "PUT",
-        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":null
       },
       "response": {
-        "_index": "test1-index1",
+        "_index": "workspace-mockname-index1",
         "_id": "vw2ZMYMB7qJ3vkuEHt6j",
         "found": false
       },
@@ -137,11 +137,11 @@
       "name": "Doc PATCH with id, failed",
       "request": {
         "method": "PATCH",
-        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":"{ \"age\":224}"
       },
       "response":{
-        "error": "Incorrect HTTP method for uri [/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j] and method [PATCH], allowed: [PUT, GET, POST, HEAD, DELETE]",
+        "error": "Incorrect HTTP method for uri [/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j] and method [PATCH], allowed: [PUT, GET, POST, HEAD, DELETE]",
         "status": 405
       },
       "responseStripped":{
@@ -153,11 +153,11 @@
       "name": "Doc POST with id",
       "request": {
         "method": "POST",
-        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body": "{ \"navn\": \"Test-2\",\"age\": 223,\"test\": \"nytt navn 2\" }"
       },
       "response":{
-        "_index": "test1-index1",
+        "_index": "workspace-mockname-index1",
         "_id": "vw2ZMYMB7qJ3vkuEHt6j",
         "_version": 7,
         "result": "updated",
@@ -187,11 +187,11 @@
       "name": "Doc PUT with id",
       "request": {
         "method": "PUT",
-        "url": "/test1-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":"{ \"navn\": \"Test-2\", \"age\":222, \"test\":\"nytt navn\"}"
       },
       "response":  {
-        "_index": "test1-index1",
+        "_index": "workspace-mockname-index1",
         "_id": "vw2ZMYMB7qJ3vkuEHt6j",
         "_version": 6,
         "result": "updated",

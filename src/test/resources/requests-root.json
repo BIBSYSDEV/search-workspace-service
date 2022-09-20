@@ -4,7 +4,7 @@
       "request": {
         "method": "POST",
         "url": "_bulk",
-        "body": "{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
+        "body": "{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
       },
       "response": {
         "took": 470,
@@ -12,7 +12,7 @@
         "items": [
           {
             "index": {
-              "_index": "test1-index-3",
+              "_index": "workspace-mockname-index-3",
               "_id": "1",
               "_version": 1,
               "result": "created",
@@ -28,7 +28,7 @@
           },
           {
             "index": {
-              "_index": "test1-index-3",
+              "_index": "workspace-mockname-index-3",
               "_id": "2",
               "_version": 1,
               "result": "created",
@@ -44,7 +44,7 @@
           },
           {
             "index": {
-              "_index": "test1-index-3",
+              "_index": "workspace-mockname-index-3",
               "_id": "3",
               "_version": 1,
               "result": "created",
@@ -120,7 +120,7 @@
       "request": {
         "method": "PUT",
         "url": "_bulk",
-        "body": "{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"test1-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
+        "body": "{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
       },
       "response":{
         "took": 212,
@@ -128,7 +128,7 @@
         "items": [
           {
             "index": {
-              "_index": "test1-index-3",
+              "_index": "workspace-mockname-index-3",
               "_id": "1",
               "_version": 2,
               "result": "updated",
@@ -144,7 +144,7 @@
           },
           {
             "index": {
-              "_index": "test1-index-3",
+              "_index": "workspace-mockname-index-3",
               "_id": "2",
               "_version": 2,
               "result": "updated",
@@ -160,7 +160,7 @@
           },
           {
             "index": {
-              "_index": "test1-index-3",
+              "_index": "workspace-mockname-index-3",
               "_id": "3",
               "_version": 2,
               "result": "updated",
@@ -270,7 +270,7 @@
         "url": "/_cat",
         "body": null
       },
-      "response": "yellow open test1-index-3 7JE2G_-_QWChqcdrPvnFLA 1 1 3 0 4.1kb 4.1kb\nyellow open test1-index-1  nXsprbMMTHuvByW3rG3u8Q 2 1 3 0   9kb   9kb",
+      "response": "yellow open workspace-mockname-index-3 7JE2G_-_QWChqcdrPvnFLA 1 1 3 0 4.1kb 4.1kb\nyellow open workspace-mockname-index-1  nXsprbMMTHuvByW3rG3u8Q 2 1 3 0   9kb   9kb",
       "responseStripped": "yellow open index-3 7JE2G_-_QWChqcdrPvnFLA 1 1 3 0 4.1kb 4.1kb\nyellow open index-1  nXsprbMMTHuvByW3rG3u8Q 2 1 3 0   9kb   9kb"
     }
 ]
