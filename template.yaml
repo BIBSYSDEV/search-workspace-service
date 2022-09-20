@@ -286,6 +286,7 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
+        - https://api.sws.aws.sikt.no/scopes/workspace
         - https://api.sws.aws.sikt.no/scopes/workspace-fredrik
       ClientName:   BackendApplicationFredrikClient
       ExplicitAuthFlows:
@@ -310,6 +311,7 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
+        - https://api.sws.aws.sikt.no/scopes/workspace
         - https://api.sws.aws.sikt.no/scopes/workspace-stig
       ClientName: BackendApplicationStigClient
       ExplicitAuthFlows:
@@ -333,6 +335,7 @@ Resources:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
+        - https://api.sws.aws.sikt.no/scopes/workspace
         - https://api.sws.aws.sikt.no/scopes/workspace-marina
       ClientName: BackendApplicationMarinaClient
       ExplicitAuthFlows:
