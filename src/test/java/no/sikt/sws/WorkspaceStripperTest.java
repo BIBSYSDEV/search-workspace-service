@@ -23,7 +23,7 @@ public class WorkspaceStripperTest {
 
     // Merge all testcases into one stream.
     static Stream<TestCaseSws> allRequestArguments() {
-        ReadableInstant before = new Instant();
+        final ReadableInstant before = new Instant();
         logger.info("Test cases loading");
         var streamBuilder = Stream.<TestCaseSws>builder();
 
