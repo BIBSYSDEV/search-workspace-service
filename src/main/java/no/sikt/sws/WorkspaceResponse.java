@@ -5,7 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static no.sikt.sws.constants.ApplicationConstants.API_GATEWAY_URL;
+
 public class WorkspaceResponse {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @JsonProperty("account_identifier")
     public String accountIdentifier;
@@ -13,21 +17,33 @@ public class WorkspaceResponse {
     @JsonProperty("index_list")
     public JsonNode indexList;
 
-    public WorkspaceResponse() {
+    @JsonProperty("create_index_link")
+    public String createIndexLink;
+
+    public WorkspaceResponse() throws JsonProcessingException {
     }
 
-    public WorkspaceResponse(String accountIdentifier, JsonNode indexList) {
+    public WorkspaceResponse(
+            String accountIdentifier,
+            JsonNode indexList,
+            String createIndexLink
+    ) throws JsonProcessingException {
         this.accountIdentifier = accountIdentifier;
         this.indexList = indexList;
+        this.createIndexLink = createIndexLink;
     }
 
     public static WorkspaceResponse fromValues(String workspace, String indexList) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
 
-        var indexListJson = objectMapper.readTree(indexList);
+        JsonNode indexListJson = objectMapper.readTree("");
+        String createIndexLink = "";
 
-        return new WorkspaceResponse(workspace, indexListJson);
+        if (indexList.isBlank()) {
+            createIndexLink = API_GATEWAY_URL + "/index_name";
+        } else {
+            indexListJson = objectMapper.readTree(indexList);
+        }
+
+        return new WorkspaceResponse(workspace, indexListJson, createIndexLink);
     }
-
 }
-

@@ -10,6 +10,7 @@ Globals:
       Variables:
         ELASTICSEARCH_REGION: "eu-west-1"
         SCOPE_IDENTIFIER: 'https://api.sws.aws.sikt.no/scopes'
+        API_GATEWAY_URL: !Sub 'https://api.${CustomDomain}/'
 
   Api:
     Cors:
