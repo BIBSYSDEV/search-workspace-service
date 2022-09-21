@@ -1,6 +1,5 @@
 package no.sikt.sws;
 
-import com.amazonaws.Response;
 import com.amazonaws.http.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

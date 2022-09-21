@@ -8,6 +8,7 @@ public final class ApplicationConstants {
     public static final String OPENSEARCH_ENDPOINT_PROTOCOL = readOpenSearchEndpointProtocol();
     public static final String OPENSEARCH_ENDPOINT_ADDRESS = readOpenSearchEndpointAddress();
     public static final String SCOPE_IDENTIFIER = readScopeIdentifier();
+    public static final String API_GATEWAY_URL = readApiGatewayEndpoint();
 
     public static final String ELASTICSEARCH_REGION = readElasticSearchRegion();
 
@@ -25,6 +26,10 @@ public final class ApplicationConstants {
 
     private static String readScopeIdentifier() {
         return ENVIRONMENT.readEnv("SCOPE_IDENTIFIER");
+    }
+
+    private static String readApiGatewayEndpoint() {
+        return ENVIRONMENT.readEnv("API_GATEWAY_URL");
     }
 
 

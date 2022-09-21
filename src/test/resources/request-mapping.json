@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Mapping",
+    "request": {
+      "method": "GET",
+      "url": null,
+      "body": ""
+    },
+    "response": {},
+    "responseStripped": {}
+  }
+]
