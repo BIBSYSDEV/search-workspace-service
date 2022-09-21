@@ -1,6 +1,7 @@
 [
     {
       "name": "GET index",
+      "indexName": "index1",
       "requestGateway": {
         "method": "GET",
         "url": "index1",
@@ -102,6 +103,7 @@
     },
     {
       "name": "Post index, failed",
+      "indexName": "index2",
       "requestGateway": {
         "method": "POST",
         "url": "index2",
@@ -123,6 +125,7 @@
     },
     {
       "name": "Put index, without template",
+      "indexName": "index2",
       "requestGateway": {
         "method": "PUT",
         "url": "index2",
@@ -146,6 +149,7 @@
     },
     {
       "name": "Put index, without template but with stupid name",
+      "indexName": "workspace-mockname-index2-index2",
       "requestGateway": {
         "method": "PUT",
         "url": "workspace-mockname-index2-index2",
@@ -169,6 +173,7 @@
     },
     {
       "name": "Put index, without template but with another stupid name",
+      "indexName": "workspace-mockname",
       "requestGateway": {
         "method": "PUT",
         "url": "workspace-mockname",

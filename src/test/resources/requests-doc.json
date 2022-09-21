@@ -1,6 +1,7 @@
 [
     {
       "name": "Doc GET without id, failed",
+      "indexName": "index1",
       "requestGateway": {
         "method": "GET",
         "url": "index1/_doc",
@@ -22,6 +23,7 @@
     },
     {
       "name": "Doc DELETE with id",
+      "indexName": "index1",
       "requestGateway": {
         "method": "DELETE",
         "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -61,6 +63,7 @@
     },
     {
       "name": "Doc DELETE with invalid id",
+      "indexName": "index1",
       "requestGateway": {
         "method": "DELETE",
         "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -100,6 +103,7 @@
     },
     {
       "name": "Doc GET with id",
+      "indexName": "index1",
       "requestGateway": {
         "method": "GET",
         "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -137,6 +141,7 @@
     },
     {
       "name": "Doc PUT with id",
+      "indexName": "index1",
       "requestGateway": {
         "method": "PUT",
         "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -160,6 +165,7 @@
     },
     {
       "name": "Doc PATCH with id, failed",
+      "indexName": "index1",
       "requestGateway": {
         "method": "PATCH",
         "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -181,6 +187,7 @@
     },
     {
       "name": "Doc POST with id",
+      "indexName": "index1",
       "requestGateway": {
         "method": "POST",
         "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -220,6 +227,7 @@
     },
     {
       "name": "Doc PUT with id",
+      "indexName": "index1",
       "requestGateway": {
         "method": "PUT",
         "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",

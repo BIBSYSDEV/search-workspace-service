@@ -10,6 +10,9 @@ public class TestCaseSws implements Serializable {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("indexName")
+    private String indexName;
+
     @JsonProperty("requestGateway")
     private TestRequestSws requestGateway;
 
@@ -23,7 +26,8 @@ public class TestCaseSws implements Serializable {
     private String responseStripped;
 
     public TestCaseSws(JsonNode testcase) {
-        this.name =  testcase.get("name").asText();
+        this.name = testcase.get("name").asText();
+        this.indexName = testcase.get("indexName").asText();
         this.requestGateway = new TestRequestSws(testcase.get("requestGateway"));
         this.requestOpensearch = new TestRequestSws(testcase.get("requestOpensearch"));
         this.response = testcase.get("response").toPrettyString();
@@ -55,5 +59,9 @@ public class TestCaseSws implements Serializable {
 
     public TestRequestSws getRequestOpensearch() {
         return requestOpensearch;
+    }
+
+    public String getIndexName() {
+        return indexName;
     }
 }

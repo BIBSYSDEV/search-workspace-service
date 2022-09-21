@@ -1,15 +1,16 @@
 [
     {
       "name": "Bulk POST create index",
+      "indexName": null,
       "requestGateway": {
         "method": "POST",
         "url": "_bulk",
-        "body": "{ \"index\": { \"_index\": \"index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
+        "body": "{ \"index\": { \"_index\": \"index-2\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
       },
       "requestOpensearch": {
         "method": "POST",
         "url": "_bulk",
-        "body": "{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
+        "body": "{ \"index\": { \"_index\": \"workspace-mockname-index-2\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
       },
       "response": {
         "took": 470,
@@ -122,6 +123,7 @@
     },
     {
       "name": "Bulk PUT create index, fail",
+      "indexName": "index1",
       "requestGateway": {
         "method": "PUT",
         "url": "index1/_doc",
@@ -143,6 +145,7 @@
     },
     {
       "name": "Bulk DELETE create index",
+      "indexName": "index1",
       "requestGateway": {
         "method": "DELETE",
         "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -182,6 +185,7 @@
     },
     {
       "name": "Bulk DELETE create index",
+      "indexName": "index1",
       "requestGateway": {
         "method": "DELETE",
         "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -218,5 +222,127 @@
         "_seq_no": 11,
         "_primary_term": 2
       }
+    },
+  {
+    "name": "Bulk POST create index with evil stupid names",
+    "indexName": null,
+    "requestGateway": {
+      "method": "POST",
+      "url": "_bulk",
+      "body": "{ \"index\": { \"_index\": \"i\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"ii\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"j\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
+    },
+    "requestOpensearch": {
+      "method": "POST",
+      "url": "_bulk",
+      "body": "{ \"index\": { \"_index\": \"workspace-mockname-i\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"workspace-mockname-ii\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"workspace-mockname-j\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
+    },
+    "response": {
+      "took": 470,
+      "errors": false,
+      "items": [
+        {
+          "index": {
+            "_index": "workspace-mockname-i",
+            "_id": "1",
+            "_version": 1,
+            "result": "created",
+            "_shards": {
+              "total": 2,
+              "successful": 1,
+              "failed": 0
+            },
+            "_seq_no": 0,
+            "_primary_term": 1,
+            "status": 201
+          }
+        },
+        {
+          "index": {
+            "_index": "workspace-mockname-ii",
+            "_id": "2",
+            "_version": 1,
+            "result": "created",
+            "_shards": {
+              "total": 2,
+              "successful": 1,
+              "failed": 0
+            },
+            "_seq_no": 1,
+            "_primary_term": 1,
+            "status": 201
+          }
+        },
+        {
+          "index": {
+            "_index": "workspace-mockname-j",
+            "_id": "3",
+            "_version": 1,
+            "result": "created",
+            "_shards": {
+              "total": 2,
+              "successful": 1,
+              "failed": 0
+            },
+            "_seq_no": 2,
+            "_primary_term": 1,
+            "status": 201
+          }
+        }
+      ]
+    },
+    "responseStripped": {
+      "took": 470,
+      "errors": false,
+      "items": [
+        {
+          "index": {
+            "_index": "i",
+            "_id": "1",
+            "_version": 1,
+            "result": "created",
+            "_shards": {
+              "total": 2,
+              "successful": 1,
+              "failed": 0
+            },
+            "_seq_no": 0,
+            "_primary_term": 1,
+            "status": 201
+          }
+        },
+        {
+          "index": {
+            "_index": "ii",
+            "_id": "2",
+            "_version": 1,
+            "result": "created",
+            "_shards": {
+              "total": 2,
+              "successful": 1,
+              "failed": 0
+            },
+            "_seq_no": 1,
+            "_primary_term": 1,
+            "status": 201
+          }
+        },
+        {
+          "index": {
+            "_index": "j",
+            "_id": "3",
+            "_version": 1,
+            "result": "created",
+            "_shards": {
+              "total": 2,
+              "successful": 1,
+              "failed": 0
+            },
+            "_seq_no": 2,
+            "_primary_term": 1,
+            "status": 201
+          }
+        }
+      ]
     }
+  }
 ]

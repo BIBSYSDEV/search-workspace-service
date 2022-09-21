@@ -1,6 +1,7 @@
 [
   {
     "name": "Mapping",
+    "indexName": null,
     "requestGateway": {
       "method": "GET",
       "url": null,
