@@ -18,6 +18,15 @@ public class WorkspaceStripper {
         return body.replaceAll(workspace + "-","");
     }
 
+    // Remove {workspace}- from responseBody
+    public static String remove(String body, String workspace, String index) {
+        if (body == null) {
+            return null;
+        }
+        logger.info("replacing " + workspace + "-" + index);
+        return body.replaceAll(workspace + "-" + index,index);
+    }
+
     // replace {index} with {workspace}-{index} from responseBody
     //public static String add(String body, String workspace, String index) {
     //    if (body == null) {

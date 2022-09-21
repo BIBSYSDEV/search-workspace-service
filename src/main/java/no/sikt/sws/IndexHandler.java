@@ -45,7 +45,7 @@ public class IndexHandler extends OpenSearchProxyHandler<String, String> {
             logger.info("response-body:" + response.getBody());
 
 
-            var responseBody = WorkspaceStripper.remove(response.getBody(), workspace);
+            var responseBody = WorkspaceStripper.remove(response.getBody(), workspace,resourceIdentifier);
             logger.info("response-body:" + responseBody);
 
             return Pair.of(responseBody, response.getStatus());
