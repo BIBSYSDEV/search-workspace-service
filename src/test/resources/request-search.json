@@ -1,9 +1,14 @@
 [
   {
     "name": "Search q=test",
-    "request": {
+    "requestGateway": {
       "method": "GET",
-      "url": "/workspace-mockname-index1/_search?q=test",
+      "url": "index1/_search?q=test",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-index1/_search?q=test",
       "body": null
     },
     "response": {

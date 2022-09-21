@@ -18,6 +18,14 @@ public class WorkspaceStripper {
         return body.replaceAll(workspace + "-","");
     }
 
+    public static String prefixUrl(String index, String workspace) {
+        if (index == null) {
+            return null;
+        }
+        logger.info("prefixing " + workspace);
+        return workspace + "-" + index;
+    }
+
     // replace {index} with {workspace}-{index} from responseBody
     //public static String add(String body, String workspace, String index) {
     //    if (body == null) {

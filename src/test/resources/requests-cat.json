@@ -1,0 +1,17 @@
+[
+    {
+      "name": "Cat GET indices",
+      "requestGateway": {
+        "method": "GET",
+        "url": "_cat",
+        "body": null
+      },
+      "requestOpensearch": {
+        "method": "GET",
+        "url": "_cat",
+        "body": null
+      },
+      "response": "yellow open workspace-mockname-index-3 7JE2G_-_QWChqcdrPvnFLA 1 1 3 0 4.1kb 4.1kb\nyellow open workspace-mockname-index-1  nXsprbMMTHuvByW3rG3u8Q 2 1 3 0   9kb   9kb",
+      "responseStripped": "yellow open index-3 7JE2G_-_QWChqcdrPvnFLA 1 1 3 0 4.1kb 4.1kb\nyellow open index-1  nXsprbMMTHuvByW3rG3u8Q 2 1 3 0   9kb   9kb"
+    }
+]

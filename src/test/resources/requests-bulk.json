@@ -1,9 +1,14 @@
 [
     {
       "name": "Bulk POST create index",
-      "request": {
+      "requestGateway": {
         "method": "POST",
-        "url": "/_bulk",
+        "url": "_bulk",
+        "body": "{ \"index\": { \"_index\": \"index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
+      },
+      "requestOpensearch": {
+        "method": "POST",
+        "url": "_bulk",
         "body": "{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"1\" } }\n{ \"navn\": \"Test-1\", \"age\":13 }\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"2\" } }\n{ \"navn\": \"Test-2\", \"age\":23}\n{ \"index\": { \"_index\": \"workspace-mockname-index-3\", \"_id\": \"3\" } }\n{ \"navn\": \"Test-3\", \"age\":33}"
       },
       "response": {
@@ -117,9 +122,14 @@
     },
     {
       "name": "Bulk PUT create index, fail",
-      "request": {
+      "requestGateway": {
         "method": "PUT",
-        "url": "/workspace-mockname-index1/_doc",
+        "url": "index1/_doc",
+        "body":null
+      },
+      "requestOpensearch": {
+        "method": "PUT",
+        "url": "workspace-mockname-index1/_doc",
         "body":null
       },
       "response":{
@@ -133,9 +143,14 @@
     },
     {
       "name": "Bulk DELETE create index",
-      "request": {
+      "requestGateway": {
         "method": "DELETE",
-        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body": "{ \"age\":224}"
+      },
+      "requestOpensearch": {
+        "method": "DELETE",
+        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body": "{ \"age\":224}"
       },
       "response": {
@@ -167,9 +182,14 @@
     },
     {
       "name": "Bulk DELETE create index",
-      "request": {
+      "requestGateway": {
         "method": "DELETE",
-        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body": "{ \"age\":224}"
+      },
+      "requestOpensearch": {
+        "method": "DELETE",
+        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body": "{ \"age\":224}"
       },
       "response": {

@@ -1,9 +1,14 @@
 [
     {
       "name": "Doc GET without id, failed",
-      "request": {
+      "requestGateway": {
         "method": "GET",
-        "url": "/workspace-mockname-index1/_doc",
+        "url": "index1/_doc",
+        "body":null
+      },
+      "requestOpensearch": {
+        "method": "GET",
+        "url": "workspace-mockname-index1/_doc",
         "body":null
       },
       "response":{
@@ -17,9 +22,14 @@
     },
     {
       "name": "Doc DELETE with id",
-      "request": {
+      "requestGateway": {
         "method": "DELETE",
-        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body": null
+      },
+      "requestOpensearch": {
+        "method": "DELETE",
+        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body": null
       },
       "response": {
@@ -51,9 +61,14 @@
     },
     {
       "name": "Doc DELETE with invalid id",
-      "request": {
+      "requestGateway": {
         "method": "DELETE",
-        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":null
+      },
+      "requestOpensearch": {
+        "method": "DELETE",
+        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":null
       },
       "response": {
@@ -85,9 +100,14 @@
     },
     {
       "name": "Doc GET with id",
-      "request": {
+      "requestGateway": {
         "method": "GET",
-        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":null
+      },
+      "requestOpensearch": {
+        "method": "GET",
+        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":null
       },
       "response": {
@@ -117,9 +137,14 @@
     },
     {
       "name": "Doc PUT with id",
-      "request": {
+      "requestGateway": {
         "method": "PUT",
-        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":null
+      },
+      "requestOpensearch": {
+        "method": "PUT",
+        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":null
       },
       "response": {
@@ -135,9 +160,14 @@
     },
     {
       "name": "Doc PATCH with id, failed",
-      "request": {
+      "requestGateway": {
         "method": "PATCH",
-        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":"{ \"age\":224}"
+      },
+      "requestOpensearch": {
+        "method": "PATCH",
+        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":"{ \"age\":224}"
       },
       "response":{
@@ -151,9 +181,14 @@
     },
     {
       "name": "Doc POST with id",
-      "request": {
+      "requestGateway": {
         "method": "POST",
-        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body": "{ \"navn\": \"Test-2\",\"age\": 223,\"test\": \"nytt navn 2\" }"
+      },
+      "requestOpensearch": {
+        "method": "POST",
+        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body": "{ \"navn\": \"Test-2\",\"age\": 223,\"test\": \"nytt navn 2\" }"
       },
       "response":{
@@ -185,9 +220,14 @@
     },
     {
       "name": "Doc PUT with id",
-      "request": {
+      "requestGateway": {
         "method": "PUT",
-        "url": "/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+        "body":"{ \"navn\": \"Test-2\", \"age\":222, \"test\":\"nytt navn\"}"
+      },
+      "requestOpensearch": {
+        "method": "PUT",
+        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
         "body":"{ \"navn\": \"Test-2\", \"age\":222, \"test\":\"nytt navn\"}"
       },
       "response":  {

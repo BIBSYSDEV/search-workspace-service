@@ -3,10 +3,7 @@ package no.sikt.sws;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
 import org.joda.time.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +44,7 @@ public class WorkspaceStripperTest {
             .getElements()
             .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
 
-        new TestCaseLoader("requests-root.json")
+        new TestCaseLoader("requests-cat.json")
             .getElements()
             .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
 
@@ -56,14 +53,28 @@ public class WorkspaceStripperTest {
     }
 
     @TestFactory
-    @DisplayName("AssertEquals")
+    @DisplayName("Opensearch body stripping")
     Stream<DynamicTest> testStripperFactory() {
 
         // TestCase in, TestName out
-        Function<TestCaseSws, String> displayNameGenerator = (input) -> "AssertEqual -> " + input.toString();
+        Function<TestCaseSws, String> displayNameGenerator = (input) -> input.toString();
 
         // Executes tests based on the current input value.
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertTestCase;
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;
+
+        // Returns a stream of dynamic tests.
+        return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
+    }
+
+    @TestFactory
+    @DisplayName("Opensearch url prefix-adder")
+    Stream<DynamicTest> testPrefixUrlAddingFactory() {
+
+        // TestCase in, TestName out
+        Function<TestCaseSws, String> displayNameGenerator = (input) -> input.toString();
+
+        // Executes tests based on the current input value.
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefixing;
 
         // Returns a stream of dynamic tests.
         return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
@@ -72,14 +83,20 @@ public class WorkspaceStripperTest {
     @Test
     void runRootRequests() {
 
-        new TestCaseLoader("requests-root.json")
+        new TestCaseLoader("requests-cat.json")
                 .getTestCases()
-                .forEach(this::assertTestCase);
+                .forEach(this::assertResponseStripping);
     }
 
-    void assertTestCase(TestCaseSws testCase) {
+    void assertResponseStripping(TestCaseSws testCase) {
         assertEquals(testCase.getResponseStripped(),WorkspaceStripper.remove(testCase.getResponse(), WORKSPACEPREFIX));
-        logger.info(testCase.getRequest().getMethod() + "->" + testCase.getRequest().getUrl());
+        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
+    }
 
+    void assertUrlPrefixing(TestCaseSws testCase) {
+        var gatewayUrl = testCase.getRequestOpensearch().getUrl();
+        var opensearchUrl = testCase.getRequestGateway().getUrl();
+        assertEquals(gatewayUrl,WorkspaceStripper.prefixUrl(opensearchUrl, WORKSPACEPREFIX));
+        logger.info(gatewayUrl + "->" + opensearchUrl);
     }
 }

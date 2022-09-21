@@ -1,9 +1,14 @@
 [
     {
       "name": "GET index",
-      "request": {
+      "requestGateway": {
         "method": "GET",
-        "url": "/workspace-mockname-index1",
+        "url": "index1",
+        "body": null
+      },
+      "requestOpensearch": {
+        "method": "GET",
+        "url": "workspace-mockname-index1",
         "body": null
       },
       "response": {
@@ -97,9 +102,14 @@
     },
     {
       "name": "Post index, failed",
-      "request": {
+      "requestGateway": {
         "method": "POST",
-        "url": "/workspace-mockname-index2",
+        "url": "index2",
+        "body": null
+      },
+      "requestOpensearch": {
+        "method": "POST",
+        "url": "workspace-mockname-index2",
         "body": null
       },
       "response":{
@@ -113,9 +123,14 @@
     },
     {
       "name": "Put index, without template",
-      "request": {
+      "requestGateway": {
         "method": "PUT",
-        "url": "/workspace-mockname-index2",
+        "url": "index2",
+        "body": null
+      },
+      "requestOpensearch": {
+        "method": "PUT",
+        "url": "workspace-mockname-index2",
         "body": null
       },
       "response":{
@@ -127,6 +142,52 @@
         "acknowledged": true,
         "shards_acknowledged": true,
         "index": "index2"
+      }
+    },
+    {
+      "name": "Put index, without template but with stupid name",
+      "requestGateway": {
+        "method": "PUT",
+        "url": "workspace-mockname-index2-index2",
+        "body": null
+      },
+      "requestOpensearch": {
+        "method": "PUT",
+        "url": "workspace-mockname-workspace-mockname-index2-index2",
+        "body": null
+      },
+      "response":{
+        "acknowledged": true,
+        "shards_acknowledged": true,
+        "index": "workspace-mockname-workspace-mockname-index2-index2"
+      },
+      "responseStripped":{
+        "acknowledged": true,
+        "shards_acknowledged": true,
+        "index": "workspace-mockname-index2-index2"
+      }
+    },
+    {
+      "name": "Put index, without template but with another stupid name",
+      "requestGateway": {
+        "method": "PUT",
+        "url": "workspace-mockname",
+        "body": null
+      },
+      "requestOpensearch": {
+        "method": "PUT",
+        "url": "workspace-mockname-workspace-mockname",
+        "body": null
+      },
+      "response":{
+        "acknowledged": true,
+        "shards_acknowledged": true,
+        "index": "workspace-mockname-workspace-mockname"
+      },
+      "responseStripped":{
+        "acknowledged": true,
+        "shards_acknowledged": true,
+        "index": "workspace-mockname"
       }
     }
 ]
