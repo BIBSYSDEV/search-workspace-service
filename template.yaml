@@ -80,7 +80,7 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: [ lambda.amazonaws.com ]
+              Service: [ opensearch.amazonaws.com ]
             Action: [ 'sts:AssumeRole' ]
       Policies:
         - PolicyName: accessS3
@@ -93,6 +93,7 @@ Resources:
                   - s3:GetObject
                   - s3:DeleteObject
                 Resource: !Sub 'arn:aws:s3:::sws-indices-snapshot-${AWS::AccountId}-*'
+                Principal: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
 
   SWSLambdaTriggerRole:
     Type: AWS::IAM::Role
