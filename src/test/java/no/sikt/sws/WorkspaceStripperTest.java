@@ -55,71 +55,65 @@ public class WorkspaceStripperTest {
     @TestFactory
     @DisplayName("Opensearch body stripping")
     Stream<DynamicTest> testStripperFactory() {
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;  // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
 
-        // TestCase in, TestName out
-        Function<TestCaseSws, String> displayNameGenerator = (input) -> input.toString();
-
-        // Executes tests based on the current input value.
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;
-
-        // Returns a stream of dynamic tests.
         return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
     }
 
     @TestFactory
     @DisplayName("Opensearch url prefix-adder")
     Stream<DynamicTest> testPrefixUrlAddingFactory() {
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefixing;      // -> test function
 
-        // TestCase in, TestName out
-        Function<TestCaseSws, String> displayNameGenerator = (input) -> input.toString();
-
-        // Executes tests based on the current input value.
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefixing;
-
-        // Returns a stream of dynamic tests.
         return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
     }
 
     @TestFactory
     @DisplayName("Opensearch body prefixing")
     Stream<DynamicTest> testPrefixBodyFactory() {
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertBodyPrefixing;     // -> test function
 
-        // TestCase in, TestName out
-        Function<TestCaseSws, String> displayNameGenerator = (input) -> input.toString();
-
-        // Executes tests based on the current input value.
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertBodyPrefixing;
-
-        // Returns a stream of dynamic tests.
         return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
     }
 
-    @Test
-    void runRootRequests() {
-
-        new TestCaseLoader("requests-cat.json")
-                .getTestCases()
-                .forEach(this::assertResponseStripping);
-    }
-
     void assertResponseStripping(TestCaseSws testCase) {
-        assertEquals(testCase.getResponseStripped(),WorkspaceStripper.remove(testCase.getResponse(), WORKSPACEPREFIX));
+        var expectedResponse = testCase.getResponseStripped();
+        var resultResponse = WorkspaceStripper.remove(testCase.getResponse(), WORKSPACEPREFIX);
+
+        assertEquals(expectedResponse,resultResponse);
+
         logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
     }
 
     void assertUrlPrefixing(TestCaseSws testCase) {
         var gatewayUrl = testCase.getRequestGateway().getUrl();
-        var opensearchUrl = testCase.getRequestOpensearch().getUrl();
-        assertEquals(opensearchUrl,WorkspaceStripper.prefixUrl(gatewayUrl, WORKSPACEPREFIX));
-        logger.info(gatewayUrl + "->" + opensearchUrl);
+        var expectedUrl = testCase.getRequestOpensearch().getUrl();
+        var resultUrl = WorkspaceStripper.prefixUrl(gatewayUrl, WORKSPACEPREFIX);
+
+        assertEquals(expectedUrl,resultUrl);
+
+        logger.info(gatewayUrl + "->" + expectedUrl);
     }
 
     void assertBodyPrefixing(TestCaseSws testCase) {
-        var index = testCase.getIndexName();
+        var indexName = testCase.getIndexName();
         var gatewayBody = testCase.getRequestGateway().getBody();
-        var opensearchBody = testCase.getRequestOpensearch().getBody();
+        var expectedBody = testCase.getRequestOpensearch().getBody();
+        var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX, indexName);
 
-        assertEquals(opensearchBody,WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX, index));
+        assertEquals(expectedBody,resultBody);
+
         logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
     }
+
+    //@Test
+    //void runRootRequests() {
+    //
+    //    new TestCaseLoader("requests-cat.json")
+    //            .getTestCases()
+    //            .forEach(this::assertResponseStripping);
+    //}
 }
