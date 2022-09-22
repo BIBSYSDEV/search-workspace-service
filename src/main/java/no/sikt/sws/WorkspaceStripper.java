@@ -32,7 +32,7 @@ public class WorkspaceStripper {
 
     // replace {index} with {workspace}-{index} from responseBody
     public static String prefixBody(String body, String workspace, String index) {
-        if (body == null) {
+        if (body == null || index == null) {
             return null;
         }
 
