@@ -24,29 +24,30 @@ public class WorkspaceStripperTest {
         logger.info("Test cases loading");
         var streamBuilder = Stream.<TestCaseSws>builder();
 
-        new TestCaseLoader("request-mapping.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
-
-        new TestCaseLoader("request-search.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
-
         new TestCaseLoader("requests-bulk.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
-
-        new TestCaseLoader("requests-doc.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
-
-        new TestCaseLoader("requests-indexes.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+                .getElements()
+                .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
 
         new TestCaseLoader("requests-cat.json")
+                .getElements()
+                .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+
+        new TestCaseLoader("requests-doc.json")
+                .getElements()
+                .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+
+        new TestCaseLoader("requests-indexes.json")
+                .getElements()
+                .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+
+        new TestCaseLoader("requests-mapping.json")
             .getElements()
             .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+
+        new TestCaseLoader("requests-search.json")
+            .getElements()
+            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+
 
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
         return streamBuilder.build();
@@ -57,7 +58,7 @@ public class WorkspaceStripperTest {
     Stream<DynamicTest> testStripperFactory() {
 
         // TestCase in, TestName out
-        Function<TestCaseSws, String> displayNameGenerator = (input) -> input.toString();
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;
 
         // Executes tests based on the current input value.
         ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;
@@ -71,7 +72,7 @@ public class WorkspaceStripperTest {
     Stream<DynamicTest> testPrefixUrlAddingFactory() {
 
         // TestCase in, TestName out
-        Function<TestCaseSws, String> displayNameGenerator = (input) -> input.toString();
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;
 
         // Executes tests based on the current input value.
         ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefixing;
@@ -85,7 +86,7 @@ public class WorkspaceStripperTest {
     Stream<DynamicTest> testPrefixBodyFactory() {
 
         // TestCase in, TestName out
-        Function<TestCaseSws, String> displayNameGenerator = (input) -> input.toString();
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;
 
         // Executes tests based on the current input value.
         ThrowingConsumer<TestCaseSws> testExecutor = this::assertBodyPrefixing;

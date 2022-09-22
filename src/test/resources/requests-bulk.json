@@ -223,7 +223,7 @@
         "_primary_term": 2
       }
     },
-  {
+    {
     "name": "Bulk POST create index with evil stupid names",
     "indexName": null,
     "requestGateway": {
