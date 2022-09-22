@@ -24,29 +24,29 @@ public class WorkspaceStripperTest {
         logger.info("Test cases loading");
         var streamBuilder = Stream.<TestCaseSws>builder();
 
-        new TestCaseLoader("request-mapping.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+        new TestCaseLoader("requests-mapping.json")
+                .getTestCases()
+                .forEach(t -> streamBuilder.add(t));
 
-        new TestCaseLoader("request-search.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+        new TestCaseLoader("requests-search.json")
+                .getTestCases()
+                .forEach(t -> streamBuilder.add(t));
 
         new TestCaseLoader("requests-bulk.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+                .getTestCases()
+                .forEach(t -> streamBuilder.add(t));
 
         new TestCaseLoader("requests-doc.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+                .getTestCases()
+                .forEach(t -> streamBuilder.add(t));
 
         new TestCaseLoader("requests-indexes.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+                .getTestCases()
+                .forEach(t -> streamBuilder.add(t));
 
         new TestCaseLoader("requests-cat.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+                .getTestCases()
+                .forEach(t -> streamBuilder.add(t));
 
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
         return streamBuilder.build();
@@ -79,6 +79,27 @@ public class WorkspaceStripperTest {
         return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
     }
 
+    @Test
+    void runRootRequests() {
+
+        new TestCaseLoader("requests-cat.json")
+                .getTestCases()
+                .forEach(this::assertResponseStripping);
+    }
+
+    @Test
+    void runSingleTestcase() {
+
+        var filename = "requests-bulk.json";
+        var testcase = "Bulk POST create index with evil stupid names";
+
+        var testCase = new TestCaseLoader(filename)
+                .getTestCase(testcase);
+
+        assertBodyPrefixing(testCase);
+
+    }
+
     void assertResponseStripping(TestCaseSws testCase) {
         var expectedResponse = testCase.getResponseStripped();
         var resultResponse = WorkspaceStripper.remove(testCase.getResponse(), WORKSPACEPREFIX);
@@ -108,12 +129,4 @@ public class WorkspaceStripperTest {
 
         logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
     }
-
-    //@Test
-    //void runRootRequests() {
-    //
-    //    new TestCaseLoader("requests-cat.json")
-    //            .getTestCases()
-    //            .forEach(this::assertResponseStripping);
-    //}
 }
