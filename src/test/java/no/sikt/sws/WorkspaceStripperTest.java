@@ -24,11 +24,11 @@ public class WorkspaceStripperTest {
         logger.info("Test cases loading");
         var streamBuilder = Stream.<TestCaseSws>builder();
 
-        new TestCaseLoader("request-mapping.json")
+        new TestCaseLoader("requests-mapping.json")
                 .getTestCases()
                 .forEach(t -> streamBuilder.add(t));
 
-        new TestCaseLoader("request-search.json")
+        new TestCaseLoader("requests-search.json")
                 .getTestCases()
                 .forEach(t -> streamBuilder.add(t));
 
