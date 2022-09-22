@@ -26,27 +26,27 @@ public class WorkspaceStripperTest {
 
         new TestCaseLoader("requests-mapping.json")
                 .getTestCases()
-                .forEach(t -> streamBuilder.add(t));
+                .forEach(streamBuilder::add);
 
         new TestCaseLoader("requests-search.json")
                 .getTestCases()
-                .forEach(t -> streamBuilder.add(t));
+                .forEach(streamBuilder::add);
 
         new TestCaseLoader("requests-bulk.json")
                 .getTestCases()
-                .forEach(t -> streamBuilder.add(t));
+                .forEach(streamBuilder::add);
 
         new TestCaseLoader("requests-doc.json")
                 .getTestCases()
-                .forEach(t -> streamBuilder.add(t));
+                .forEach(streamBuilder::add);
 
         new TestCaseLoader("requests-indexes.json")
                 .getTestCases()
-                .forEach(t -> streamBuilder.add(t));
+                .forEach(streamBuilder::add);
 
         new TestCaseLoader("requests-cat.json")
                 .getTestCases()
-                .forEach(t -> streamBuilder.add(t));
+                .forEach(streamBuilder::add);
 
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
         return streamBuilder.build();
@@ -57,7 +57,7 @@ public class WorkspaceStripperTest {
     Stream<DynamicTest> testStripperFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;  // -> testcase name
         ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
-        var testCases = allRequestArguments().filter(t -> t.isResponseTest());
+        var testCases = allRequestArguments().filter(TestCaseSws::isResponseTest);
 
         return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
@@ -67,8 +67,7 @@ public class WorkspaceStripperTest {
     Stream<DynamicTest> testPrefixUrlAddingFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
         ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefixing;      // -> test function
-
-        var testCases = allRequestArguments().filter(t -> t.isRequestTest());
+        var testCases = allRequestArguments().filter(TestCaseSws::isRequestTest);
 
         return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
@@ -78,9 +77,10 @@ public class WorkspaceStripperTest {
     Stream<DynamicTest> testPrefixBodyFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
         ThrowingConsumer<TestCaseSws> testExecutor = this::assertBodyPrefixing;     // -> test function
+        var testCases = allRequestArguments().filter(TestCaseSws::isRequestBodyTest);
 
-        var testCases = allRequestArguments().filter(t -> t.isRequestBodyTest());
-        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);   }
+        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+    }
 
     /**
      * Using for debuging a single test-case. Change the filename, testcase,
