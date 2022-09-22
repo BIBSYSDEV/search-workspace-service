@@ -26,12 +26,18 @@ public class TestCaseSws implements Serializable {
     private String responseStripped;
 
     public TestCaseSws(JsonNode testcase) {
-        this.name = testcase.get("name").asText();
-        this.indexName = testcase.get("indexName").asText();
-        this.requestGateway = new TestRequestSws(testcase.get("requestGateway"));
-        this.requestOpensearch = new TestRequestSws(testcase.get("requestOpensearch"));
-        this.response = testcase.get("response").toPrettyString();
-        this.responseStripped = testcase.get("responseStripped").toPrettyString();
+        try {
+            this.name = testcase.get("name").asText();
+            this.indexName = testcase.get("indexName").asText();
+            this.requestGateway = new TestRequestSws(testcase.get("requestGateway"));
+            this.requestOpensearch = new TestRequestSws(testcase.get("requestOpensearch"));
+            this.response = testcase.get("response").toPrettyString();
+            this.responseStripped = testcase.get("responseStripped").toPrettyString();
+        } catch (Exception e) {
+            System.out.println("Problems parsing testcase: " + testcase.asText());
+            throw e;
+        }
+
     }
 
     public String getName() {
