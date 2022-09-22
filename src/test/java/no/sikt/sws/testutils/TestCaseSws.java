@@ -1,9 +1,13 @@
 package no.sikt.sws.testutils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
+
+import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
 
 // WorkspaceIndexHandlerTestCase
 public class TestCaseSws implements Serializable {
@@ -20,25 +24,10 @@ public class TestCaseSws implements Serializable {
     private TestRequestSws requestOpensearch;
 
     @JsonProperty("response")
-    private String response;
+    private JsonNode response;
 
     @JsonProperty("responseStripped")
-    private String responseStripped;
-
-    public TestCaseSws(JsonNode testcase) {
-        try {
-            this.name = testcase.get("name").asText();
-            this.indexName = testcase.get("indexName").asText();
-            this.requestGateway = new TestRequestSws(testcase.get("requestGateway"));
-            this.requestOpensearch = new TestRequestSws(testcase.get("requestOpensearch"));
-            this.response = testcase.get("response").toPrettyString();
-            this.responseStripped = testcase.get("responseStripped").toPrettyString();
-        } catch (Exception e) {
-            System.out.println("Problems parsing testcase: " + testcase.asText());
-            throw e;
-        }
-
-    }
+    private JsonNode responseStripped;
 
     public String getName() {
         return name;
@@ -47,11 +36,24 @@ public class TestCaseSws implements Serializable {
 
 
     public String getResponse() {
-        return response;
+        return response != null ? response.toPrettyString() : null;
     }
 
     public String getResponseStripped() {
-        return responseStripped;
+        return responseStripped != null ? responseStripped.toPrettyString() : null;
+    }
+
+    public boolean isResponseTest() {
+        return response != null && responseStripped != null;
+    }
+
+    public boolean isRequestTest() {
+        return requestGateway != null && requestOpensearch != null;
+    }
+
+    public boolean isRequestBodyTest() {
+        return requestGateway != null && requestGateway.getBody() != null
+                && requestOpensearch != null && requestOpensearch.getBody() != null;
     }
 
     @Override
@@ -69,5 +71,14 @@ public class TestCaseSws implements Serializable {
 
     public String getIndexName() {
         return indexName;
+    }
+
+    public static TestCaseSws fromJson(JsonNode jsonNode) {
+        try {
+            return dtoObjectMapper.treeToValue(jsonNode, TestCaseSws.class);
+        } catch (Exception e) {
+            System.out.println("Could not passe json as TestCase: " + jsonNode.toString());
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -53,43 +53,41 @@ public class WorkspaceStripperTest {
     }
 
     @TestFactory
-    @DisplayName("Opensearch body stripping")
+    @DisplayName("Opensearch response-body stripping")
     Stream<DynamicTest> testStripperFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;  // -> testcase name
         ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
+        var testCases = allRequestArguments().filter(t -> t.isResponseTest());
 
-        return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
+        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
 
     @TestFactory
-    @DisplayName("Opensearch url prefix-adder")
+    @DisplayName("Opensearch url prefixing")
     Stream<DynamicTest> testPrefixUrlAddingFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
         ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefixing;      // -> test function
 
-        return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
+        var testCases = allRequestArguments().filter(t -> t.isRequestTest());
+
+        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
 
     @TestFactory
-    @DisplayName("Opensearch body prefixing")
+    @DisplayName("Opensearch request-body prefixing")
     Stream<DynamicTest> testPrefixBodyFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
         ThrowingConsumer<TestCaseSws> testExecutor = this::assertBodyPrefixing;     // -> test function
 
-        return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
-    }
+        var testCases = allRequestArguments().filter(t -> t.isRequestBodyTest());
+        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);   }
 
-    @Test
-    void runRootRequests() {
-
-        new TestCaseLoader("requests-cat.json")
-                .getTestCases()
-                .forEach(this::assertResponseStripping);
-    }
-
+    /**
+     * Using for debuging a single test-case. Change the filename, testcase,
+     * and assert-function on the last line as needed
+     */
     @Test
     void runSingleTestcase() {
-
         var filename = "requests-bulk.json";
         var testcase = "Bulk POST create index with evil stupid names";
 
