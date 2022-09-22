@@ -35,13 +35,11 @@ public class WorkspaceResponse {
 
     public static WorkspaceResponse fromValues(String workspace, String indexList) throws JsonProcessingException {
 
-        JsonNode indexListJson = objectMapper.readTree("");
+        JsonNode indexListJson = objectMapper.readTree(indexList);
         String createIndexLink = "";
 
-        if (indexList.isBlank()) {
+        if (indexListJson.isEmpty()) {
             createIndexLink = API_GATEWAY_URL + "/index_name";
-        } else {
-            indexListJson = objectMapper.readTree(indexList);
         }
 
         return new WorkspaceResponse(workspace, indexListJson, createIndexLink);
