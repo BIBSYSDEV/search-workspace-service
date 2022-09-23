@@ -36,11 +36,7 @@ public class WorkspaceResponse {
     public static WorkspaceResponse fromValues(String workspace, String indexList) throws JsonProcessingException {
 
         JsonNode indexListJson = objectMapper.readTree(indexList);
-        String createIndexLink = "";
-
-        if (indexListJson.isEmpty()) {
-            createIndexLink = API_GATEWAY_URL + "/index_name";
-        }
+        String createIndexLink = API_GATEWAY_URL + "/index_name";
 
         return new WorkspaceResponse(workspace, indexListJson, createIndexLink);
     }
