@@ -11,7 +11,7 @@ Globals:
         ELASTICSEARCH_REGION: "eu-west-1"
         SCOPE_IDENTIFIER: 'https://api.sws.aws.sikt.no/scopes'
         API_GATEWAY_URL: !Sub 'https://api.${CustomDomain}'
-        BACKUP_BUCKET_ARN: !Sub '${BackupBucketArn}'
+        BACKUP_BUCKET_NAME: !Sub '${BackupBucketName}'
 
   Api:
     Cors:
@@ -33,7 +33,7 @@ Parameters:
   CustomDomain:
     Type: String
     Description: Custom API to connect this lambda to
-  BackupBucketArn:
+  BackupBucketName:
     Type: String
     Description: Arn of the S3 bucket for olensearch buckups
 
