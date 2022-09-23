@@ -35,7 +35,7 @@ Parameters:
     Description: Custom API to connect this lambda to
   BackupBucketName:
     Type: String
-    Description: Arn of the S3 bucket for olensearch buckups
+    Description: Name of the S3 bucket for olensearch buckups
 
 Conditions:
   LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
