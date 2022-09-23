@@ -3,13 +3,15 @@ package no.sikt.sws.testutils;
 
 import com.amazonaws.http.HttpMethodName;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import no.sikt.sws.WorkspaceStripperTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import no.unit.nva.commons.json.JsonUtils;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class TestRequestSws implements Serializable {
 
@@ -31,7 +33,18 @@ public class TestRequestSws implements Serializable {
     }
 
     public String getBody() {
-        return body;
+        return body; //.textValue();
+    }
+
+    public List<JsonNode> getBulkBody() {
+        return Arrays.stream(body.split("\n"))
+            .map(s -> {
+                try {
+                    return JsonUtils.dtoObjectMapper.readValue(s, JsonNode.class);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList());
     }
 
     @Override

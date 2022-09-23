@@ -89,12 +89,12 @@ public class WorkspaceStripperTest {
     @Test
     void runSingleTestcase() {
         var filename = "requests-bulk.json";
-        var testcase = "Bulk POST create index with evil stupid names";
+        var testName = "Bulk POST create index with evil stupid names";
 
         var testCase = new TestCaseLoader(filename)
-                .getTestCase(testcase);
+                .getTestCase(testName);
 
-        assertBodyPrefixing(testCase);
+        assertBulkBodyPrefixing(testCase);
 
     }
 
@@ -127,4 +127,15 @@ public class WorkspaceStripperTest {
 
         logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
     }
+
+    void assertBulkBodyPrefixing(TestCaseSws testCase) {
+        var gatewayBody = testCase.getRequestGateway().getBulkBody();
+        var expectedBody = testCase.getRequestOpensearch().getBody();
+        var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX);
+
+        assertEquals(expectedBody,resultBody);
+
+        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
+    }
+
 }
