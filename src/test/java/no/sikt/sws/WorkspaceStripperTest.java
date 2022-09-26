@@ -127,16 +127,17 @@ public class WorkspaceStripperTest {
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
         if (indexName == null) {
-            logger.info("no index name");
+            logger.info("no index name, presuming bulk inserts");
             var gatewayBody = testCase.getRequestGateway().getBulkBody();
             var resultBody = WorkspaceStripper.prefixIndexesBody(gatewayBody, WORKSPACEPREFIX);
             assertEquals(expectedBody,resultBody);
-
+            logger.info(resultBody);
         } else {
             logger.info(indexName);
             var gatewayBody = testCase.getRequestGateway().getBody();
             var resultBody = WorkspaceStripper.prefixIndexesBody(gatewayBody, WORKSPACEPREFIX, indexName);
             assertEquals(expectedBody,resultBody);
+            logger.info(resultBody);
         }
 
         logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
