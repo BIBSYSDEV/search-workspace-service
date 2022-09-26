@@ -76,6 +76,29 @@ Resources:
                 Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:IdentityServiceSecret*'
 
 
+  SnapshotRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ opensearch.amazonaws.com ]
+            Action: [ 'sts:AssumeRole' ]
+      Policies:
+        - PolicyName: accessS3
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:DeleteObject
+                Resource: !Sub 'arn:aws:s3:::sws-indices-snapshot-${AWS::AccountId}-*'
+                Principal: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
+
   SWSLambdaTriggerRole:
     Type: AWS::IAM::Role
     Properties:
@@ -194,6 +217,7 @@ Resources:
       Handler: no.sikt.sws.IndexHandler::handleRequest
       Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn
+
 
   WorkspaceHandler:
     Type: AWS::Serverless::Function
@@ -378,17 +402,7 @@ Resources:
               - es:ESHttpHead
             Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
         Policies:
-          - PolicyName: accessS3
-            PolicyDocument:
-              Version: 2012-10-17
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - s3:PutObject
-                    - s3:GetObject
-                    - s3:DeleteObject
-                  Resource: !Sub 'arn:aws:s3:::sws-indices-snapshot-${AWS::AccountId}-*'
-                  Principal: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
+          -
       ClusterConfig: !If [ LargeElasticSearch,
         {
           DedicatedMasterEnabled: true,
@@ -412,3 +426,4 @@ Resources:
         VolumeType: gp2
       CognitoOptions:
         Enabled: false
+      Role: !GetAtt  SnapshotRole.Arn
