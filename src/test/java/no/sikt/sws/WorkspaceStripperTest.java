@@ -3,10 +3,7 @@ package no.sikt.sws;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
 import org.joda.time.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,59 +24,130 @@ public class WorkspaceStripperTest {
         logger.info("Test cases loading");
         var streamBuilder = Stream.<TestCaseSws>builder();
 
-        new TestCaseLoader("request-mapping.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+        new TestCaseLoader("requests-mapping.json")
+                .getTestCases()
+                .forEach(streamBuilder::add);
 
-        new TestCaseLoader("request-search.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+        new TestCaseLoader("requests-search.json")
+                .getTestCases()
+                .forEach(streamBuilder::add);
 
         new TestCaseLoader("requests-bulk.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+                .getTestCases()
+                .forEach(streamBuilder::add);
 
         new TestCaseLoader("requests-doc.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+                .getTestCases()
+                .forEach(streamBuilder::add);
 
         new TestCaseLoader("requests-indexes.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+                .getTestCases()
+                .forEach(streamBuilder::add);
 
-        new TestCaseLoader("requests-root.json")
-            .getElements()
-            .forEachRemaining(argument ->  streamBuilder.add(new TestCaseSws(argument)));
+        new TestCaseLoader("requests-cat.json")
+                .getTestCases()
+                .forEach(streamBuilder::add);
 
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
         return streamBuilder.build();
     }
 
     @TestFactory
-    @DisplayName("AssertEquals")
+    @Disabled
+    @DisplayName("Opensearch response-body stripping")
     Stream<DynamicTest> testStripperFactory() {
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;  // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
+        var testCases = allRequestArguments().filter(TestCaseSws::isResponseTest);
 
-        // TestCase in, TestName out
-        Function<TestCaseSws, String> displayNameGenerator = (input) -> "AssertEqual -> " + input.toString();
-
-        // Executes tests based on the current input value.
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertTestCase;
-
-        // Returns a stream of dynamic tests.
-        return DynamicTest.stream(allRequestArguments(), displayNameGenerator, testExecutor);
+        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
 
+    @TestFactory
+    @Disabled
+    @DisplayName("Opensearch url prefixing")
+    Stream<DynamicTest> testPrefixUrlAddingFactory() {
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefixing;      // -> test function
+        var testCases = allRequestArguments().filter(TestCaseSws::isRequestTest);
+
+        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+    }
+
+    @TestFactory
+    @Disabled
+    @DisplayName("Opensearch request-body prefixing")
+    Stream<DynamicTest> testPrefixBodyFactory() {
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertBodyPrefixing;     // -> test function
+        var testCases = allRequestArguments().filter(TestCaseSws::isRequestBodyTest);
+
+        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+    }
+
+    /**
+     * Using for debuging a single test-case. Change the filename, testcase,
+     * and assert-function on the last line as needed
+     */
     @Test
-    void runRootRequests() {
+    @Disabled
+    void runSingleTestcase() {
+        var filename = "requests-bulk.json";
+        var testName = "Bulk POST create index with evil stupid names";
 
-        new TestCaseLoader("requests-root.json")
-                .getTestCases()
-                .forEach(this::assertTestCase);
+        var testCase = new TestCaseLoader(filename)
+                .getTestCase(testName);
+
+        assertBulkBodyPrefixing(testCase);
+
     }
 
-    void assertTestCase(TestCaseSws testCase) {
-        assertEquals(testCase.getResponseStripped(),WorkspaceStripper.remove(testCase.getResponse(), WORKSPACEPREFIX));
-        logger.info(testCase.getRequest().getMethod() + "->" + testCase.getRequest().getUrl());
+    void assertResponseStripping(TestCaseSws testCase) {
+        var expectedResponse = testCase.getResponseStripped();
+        var resultResponse = WorkspaceStripper.remove(testCase.getResponse(), WORKSPACEPREFIX);
 
+        assertEquals(expectedResponse,resultResponse);
+
+        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
     }
+
+    void assertUrlPrefixing(TestCaseSws testCase) {
+        var gatewayUrl = testCase.getRequestGateway().getUrl();
+        var expectedUrl = testCase.getRequestOpensearch().getUrl();
+        var resultUrl = WorkspaceStripper.prefixUrl(gatewayUrl, WORKSPACEPREFIX);
+
+        assertEquals(expectedUrl,resultUrl);
+
+        logger.info(gatewayUrl + "->" + expectedUrl);
+    }
+
+    void assertBodyPrefixing(TestCaseSws testCase) {
+        var indexName = testCase.getIndexName();
+
+        if (indexName != null) {
+            //var expectedBody = testCase.getRequestOpensearch().getBulkBody();
+            //var gatewayBody = testCase.getRequestGateway().getBulkBody();
+            //var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX);
+            //assertEquals(expectedBody,resultBody);
+
+            //} else {
+            var expectedBody = testCase.getRequestOpensearch().getBody();
+            var gatewayBody = testCase.getRequestGateway().getBody();
+            var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX, indexName);
+            assertEquals(expectedBody,resultBody);
+        }
+
+        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
+    }
+
+    void assertBulkBodyPrefixing(TestCaseSws testCase) {
+        var gatewayBody = testCase.getRequestGateway().getBulkBody();
+        var expectedBody = testCase.getRequestOpensearch().getBody();
+        var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX);
+
+        assertEquals(expectedBody,resultBody);
+
+        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
+    }
+
 }

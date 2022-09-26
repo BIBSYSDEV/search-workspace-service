@@ -1,7 +1,13 @@
 [
   {
     "name": "Mapping",
-    "request": {
+    "indexName": null,
+    "requestGateway": {
+      "method": "GET",
+      "url": null,
+      "body": ""
+    },
+    "requestOpensearch": {
       "method": "GET",
       "url": null,
       "body": ""

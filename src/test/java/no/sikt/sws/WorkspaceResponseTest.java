@@ -2,7 +2,6 @@ package no.sikt.sws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nva.commons.core.Environment;
 import org.junit.jupiter.api.Test;
 
 import static no.sikt.sws.constants.ApplicationConstants.API_GATEWAY_URL;
