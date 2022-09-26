@@ -124,13 +124,13 @@ public class WorkspaceStripperTest {
     void assertBodyPrefixing(TestCaseSws testCase) {
         var indexName = testCase.getIndexName();
 
-        if (indexName == null) {
+        if (indexName != null) {
             //var expectedBody = testCase.getRequestOpensearch().getBulkBody();
             //var gatewayBody = testCase.getRequestGateway().getBulkBody();
             //var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX);
             //assertEquals(expectedBody,resultBody);
 
-        } else {
+            //} else {
             var expectedBody = testCase.getRequestOpensearch().getBody();
             var gatewayBody = testCase.getRequestGateway().getBody();
             var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX, indexName);
