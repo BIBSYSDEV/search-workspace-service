@@ -15,6 +15,7 @@ import static nva.commons.core.attempt.Try.attempt;
 public class WorkspaceStripper {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceStripper.class);
+    private static final String QUOTE = "\"";
 
     // Remove {workspace}- from responseBody
     public static String remove(String body, String workspace) {
@@ -35,7 +36,7 @@ public class WorkspaceStripper {
 
     // replace {index} with {workspace}-{index} from responseBody
     public static String prefixBody(String body, String workspace, String index) {
-        if (body == null || index == null) {
+        if (body == null || index == null || workspace == null) {
             return null;
         }
 
@@ -46,19 +47,28 @@ public class WorkspaceStripper {
     }
 
 
-    public static String prefixBody(List<JsonNode> gatewayBody, String workspaceprefix) {
+    public static String prefixBody(List<JsonNode> gatewayBody, String workspacePrefix) {
+        if (gatewayBody == null || workspacePrefix == null) {
+            return null;
+        }
         return gatewayBody.stream().map(item -> {
-            // må lage nye returverdier...
-            // logger.info(item.toPrettyString());
-            item.elements().forEachRemaining(node -> {
-                if (node.has("_index")) {
-                    //node.get("_index") = node.
-                }
-                logger.info(node.toString());
-                logger.info(node.asToken().asString());
-            });
-            return item.get("_index").toPrettyString();
-        }).collect(Collectors.joining());
-
+            String indexName;
+            if (item.has("index")) {
+                indexName = item.get("index").get("_index").textValue();
+            } else if (item.has("delete")) {
+                indexName = item.get("delete").get("_index").textValue();
+            } else if (item.has("update")) {
+                indexName = item.get("update").get("_index").textValue();
+            } else if (item.has("create")) {
+                indexName = item.get("create").get("_index").textValue();
+            } else {
+                return item.toString();
+            }
+            var workspace = String.format("%s%s-%s%s", QUOTE, workspacePrefix, indexName, QUOTE);
+            indexName = String.format("%s%s%s", QUOTE, indexName, QUOTE);
+            return item.toString().replaceAll(indexName,workspace);
+        }).collect(Collectors.joining("\n"));
     }
+
+
 }

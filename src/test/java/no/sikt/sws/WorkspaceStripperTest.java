@@ -53,7 +53,6 @@ public class WorkspaceStripperTest {
     }
 
     @TestFactory
-    @Disabled
     @DisplayName("Opensearch response-body stripping")
     Stream<DynamicTest> testStripperFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;  // -> testcase name
@@ -75,7 +74,6 @@ public class WorkspaceStripperTest {
     }
 
     @TestFactory
-    @Disabled
     @DisplayName("Opensearch request-body prefixing")
     Stream<DynamicTest> testPrefixBodyFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
@@ -104,7 +102,9 @@ public class WorkspaceStripperTest {
 
     void assertResponseStripping(TestCaseSws testCase) {
         var expectedResponse = testCase.getResponseStripped();
-        var resultResponse = WorkspaceStripper.remove(testCase.getResponse(), WORKSPACEPREFIX);
+        var openSearchResponse = testCase.getResponse();
+
+        var resultResponse = WorkspaceStripper.remove(openSearchResponse, WORKSPACEPREFIX);
 
         assertEquals(expectedResponse,resultResponse);
 
@@ -123,15 +123,14 @@ public class WorkspaceStripperTest {
 
     void assertBodyPrefixing(TestCaseSws testCase) {
         var indexName = testCase.getIndexName();
+        var expectedBody = testCase.getRequestOpensearch().getBody();
 
-        if (indexName != null) {
-            //var expectedBody = testCase.getRequestOpensearch().getBulkBody();
-            //var gatewayBody = testCase.getRequestGateway().getBulkBody();
-            //var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX);
-            //assertEquals(expectedBody,resultBody);
+        if (indexName == null) {
+            var gatewayBody = testCase.getRequestGateway().getBulkBody();
+            var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX);
+            assertEquals(expectedBody,resultBody);
 
-            //} else {
-            var expectedBody = testCase.getRequestOpensearch().getBody();
+        } else {
             var gatewayBody = testCase.getRequestGateway().getBody();
             var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX, indexName);
             assertEquals(expectedBody,resultBody);
