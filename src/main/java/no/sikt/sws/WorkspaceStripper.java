@@ -51,9 +51,9 @@ public class WorkspaceStripper {
             // må lage nye returverdier...
             // logger.info(item.toPrettyString());
             item.elements().forEachRemaining(node -> {
-                if (node.has("_index")) {
-                    //node.get("_index") = node.
-                }
+                //if (node.has("_index")) {
+                //node.get("_index") = node.
+                //}
                 logger.info(node.toString());
                 logger.info(node.asToken().asString());
             });
