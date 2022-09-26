@@ -53,7 +53,6 @@ public class WorkspaceStripperTest {
     }
 
     @TestFactory
-    @Disabled
     @DisplayName("Opensearch response-body stripping")
     Stream<DynamicTest> testStripperFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;  // -> testcase name
@@ -90,15 +89,16 @@ public class WorkspaceStripperTest {
      * and assert-function on the last line as needed
      */
     @Test
-    @Disabled
     void runSingleTestcase() {
-        var filename = "requests-bulk.json";
-        var testName = "Bulk POST create index with evil stupid names";
+        var filename = "requests-indexes.json";
+        var testName = "Put index, without template but with stupid name";
 
         var testCase = new TestCaseLoader(filename)
                 .getTestCase(testName);
 
-        assertBulkBodyPrefixing(testCase);
+        //assertBulkBodyPrefixing(testCase);
+        assertUrlPrefixing(testCase);
+        assertResponseStripping(testCase);
 
     }
 

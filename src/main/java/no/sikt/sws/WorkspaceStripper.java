@@ -16,13 +16,16 @@ public class WorkspaceStripper {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceStripper.class);
 
-    // Remove {workspace}- from responseBody
+    // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
     public static String remove(String body, String workspace) {
         if (body == null) {
             return null;
         }
-        logger.info("removing " + workspace);
-        return body.replaceAll(workspace + "-","");
+
+        //Regex that matches '{workspace}-' preceded by ' ', '/' or '"'
+        var regex = "(?<=[ /\"])" + workspace + "-";
+
+        return body.replaceAll(regex, "");
     }
 
     public static String prefixUrl(String index, String workspace) {
