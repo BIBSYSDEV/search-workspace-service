@@ -49,10 +49,10 @@ public class WorkspaceStripper {
     public static String prefixBody(List<JsonNode> gatewayBody, String workspaceprefix) {
         return gatewayBody.stream().map(item -> {
             // må lage nye returverdier...
-//            logger.info(item.toPrettyString());
+            // logger.info(item.toPrettyString());
             item.elements().forEachRemaining(node -> {
                 if (node.has("_index")) {
-//                    node.get("_index") = node.
+                    //node.get("_index") = node.
                 }
                 logger.info(node.toString());
                 logger.info(node.asToken().asString());
