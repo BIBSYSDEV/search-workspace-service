@@ -15,7 +15,6 @@ import static nva.commons.core.attempt.Try.attempt;
 public class WorkspaceStripper {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceStripper.class);
-    private static final String QUOTE = "\"";
 
     // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
     public static String remove(String body, String workspace) {
@@ -31,14 +30,16 @@ public class WorkspaceStripper {
 
     public static String prefixUrl(String index, String workspace) {
         if (index == null) {
-            return null;
+            index = "*";
+        } else if (index.startsWith("_")) {
+            return index;
         }
         logger.info("prefixing " + workspace);
         return workspace + "-" + index;
     }
 
     // replace {index} with {workspace}-{index} from responseBody
-    public static String prefixBody(String body, String workspace, String index) {
+    public static String prefixIndexesBody(String body, String workspace, String index) {
         if (body == null || index == null || workspace == null) {
             return null;
         }
@@ -50,7 +51,7 @@ public class WorkspaceStripper {
     }
 
 
-    public static String prefixBody(List<JsonNode> gatewayBody, String workspacePrefix) {
+    public static String prefixIndexesBody(List<JsonNode> gatewayBody, String workspacePrefix) {
         if (gatewayBody == null || workspacePrefix == null) {
             return null;
         }
@@ -67,9 +68,10 @@ public class WorkspaceStripper {
             } else {
                 return item.toString();
             }
-            var workspace = String.format("%s%s-%s%s", QUOTE, workspacePrefix, indexName, QUOTE);
-            indexName = String.format("%s%s%s", QUOTE, indexName, QUOTE);
-            return item.toString().replaceAll(indexName,workspace);
+            var workspaceIndexName = String.format("\"%s-%s\"", workspacePrefix, indexName);
+            indexName = String.format("\"%s\"",  indexName);
+
+            return item.toString().replaceAll(indexName,workspaceIndexName);
         }).collect(Collectors.joining("\n"));
     }
 

@@ -63,7 +63,6 @@ public class WorkspaceStripperTest {
     }
 
     @TestFactory
-    @Disabled
     @DisplayName("Opensearch url prefixing")
     Stream<DynamicTest> testPrefixUrlAddingFactory() {
         Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
@@ -90,12 +89,12 @@ public class WorkspaceStripperTest {
     @Test
     void runSingleTestcase() {
         var filename = "requests-indexes.json";
-        var testName = "Put index, without template but with stupid name";
+        var testName = "PUT index, without template but with stupid name";
 
         var testCase = new TestCaseLoader(filename)
                 .getTestCase(testName);
 
-        //assertBulkBodyPrefixing(testCase);
+        // assertBulkBodyPrefixing(testCase);
         assertUrlPrefixing(testCase);
         assertResponseStripping(testCase);
 
@@ -104,12 +103,12 @@ public class WorkspaceStripperTest {
     void assertResponseStripping(TestCaseSws testCase) {
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
-
         var resultResponse = WorkspaceStripper.remove(openSearchResponse, WORKSPACEPREFIX);
 
         assertEquals(expectedResponse,resultResponse);
 
         logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
+        logger.info(resultResponse);
     }
 
     void assertUrlPrefixing(TestCaseSws testCase) {
@@ -117,9 +116,10 @@ public class WorkspaceStripperTest {
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
         var resultUrl = WorkspaceStripper.prefixUrl(gatewayUrl, WORKSPACEPREFIX);
 
+        logger.info(gatewayUrl + "->" + expectedUrl);
+
         assertEquals(expectedUrl,resultUrl);
 
-        logger.info(gatewayUrl + "->" + expectedUrl);
     }
 
     void assertBodyPrefixing(TestCaseSws testCase) {
@@ -127,25 +127,17 @@ public class WorkspaceStripperTest {
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
         if (indexName == null) {
+            logger.info("no index name");
             var gatewayBody = testCase.getRequestGateway().getBulkBody();
-            var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX);
+            var resultBody = WorkspaceStripper.prefixIndexesBody(gatewayBody, WORKSPACEPREFIX);
             assertEquals(expectedBody,resultBody);
 
         } else {
+            logger.info(indexName);
             var gatewayBody = testCase.getRequestGateway().getBody();
-            var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX, indexName);
+            var resultBody = WorkspaceStripper.prefixIndexesBody(gatewayBody, WORKSPACEPREFIX, indexName);
             assertEquals(expectedBody,resultBody);
         }
-
-        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
-    }
-
-    void assertBulkBodyPrefixing(TestCaseSws testCase) {
-        var gatewayBody = testCase.getRequestGateway().getBulkBody();
-        var expectedBody = testCase.getRequestOpensearch().getBody();
-        var resultBody = WorkspaceStripper.prefixBody(gatewayBody, WORKSPACEPREFIX);
-
-        assertEquals(expectedBody,resultBody);
 
         logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
     }

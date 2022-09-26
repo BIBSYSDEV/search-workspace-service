@@ -1,268 +1,290 @@
 [
-    {
-      "name": "Doc GET without id, failed",
-      "indexName": "index1",
-      "requestGateway": {
-        "method": "GET",
-        "url": "index1/_doc",
-        "body":null
-      },
-      "requestOpensearch": {
-        "method": "GET",
-        "url": "workspace-mockname-index1/_doc",
-        "body":null
-      },
-      "response":{
-        "error": "Incorrect HTTP method for uri [/workspace-mockname-index1/_doc] and method [GET], allowed: [POST]",
-        "status": 405
-      },
-      "responseStripped":{
-        "error": "Incorrect HTTP method for uri [/index1/_doc] and method [GET], allowed: [POST]",
-        "status": 405
+  {
+    "name": "Doc GET without id, failed",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "GET",
+      "url": "index1/_doc",
+      "body":null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-index1/_doc",
+      "body":null
+    },
+    "response":{
+      "error": "Incorrect HTTP method for uri [/workspace-mockname-index1/_doc] and method [GET], allowed: [POST]",
+      "status": 405
+    },
+    "responseStripped":{
+      "error": "Incorrect HTTP method for uri [/index1/_doc] and method [GET], allowed: [POST]",
+      "status": 405
+    }
+  },
+  {
+    "name": "Doc GET with id",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "GET",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "response": {
+      "_index": "workspace-mockname-index1",
+      "_id": "wA2eMYMB7qJ3vkuEet4E",
+      "_version": 2,
+      "_seq_no": 5,
+      "_primary_term": 1,
+      "found": true,
+      "_source": {
+        "navn": "Test-2",
+        "age": 333
       }
     },
-    {
-      "name": "Doc DELETE with id",
-      "indexName": "index1",
-      "requestGateway": {
-        "method": "DELETE",
-        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body": null
-      },
-      "requestOpensearch": {
-        "method": "DELETE",
-        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body": null
-      },
-      "response": {
-        "_index": "workspace-mockname-index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "_version": 8,
-        "result": "deleted",
-        "_shards": {
-          "total": 2,
-          "successful": 1,
-          "failed": 0
-        },
-        "_seq_no": 10,
-        "_primary_term": 2
-      },
-      "responseStripped": {
-        "_index": "index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "_version": 8,
-        "result": "deleted",
-        "_shards": {
-          "total": 2,
-          "successful": 1,
-          "failed": 0
-        },
-        "_seq_no": 10,
-        "_primary_term": 2
-      }
-    },
-    {
-      "name": "Doc DELETE with invalid id",
-      "indexName": "index1",
-      "requestGateway": {
-        "method": "DELETE",
-        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":null
-      },
-      "requestOpensearch": {
-        "method": "DELETE",
-        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":null
-      },
-      "response": {
-        "_index": "workspace-mockname-index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "_version": 9,
-        "result": "not_found",
-        "_shards": {
-          "total": 2,
-          "successful": 1,
-          "failed": 0
-        },
-        "_seq_no": 11,
-        "_primary_term": 2
-      },
-      "responseStripped": {
-        "_index": "index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "_version": 9,
-        "result": "not_found",
-        "_shards": {
-          "total": 2,
-          "successful": 1,
-          "failed": 0
-        },
-        "_seq_no": 11,
-        "_primary_term": 2
-      }
-    },
-    {
-      "name": "Doc GET with id",
-      "indexName": "index1",
-      "requestGateway": {
-        "method": "GET",
-        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":null
-      },
-      "requestOpensearch": {
-        "method": "GET",
-        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":null
-      },
-      "response": {
-        "_index": "workspace-mockname-index1",
-        "_id": "wA2eMYMB7qJ3vkuEet4E",
-        "_version": 2,
-        "_seq_no": 5,
-        "_primary_term": 1,
-        "found": true,
-        "_source": {
-          "navn": "Test-2",
-          "age": 333
-        }
-      },
-      "responseStripped": {
-        "_index": "index1",
-        "_id": "wA2eMYMB7qJ3vkuEet4E",
-        "_version": 2,
-        "_seq_no": 5,
-        "_primary_term": 1,
-        "found": true,
-        "_source": {
-          "navn": "Test-2",
-          "age": 333
-        }
-      }
-    },
-    {
-      "name": "Doc PUT with id",
-      "indexName": "index1",
-      "requestGateway": {
-        "method": "PUT",
-        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":null
-      },
-      "requestOpensearch": {
-        "method": "PUT",
-        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":null
-      },
-      "response": {
-        "_index": "workspace-mockname-index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "found": false
-      },
-      "responseStripped": {
-        "_index": "index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "found": false
-      }
-    },
-    {
-      "name": "Doc PATCH with id, failed",
-      "indexName": "index1",
-      "requestGateway": {
-        "method": "PATCH",
-        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":"{ \"age\":224}"
-      },
-      "requestOpensearch": {
-        "method": "PATCH",
-        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":"{ \"age\":224}"
-      },
-      "response":{
-        "error": "Incorrect HTTP method for uri [/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j] and method [PATCH], allowed: [PUT, GET, POST, HEAD, DELETE]",
-        "status": 405
-      },
-      "responseStripped":{
-        "error": "Incorrect HTTP method for uri [/index1/_doc/vw2ZMYMB7qJ3vkuEHt6j] and method [PATCH], allowed: [PUT, GET, POST, HEAD, DELETE]",
-        "status": 405
-      }
-    },
-    {
-      "name": "Doc POST with id",
-      "indexName": "index1",
-      "requestGateway": {
-        "method": "POST",
-        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body": "{ \"navn\": \"Test-2\",\"age\": 223,\"test\": \"nytt navn 2\" }"
-      },
-      "requestOpensearch": {
-        "method": "POST",
-        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body": "{ \"navn\": \"Test-2\",\"age\": 223,\"test\": \"nytt navn 2\" }"
-      },
-      "response":{
-        "_index": "workspace-mockname-index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "_version": 7,
-        "result": "updated",
-        "_shards": {
-          "total": 2,
-          "successful": 1,
-          "failed": 0
-        },
-        "_seq_no": 9,
-        "_primary_term": 2
-      },
-      "responseStripped":{
-        "_index": "index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "_version": 7,
-        "result": "updated",
-        "_shards": {
-          "total": 2,
-          "successful": 1,
-          "failed": 0
-        },
-        "_seq_no": 9,
-        "_primary_term": 2
-      }
-    },
-    {
-      "name": "Doc PUT with id",
-      "indexName": "index1",
-      "requestGateway": {
-        "method": "PUT",
-        "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":"{ \"navn\": \"Test-2\", \"age\":222, \"test\":\"nytt navn\"}"
-      },
-      "requestOpensearch": {
-        "method": "PUT",
-        "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
-        "body":"{ \"navn\": \"Test-2\", \"age\":222, \"test\":\"nytt navn\"}"
-      },
-      "response":  {
-        "_index": "workspace-mockname-index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "_version": 6,
-        "result": "updated",
-        "_shards": {
-          "total": 2,
-          "successful": 1,
-          "failed": 0
-        },
-        "_seq_no": 8,
-        "_primary_term": 2
-      },
-      "responseStripped":  {
-        "_index": "index1",
-        "_id": "vw2ZMYMB7qJ3vkuEHt6j",
-        "_version": 6,
-        "result": "updated",
-        "_shards": {
-          "total": 2,
-          "successful": 1,
-          "failed": 0
-        },
-        "_seq_no": 8,
-        "_primary_term": 2
+    "responseStripped": {
+      "_index": "index1",
+      "_id": "wA2eMYMB7qJ3vkuEet4E",
+      "_version": 2,
+      "_seq_no": 5,
+      "_primary_term": 1,
+      "found": true,
+      "_source": {
+        "navn": "Test-2",
+        "age": 333
       }
     }
+  },
+  {
+    "name": "Doc PATCH with id, failed",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "PATCH",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":"{ \"age\":224}"
+    },
+    "requestOpensearch": {
+      "method": "PATCH",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":"{ \"age\":224}"
+    },
+    "response":{
+      "error": "Incorrect HTTP method for uri [/workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j] and method [PATCH], allowed: [PUT, GET, POST, HEAD, DELETE]",
+      "status": 405
+    },
+    "responseStripped":{
+      "error": "Incorrect HTTP method for uri [/index1/_doc/vw2ZMYMB7qJ3vkuEHt6j] and method [PATCH], allowed: [PUT, GET, POST, HEAD, DELETE]",
+      "status": 405
+    }
+  },
+  {
+    "name": "Doc POST with id",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "POST",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body": "{ \"navn\": \"Test-2\",\"age\": 223,\"test\": \"nytt navn 2\" }"
+    },
+    "requestOpensearch": {
+      "method": "POST",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body": "{ \"navn\": \"Test-2\",\"age\": 223,\"test\": \"nytt navn 2\" }"
+    },
+    "response":{
+      "_index": "workspace-mockname-index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 7,
+      "result": "updated",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 9,
+      "_primary_term": 2
+    },
+    "responseStripped":{
+      "_index": "index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 7,
+      "result": "updated",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 9,
+      "_primary_term": 2
+    }
+  },
+  {
+    "name": "Doc PUT with id",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "PUT",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "response": {
+      "_index": "workspace-mockname-index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "found": false
+    },
+    "responseStripped": {
+      "_index": "index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "found": false
+    }
+  },
+  {
+    "name": "Doc PUT with id",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "PUT",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":"{ \"navn\": \"Test-2\", \"age\":222, \"test\":\"nytt navn\"}"
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":"{ \"navn\": \"Test-2\", \"age\":222, \"test\":\"nytt navn\"}"
+    },
+    "response":  {
+      "_index": "workspace-mockname-index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 6,
+      "result": "updated",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 8,
+      "_primary_term": 2
+    },
+    "responseStripped":  {
+      "_index": "index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 6,
+      "result": "updated",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 8,
+      "_primary_term": 2
+    }
+  },
+  {
+    "name": "Doc PUT into index, fail",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "PUT",
+      "url": "index1/_doc",
+      "body":null
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-index1/_doc",
+      "body":null
+    },
+    "response":{
+      "error": "Incorrect HTTP method for uri [/workspace-mockname-index1/_doc] and method [GET], allowed: [POST]",
+      "status": 405
+    },
+    "responseStripped":{
+      "error": "Incorrect HTTP method for uri [/index1/_doc] and method [GET], allowed: [POST]",
+      "status": 405
+    }
+  },
+  {
+    "name": "Doc DELETE with invalid id",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "DELETE",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "requestOpensearch": {
+      "method": "DELETE",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "response": {
+      "_index": "workspace-mockname-index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 9,
+      "result": "not_found",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 11,
+      "_primary_term": 2
+    },
+    "responseStripped": {
+      "_index": "index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 9,
+      "result": "not_found",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 11,
+      "_primary_term": 2
+    }
+  },
+  {
+    "name": "Doc DELETE with id",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "DELETE",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "DELETE",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body": null
+    },
+    "response": {
+      "_index": "workspace-mockname-index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 8,
+      "result": "deleted",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 10,
+      "_primary_term": 2
+    },
+    "responseStripped": {
+      "_index": "index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 8,
+      "result": "deleted",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 10,
+      "_primary_term": 2
+    }
+  }
 ]
