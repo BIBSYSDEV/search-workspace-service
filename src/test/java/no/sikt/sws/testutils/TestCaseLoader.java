@@ -1,34 +1,45 @@
 package no.sikt.sws.testutils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.unit.nva.commons.json.JsonUtils;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TestCaseLoader {
-    private final Iterator<JsonNode> elements;
+    private final List<JsonNode> elements;
 
     public TestCaseLoader(String  resourceFileName) {
         URL resource = getClass().getClassLoader().getResource(resourceFileName);
         try {
-            this.elements = JsonUtils.dtoObjectMapper.readTree(resource).elements();
+            this.elements = JsonUtils.dtoObjectMapper.readValue(resource, new TypeReference<>() {});
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public Iterator<JsonNode> getElements() {
+    public List<JsonNode> getElements() {
         return elements;
     }
 
-    public ArrayList<TestCaseSws> getTestCases() {
-        var retvalues = new ArrayList<TestCaseSws>();
-        getElements().forEachRemaining(action -> retvalues.add(new TestCaseSws(action)));
-        return retvalues;
+    public List<TestCaseSws> getTestCases() {
+        return getElements()
+                .stream()
+                .map(json -> TestCaseSws.fromJson(json))
+                .collect(Collectors.toList());
+    }
+
+    public TestCaseSws getTestCase(String name) {
+        return getElements()
+                .stream()
+                .map(json -> TestCaseSws.fromJson(json))
+                .filter(e -> e.getName().equals(name))
+                .findFirst()
+                .orElseThrow();
     }
 
 }

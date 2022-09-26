@@ -2,24 +2,27 @@ package no.sikt.sws.testutils;
 
 
 import com.amazonaws.http.HttpMethodName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import no.unit.nva.commons.json.JsonUtils;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class TestRequestSws implements Serializable {
 
-    private final String method;
+    @JsonProperty("method")
+    private String method;
 
-    private final String url;
+    @JsonProperty("url")
+    private String url;
 
-    private final JsonNode body;
-
-    public TestRequestSws(JsonNode request) {
-        this.method = request.get("method").textValue();
-        this.url = request.get("url").textValue();
-        this.body = request.get("body");
-    }
+    @JsonProperty("body")
+    private String body;
 
     public HttpMethodName getMethod() {
         return HttpMethodName.valueOf(method);
@@ -30,11 +33,18 @@ public class TestRequestSws implements Serializable {
     }
 
     public String getBody() {
-        return body.textValue();
+        return body; //.textValue();
     }
 
-    public JsonNode getBodyNode() {
-        return body;
+    public List<JsonNode> getBulkBody() {
+        return Arrays.stream(body.split("\n"))
+            .map(s -> {
+                try {
+                    return JsonUtils.dtoObjectMapper.readValue(s, JsonNode.class);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList());
     }
 
     @Override

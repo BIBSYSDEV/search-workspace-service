@@ -32,7 +32,8 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
 
         try {
-            var url = workspace + "-" + resourceIdentifier;
+            var url = WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);
+
             logger.info("URL: " + url);
 
             var response = openSearchClient.sendRequest(httpMethod, url, body);

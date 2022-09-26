@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Mapping",
+    "requestGateway": {
+      "method": "GET",
+      "url": null,
+      "body": ""
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": null,
+      "body": ""
+    },
+    "response": {},
+    "responseStripped": {}
+  }
+]
