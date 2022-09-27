@@ -86,6 +86,7 @@ Resources:
             Principal:
               Service: [ opensearch.amazonaws.com ]
             Action: [ 'sts:AssumeRole' ]
+      Description: a role to provide access to S# for opensearch
       Policies:
         - PolicyName: accessS3
           PolicyDocument:
@@ -97,7 +98,7 @@ Resources:
                   - s3:GetObject
                   - s3:DeleteObject
                 Resource: !Sub 'arn:aws:s3:::sws-indices-snapshot-${AWS::AccountId}-*'
-                Principal: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
+
 
   SWSLambdaTriggerRole:
     Type: AWS::IAM::Role
@@ -401,8 +402,6 @@ Resources:
               - es:ESHttpPut
               - es:ESHttpHead
             Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
-        Policies:
-          -
       ClusterConfig: !If [ LargeElasticSearch,
         {
           DedicatedMasterEnabled: true,
@@ -426,4 +425,4 @@ Resources:
         VolumeType: gp2
       CognitoOptions:
         Enabled: false
-      Role: !GetAtt  SnapshotRole.Arn
+      Role: !Ref  SnapshotRole.Arn
