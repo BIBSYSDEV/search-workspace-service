@@ -45,7 +45,7 @@ Resources:
   ApiAccessLogGroup:
     Type: AWS::Logs::LogGroup
 
-  ReadOnlyAccessElasticSearchRole:
+  CrudElasticSearchRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -98,12 +98,13 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
-        - PolicyName: writeReadOpenSearch
+        - PolicyName: crudOpenSearch
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action:
+                  - es:ESHttpDelete
                   - es:ESHttpPost
                   - es:ESHttpPut
                   - es:ESHttpGet
@@ -369,11 +370,12 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              AWS: !GetAtt ReadOnlyAccessElasticSearchRole.Arn
+              AWS: !GetAtt CrudElasticSearchRole.Arn
             Action:
               - es:ESHttpPost
               - es:ESHttpGet
               - es:ESHttpPut
+              - es:ESHttpDelete
               - es:ESHttpHead
             Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
       ClusterConfig: !If [ LargeElasticSearch,
