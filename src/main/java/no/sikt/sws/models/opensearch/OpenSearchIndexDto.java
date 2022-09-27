@@ -3,14 +3,23 @@ package no.sikt.sws.models.opensearch;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class OpenSearchIndexListDto {
+public class OpenSearchIndexDto {
 
     @JsonProperty("aliases")
-    private JsonNode aliases;
+    public JsonNode aliases;
 
     @JsonProperty("mappings")
-    private JsonNode mappings;
+    public JsonNode mappings;
 
     @JsonProperty("settings")
-    private JsonNode settings;
+    public JsonNode settings;
+
+    @Override
+    public String toString() {
+        return "OpenSearchIndexDto{"
+               + "aliases=" + aliases.toString()
+               + ", mappings=" + mappings.toString()
+               + ", settings=" + settings.toString()
+               + '}';
+    }
 }
