@@ -425,4 +425,4 @@ Resources:
         VolumeType: gp2
       CognitoOptions:
         Enabled: false
-      Role: !Ref  SnapshotRole.Arn
+      Role: !Ref  SnapshotRole
