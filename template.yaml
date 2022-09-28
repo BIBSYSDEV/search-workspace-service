@@ -75,31 +75,6 @@ Resources:
                   - secretsmanager:GetSecretValue
                 Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:IdentityServiceSecret*'
 
-
-  SnapshotRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: [ opensearch.amazonaws.com ]
-            Action: [ 'sts:AssumeRole' ]
-      Description: a role to provide access to S# for opensearch
-      Policies:
-        - PolicyName: accessS3
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - s3:PutObject
-                  - s3:GetObject
-                  - s3:DeleteObject
-                Resource: !Sub 'arn:aws:s3:::sws-indices-snapshot-${AWS::AccountId}-*'
-
-
   SWSLambdaTriggerRole:
     Type: AWS::IAM::Role
     Properties:
@@ -401,6 +376,9 @@ Resources:
               - es:ESHttpGet
               - es:ESHttpPut
               - es:ESHttpHead
+              - s3:PutObject
+              - s3:GetObject
+              - s3:DeleteObject
             Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
       ClusterConfig: !If [ LargeElasticSearch,
         {
@@ -425,4 +403,3 @@ Resources:
         VolumeType: gp2
       CognitoOptions:
         Enabled: false
-      Role: !Ref  SnapshotRole
