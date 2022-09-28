@@ -45,7 +45,7 @@ Resources:
   ApiAccessLogGroup:
     Type: AWS::Logs::LogGroup
 
-  CrudElasticSearchRole:
+  ElasticSearchRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -98,7 +98,7 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
-        - PolicyName: crudOpenSearch
+        - PolicyName: allOpenSearch
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -370,7 +370,7 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              AWS: !GetAtt CrudElasticSearchRole.Arn
+              AWS: !GetAtt ElasticSearchRole.Arn
             Action:
               - es:ESHttpPost
               - es:ESHttpGet
