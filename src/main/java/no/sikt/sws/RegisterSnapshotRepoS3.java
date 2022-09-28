@@ -16,9 +16,7 @@ public class RegisterSnapshotRepoS3 {
 
     private static final Logger logger = LoggerFactory.getLogger(IndexHandler.class);
 
-    ProfileCredentialsProvider credentialsProvider =
-            ProfileCredentialsProvider.create();
-    Region region = Region.EU_WEST_1;
+
     private final String bucketName = BACKUP_BUCKET_NAME;
 
 
