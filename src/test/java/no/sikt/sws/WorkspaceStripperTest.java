@@ -105,7 +105,7 @@ public class WorkspaceStripperTest {
         var filename = "requests-alias.json";
 
         new TestCaseLoader(filename)
-            .getTestCases().forEach( this::assertBodyPrefixAlias);
+            .getTestCases().forEach(this::assertBodyPrefixAlias);
     }
 
 
