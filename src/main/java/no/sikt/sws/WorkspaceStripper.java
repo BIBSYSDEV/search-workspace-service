@@ -51,7 +51,7 @@ public class WorkspaceStripper {
     }
 
 
-    public static String prefixIndexesBody(List<JsonNode> gatewayBody, String workspacePrefix) {
+    public static String prefixIndexesBulkBody(List<JsonNode> gatewayBody, String workspacePrefix) {
         if (gatewayBody == null || workspacePrefix == null) {
             return null;
         }
@@ -75,5 +75,13 @@ public class WorkspaceStripper {
         }).collect(Collectors.joining("\n"));
     }
 
+    public static String prefixAliasBody(JsonNode aliasBody, String workspacePrefix) {
+        if (aliasBody == null || workspacePrefix == null) {
+            return null;
+        }
+        return aliasBody.asText()
+                .replaceAll("(\"index\".*:.*?\")(.+)","$1" + workspacePrefix + "$2")
+                .replaceAll("(\"alias\".*:.*?\")(.+)","$1" + workspacePrefix + "$2");
+    }
 
 }
