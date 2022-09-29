@@ -302,7 +302,7 @@ Resources:
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.RegisterSnapshotRepoHandler::handleRequest
       Runtime: java11
-      Role: !GetAtt SWSLambdaTriggerRole.Arn
+      Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
 
   UserPool:
