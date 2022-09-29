@@ -2,6 +2,7 @@ package no.sikt.sws;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import junit.framework.TestCase;
 import no.unit.nva.commons.json.JsonUtils;
@@ -132,6 +133,25 @@ public class IndexHandlerTest extends TestCase {
 
         var pathparams = Map.of(
                 RESOURCE_IDENTIFIER, "_" + TEST_INDEX_1
+        );
+
+        var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
+                .withHttpMethod(HttpMethod.PUT.toString())
+                .withPathParameters(pathparams)
+                .withAuthorizerClaim(SCOPE_CLAIM,TEST_SCOPE)
+                .build();
+
+        handler.handleRequest(request, output, CONTEXT);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
+
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_BAD_REQUEST)));
+    }
+
+    @Test
+    void shouldThrowBadRequestWhenUsingNonWhitelistedCharacters() throws IOException {
+
+        var pathparams = Map.of(
+                RESOURCE_IDENTIFIER, TEST_INDEX_1 + ":illegalchar"
         );
 
         var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)

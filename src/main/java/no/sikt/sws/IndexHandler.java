@@ -34,7 +34,10 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
         var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        if (resourceIdentifier.startsWith("_")) {
+        // Regex: may only contain big and small letters, digits, '/', '?', '&', '-' and '_'
+        var regex = "[A-Za-z\\d/?&_-]*";
+
+        if (resourceIdentifier.startsWith("_") || !resourceIdentifier.matches(regex)) {
             throw new BadRequestException(
                     "Root operations and indeces starting with '_' are not allowed. Got: " + resourceIdentifier);
         }
