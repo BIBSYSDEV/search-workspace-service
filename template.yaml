@@ -12,6 +12,7 @@ Globals:
         SCOPE_IDENTIFIER: 'https://api.sws.aws.sikt.no/scopes'
         API_GATEWAY_URL: !Sub 'https://api.${CustomDomain}'
         BACKUP_BUCKET_NAME: !Sub '${BackupBucketName}'
+        BACKUP_ROLE_ARN: !GetAtt SWSSnapshotRepoRole.Arn
 
   Api:
     Cors:
@@ -118,6 +119,72 @@ Resources:
                 Action:
                   - lambda:InvokeFunction
                 Resource: "*"
+
+
+  SWSSnapshotRepoRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: writeLog
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
+        - PolicyName: allOpenSearch
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - es:ESHttpDelete
+                  - es:ESHttpPost
+                  - es:ESHttpPut
+                  - es:ESHttpGet
+                  - es:ESHttpHead
+                Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
+        - PolicyName: invokeLambda
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: "*"
+        - PolicyName: snapshotS3Repo
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub  "arn:aws:s3:::${BackupBucketName}/*"
+        - PolicyName: lists3Bucket
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3: ListBucket"
+                Resource: !Sub  "arn:aws:s3:::${BackupBucketName}"
+
+
+
 
   SWSApi:
     Type: AWS::Serverless::Api
