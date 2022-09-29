@@ -220,6 +220,23 @@ Resources:
       Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn
 
+  RegisterSnapshotRepoHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Description: Handler for registering snapshots manually. Needs to be run from Lambda test in console.
+      Environment:
+        Variables:
+          ALLOWED_ORIGIN: '*'
+          OPENSEARCH_ENDPOINT_PROTOCOL: "https"
+          OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+      Handler: no.sikt.sws.RegisterSnapshotRepoHandler::handleRequest
+      Runtime: java11
+      Role: !GetAtt SWSLambdaTriggerRole.Arn
+
 
   UserPool:
     Type: AWS::Cognito::UserPool
