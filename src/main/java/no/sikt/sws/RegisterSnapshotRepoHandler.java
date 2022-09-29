@@ -31,7 +31,8 @@ public class RegisterSnapshotRepoHandler extends ApiGatewayHandler<Void, String>
 
         try {
             var requestStr = JsonUtils.dtoObjectMapper.writeValueAsString(request);
-            var response = openSearchClient.sendRequest(HttpMethodName.PUT, "", requestStr);
+            var snapshotRepoName = "initial-snapshot";
+            var response = openSearchClient.sendRequest(HttpMethodName.PUT, "/_snapshot/" + snapshotRepoName, requestStr);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
             return response.getBody();
