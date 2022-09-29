@@ -21,6 +21,7 @@ import java.util.Map;
 
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.IndexHandler.RESOURCE_IDENTIFIER;
 import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
@@ -46,7 +47,7 @@ public class IndexHandlerTest extends TestCase {
     OpenSearchClient openSearchClient;
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    public void beforeEach() {
         MockitoAnnotations.openMocks(this);
 
         this.output = new ByteArrayOutputStream();
@@ -105,5 +106,43 @@ public class IndexHandlerTest extends TestCase {
         var response = GatewayResponse.fromOutputStream(output, String.class);
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
+    }
+
+    @Test
+    void shouldThrowBadRequestWhenGivenRootOperation() throws IOException {
+
+        var pathparams = Map.of(
+                RESOURCE_IDENTIFIER, "_cat"
+        );
+
+        var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
+                .withHttpMethod(HttpMethod.PUT.toString())
+                .withPathParameters(pathparams)
+                .withAuthorizerClaim(SCOPE_CLAIM,TEST_SCOPE)
+                .build();
+
+        handler.handleRequest(request, output, CONTEXT);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
+
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_BAD_REQUEST)));
+    }
+
+    @Test
+    void shouldThrowBadRequestWhenGivenIndexBeginningWithUnderscore() throws IOException {
+
+        var pathparams = Map.of(
+                RESOURCE_IDENTIFIER, "_" + TEST_INDEX_1
+        );
+
+        var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
+                .withHttpMethod(HttpMethod.PUT.toString())
+                .withPathParameters(pathparams)
+                .withAuthorizerClaim(SCOPE_CLAIM,TEST_SCOPE)
+                .build();
+
+        handler.handleRequest(request, output, CONTEXT);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
+
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_BAD_REQUEST)));
     }
 }
