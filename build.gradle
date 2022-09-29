@@ -92,7 +92,7 @@ test {
     environment "ALLOWED_ORIGIN", "*"
     environment "COGNITO_HOST", "https://example.com"
     environment "ELASTICSEARCH_REGION", "eu-west-1"
-    environment "BACKUP_BUCKET_NAME", "sws-indices-snapshot-100820817332-sandbox"
+    environment "BACKUP_BUCKET_NAME", "s3-dummy-name"
     environment "OPENSEARCH_ENDPOINT_PROTOCOL", "http"
     environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost:3000"
     environment "SCOPE_IDENTIFIER", "https://api.sws.aws.sikt.no/scopes"
