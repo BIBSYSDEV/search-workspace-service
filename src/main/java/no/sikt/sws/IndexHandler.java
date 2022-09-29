@@ -2,6 +2,7 @@ package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.exception.SearchException;
+import no.sikt.sws.models.OpenSearchCommand;
 import nva.commons.apigateway.ApiGatewayProxyHandler;
 import nva.commons.apigateway.ProxyResponse;
 import nva.commons.apigateway.RequestInfo;
@@ -35,29 +36,22 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
     ) throws ApiGatewayException {
 
         var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
-
-        if (!"_alias".equals(resourceIdentifier)
-            &&  resourceIdentifier.startsWith("_")
-            || !resourceIdentifier.matches(ALLOWED_INPUT)) {
-            throw new BadRequestException(
-                    "Root operations and indeces starting with '_' or containing anything but letters, digits, '/',"
-                            + " '-' or '_'are not allowed. Got: " + resourceIdentifier);
-        }
-
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
 
+        var searchCommand = OpenSearchCommand.fromString(resourceIdentifier);
+        if (searchCommand.ordinal() > OpenSearchCommand.OTHER.ordinal()) {
+            validateResourceIdentifier(resourceIdentifier);
+        }
+
         try {
             var url = "/" + WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);
-            var requestbody = body;
 
-            if ("_alias".equals(resourceIdentifier)) {
-                requestbody = WorkspaceStripper.prefixAliasBody(body, workspace);
-            }
+            var requestBody = WorkspaceStripper.prefixBody(body, workspace, resourceIdentifier);
 
             logger.info("URL: " + url);
 
-            var response = openSearchClient.sendRequest(httpMethod, url, requestbody);
+            var response = openSearchClient.sendRequest(httpMethod, url, requestBody);
 
             logger.info("response-code:" + response.getStatus());
             logger.info("raw response-body:" + response.getBody());
@@ -71,4 +65,13 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             throw new SearchException(e.getMessage(), e);
         }
     }
+
+    private static void validateResourceIdentifier(String resourceIdentifier) throws BadRequestException {
+        if (resourceIdentifier.startsWith("_") || !resourceIdentifier.matches(ALLOWED_INPUT)) {
+            throw new BadRequestException(
+                    "Root operations and indeces starting with '_' or containing anything but letters, digits, '/',"
+                            + " '-' or '_'are not allowed. Got: " + resourceIdentifier);
+        }
+    }
+
 }

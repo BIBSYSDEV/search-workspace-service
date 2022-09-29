@@ -1,6 +1,10 @@
 package no.sikt.sws;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import no.sikt.sws.models.OpenSearchCommand;
+import no.unit.nva.commons.json.JsonUtils;
+import nva.commons.apigateway.exceptions.BadRequestException;
 import nva.commons.core.JacocoGenerated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +45,26 @@ public class WorkspaceStripper {
         return workspace + "-" + index;
     }
 
+    public static String prefixBody(String resourceIdentifier, String workspace, String body)
+            throws BadRequestException, IllegalStateException {
+        var getEnumt = OpenSearchCommand.fromString(resourceIdentifier);
+
+        switch (getEnumt) {
+            case ALIAS:
+                return WorkspaceStripper.prefixAliasBody(body,workspace);
+            case BULK:
+                return WorkspaceStripper.prefixIndexesBulkBody(getBulkBody(body),workspace);
+            case OTHER:
+                return body;
+            case NOT_IMPLEMENTED:
+                throw new BadRequestException("Not implemented " + resourceIdentifier);
+            case INVALID:
+                throw new BadRequestException("resourceIdentifier [" + resourceIdentifier + "] is invalid");
+            default:
+                throw new IllegalStateException("Unexpected value: " + resourceIdentifier);
+        }
+    }
+
     // replace {index} with {workspace}-{index} from responseBody
     public static String prefixIndexesBody(String body, String workspace, String index) {
         if (body == null || index == null || workspace == null) {
@@ -54,7 +78,7 @@ public class WorkspaceStripper {
     }
 
 
-    public static String prefixIndexesBulkBody(List<JsonNode> gatewayBody, String workspacePrefix) {
+    protected static String prefixIndexesBulkBody(List<JsonNode> gatewayBody, String workspacePrefix) {
         if (gatewayBody == null || workspacePrefix == null) {
             return null;
         }
@@ -78,13 +102,24 @@ public class WorkspaceStripper {
         }).collect(Collectors.joining("\n"));
     }
 
-    public static String prefixAliasBody(String aliasBody, String workspacePrefix) {
+    protected static String prefixAliasBody(String aliasBody, String workspacePrefix) {
         if (aliasBody == null || workspacePrefix == null) {
             return null;
         }
         return aliasBody
                 .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
                 .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
+    }
+
+    private static List<JsonNode> getBulkBody(String body) {
+        return Arrays.stream(body.split("\n"))
+                .map(s -> {
+                    try {
+                        return JsonUtils.dtoObjectMapper.readValue(s, JsonNode.class);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList());
     }
 
 }
