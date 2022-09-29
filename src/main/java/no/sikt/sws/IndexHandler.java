@@ -44,14 +44,15 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
         try {
             var url = WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);
+            var requestbody = body;
 
             if (resourceIdentifier.equals("_alias")) {
-                body = WorkspaceStripper.prefixAliasBody(body, workspace);
+                requestbody = WorkspaceStripper.prefixAliasBody(body, workspace);
             }
 
             logger.info("URL: " + url);
 
-            var response = openSearchClient.sendRequest(httpMethod, url, body);
+            var response = openSearchClient.sendRequest(httpMethod, url, requestbody);
 
             logger.info("response-code:" + response.getStatus());
             logger.info("raw response-body:" + response.getBody());
