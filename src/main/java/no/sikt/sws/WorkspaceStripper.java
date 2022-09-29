@@ -78,13 +78,13 @@ public class WorkspaceStripper {
         }).collect(Collectors.joining("\n"));
     }
 
-    public static String prefixAliasBody(JsonNode aliasBody, String workspacePrefix) {
+    public static String prefixAliasBody(String aliasBody, String workspacePrefix) {
         if (aliasBody == null || workspacePrefix == null) {
             return null;
         }
-        return aliasBody.asText()
-                .replaceAll("(\"index\".*:.*?\")(.+\")","$1" + workspacePrefix + "-$2")
-                .replaceAll("(\"alias\".*:.*?\")(.+\")","$1" + workspacePrefix + "-$2");
+        return aliasBody
+                .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
+                .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
     }
 
 }

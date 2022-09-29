@@ -34,7 +34,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
         var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        if (resourceIdentifier.startsWith("_")) {
+        if (!resourceIdentifier.equals("_alias") && resourceIdentifier.startsWith("_")) {
             throw new BadRequestException(
                     "Root operations and indeces starting with '_' are not allowed. Got: " + resourceIdentifier);
         }
@@ -44,6 +44,10 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
         try {
             var url = WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);
+
+            if (resourceIdentifier.equals("_alias")) {
+                body = WorkspaceStripper.prefixAliasBody(body, workspace);
+            }
 
             logger.info("URL: " + url);
 

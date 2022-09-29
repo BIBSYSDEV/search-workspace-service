@@ -100,6 +100,16 @@ public class WorkspaceStripperTest {
 
     }
 
+    @Test
+    void assertAliasPrefixing() {
+        var filename = "requests-alias.json";
+
+        new TestCaseLoader(filename)
+            .getTestCases().forEach( this::assertBodyPrefixAlias);
+    }
+
+
+
     void assertResponseStripping(TestCaseSws testCase) {
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
@@ -119,6 +129,16 @@ public class WorkspaceStripperTest {
         logger.info(gatewayUrl + "->" + expectedUrl);
 
         assertEquals(expectedUrl,resultUrl);
+
+    }
+
+    void assertBodyPrefixAlias(TestCaseSws testCase) {
+        var expectedBody = testCase.getRequestOpensearch().getBody();
+        var gatewayBody = testCase.getRequestGateway().getBody();
+        var resultBody = WorkspaceStripper.prefixAliasBody(gatewayBody, WORKSPACEPREFIX);
+
+        assertEquals(expectedBody,resultBody);
+        logger.info(resultBody);
 
     }
 
