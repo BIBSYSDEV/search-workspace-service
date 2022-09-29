@@ -36,7 +36,9 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
         var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        if (resourceIdentifier.startsWith("_") || !resourceIdentifier.matches(ALLOWED_INPUT)) {
+        if (!resourceIdentifier.equals("_alias") &&
+                resourceIdentifier.startsWith("_") ||
+                !resourceIdentifier.matches(ALLOWED_INPUT)) {
             throw new BadRequestException(
                     "Root operations and indeces starting with '_' or containing anything but letters, digits, '/',"
                             + " '-' or '_'are not allowed. Got: " + resourceIdentifier);
