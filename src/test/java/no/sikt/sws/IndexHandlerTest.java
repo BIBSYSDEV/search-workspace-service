@@ -2,13 +2,11 @@ package no.sikt.sws;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import junit.framework.TestCase;
+import no.sikt.sws.testutils.TestUtils;
 import no.unit.nva.commons.json.JsonUtils;
 import no.sikt.sws.testutils.JsonStringMatcher;
 import no.unit.nva.stubs.FakeContext;
-import no.unit.nva.testutils.HandlerRequestBuilder;
 import nva.commons.apigateway.GatewayResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,17 +16,15 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Map;
 
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static no.sikt.sws.IndexHandler.RESOURCE_IDENTIFIER;
 import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
-import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE;
 import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
-import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
+import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
+import static no.sikt.sws.testutils.TestUtils.buildRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -63,15 +59,9 @@ public class IndexHandlerTest extends TestCase {
                 .thenReturn(mockResponse);
 
 
-        var pathparams = Map.of(
-                RESOURCE_IDENTIFIER, TEST_INDEX_1 + "/_mapping"
-        );
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_mapping");
 
-        var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
-                .withHttpMethod(HttpMethod.PUT.toString())
-                .withPathParameters(pathparams)
-                .withAuthorizerClaim(SCOPE_CLAIM,TEST_SCOPE)
-                .build();
+        var request = buildRequest(HttpMethod.PUT, pathParams);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -91,17 +81,9 @@ public class IndexHandlerTest extends TestCase {
                 argThat(new JsonStringMatcher(body.toString())))
         ).thenReturn(mockResponse);
 
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_mapping");
 
-        var pathparams = Map.of(
-                RESOURCE_IDENTIFIER, TEST_INDEX_1 + "/_mapping"
-        );
-
-        var request = new HandlerRequestBuilder<JsonNode>(JsonUtils.dtoObjectMapper)
-                .withHttpMethod(HttpMethod.POST.toString())
-                .withPathParameters(pathparams)
-                .withAuthorizerClaim(SCOPE_CLAIM,TEST_SCOPE)
-                .withBody(body)
-                .build();
+        var request = TestUtils.buildRequestWithBody(HttpMethod.POST, pathParams, body);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -110,36 +92,10 @@ public class IndexHandlerTest extends TestCase {
     }
 
     @Test
-    void shouldThrowBadRequestWhenGivenRootOperation() throws IOException {
-
-        var pathparams = Map.of(
-                RESOURCE_IDENTIFIER, "_cat"
-        );
-
-        var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
-                .withHttpMethod(HttpMethod.PUT.toString())
-                .withPathParameters(pathparams)
-                .withAuthorizerClaim(SCOPE_CLAIM,TEST_SCOPE)
-                .build();
-
-        handler.handleRequest(request, output, CONTEXT);
-        var response = GatewayResponse.fromOutputStream(output, String.class);
-
-        assertThat(response.getStatusCode(), is(equalTo(HTTP_BAD_REQUEST)));
-    }
-
-    @Test
     void shouldThrowBadRequestWhenGivenIndexBeginningWithUnderscore() throws IOException {
 
-        var pathparams = Map.of(
-                RESOURCE_IDENTIFIER, "_" + TEST_INDEX_1
-        );
-
-        var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
-                .withHttpMethod(HttpMethod.PUT.toString())
-                .withPathParameters(pathparams)
-                .withAuthorizerClaim(SCOPE_CLAIM,TEST_SCOPE)
-                .build();
+        var pathParams = buildPathParamsForIndex("_BULK");
+        var request = buildRequest(HttpMethod.PUT, pathParams);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -150,15 +106,8 @@ public class IndexHandlerTest extends TestCase {
     @Test
     void shouldThrowBadRequestWhenUsingNonWhitelistedCharacters() throws IOException {
 
-        var pathparams = Map.of(
-                RESOURCE_IDENTIFIER, TEST_INDEX_1 + ":illegalchar"
-        );
-
-        var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
-                .withHttpMethod(HttpMethod.PUT.toString())
-                .withPathParameters(pathparams)
-                .withAuthorizerClaim(SCOPE_CLAIM,TEST_SCOPE)
-                .build();
+        var pathParams = buildPathParamsForIndex("some:index");
+        var request = buildRequest(HttpMethod.PUT, pathParams);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
