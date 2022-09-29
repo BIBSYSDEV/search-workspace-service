@@ -4,7 +4,9 @@ import com.amazonaws.http.HttpMethodName;
 
 
 import no.sikt.sws.exception.SearchException;
-import org.json.JSONObject;
+import no.sikt.sws.models.opensearch.SnapshotRequestDto;
+import no.sikt.sws.models.opensearch.SnapshotSettingsRequestDto;
+import no.unit.nva.commons.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,25 +15,17 @@ import static no.sikt.sws.constants.ApplicationConstants.BACKUP_BUCKET_NAME;
 public class RegisterSnapshotRepoS3 {
 
     private static final Logger logger = LoggerFactory.getLogger(IndexHandler.class);
-
-
-    private final String bucketName = BACKUP_BUCKET_NAME;
-
-
-    public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
+    public OpenSearchClient openSearchClient = new OpenSearchClient();
 
     public OpenSearchResponse registerRepository() throws SearchException {
-        JSONObject jsonSettings = new JSONObject();
-        JSONObject jsonRepo = new JSONObject();
-        jsonRepo.put("type", "s3");
-        jsonSettings.put("bucket", bucketName);
-        jsonSettings.put("base_path","/snapshots");
-        jsonRepo.put("settings", jsonSettings);
-        String jsonRequest = jsonRepo.toString();
+        var settings = new SnapshotSettingsRequestDto(BACKUP_BUCKET_NAME, null, null, "/snapshots");
+        var request = new SnapshotRequestDto("s3", settings);
 
         try {
-            var response = openSearchClient.sendRequest(HttpMethodName.PUT, "", jsonRequest);
+            var requestStr = JsonUtils.dtoObjectMapper.writeValueAsString(request);
+            var response = openSearchClient.sendRequest(HttpMethodName.PUT, "", requestStr);
             logger.info("response-code:" + response.getStatus());
+            logger.info("response-body:" + response.getBody());
             return response;
         } catch (Exception e) {
             logger.error("Error when attempting to set snapshot repository:" + e.getMessage(), e);
