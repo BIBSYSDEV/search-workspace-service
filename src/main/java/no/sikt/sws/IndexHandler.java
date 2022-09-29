@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
     public static final String RESOURCE_IDENTIFIER = "resource";
+    // Regex: may only contain big and small latin letters, norwegian letters, digits, '/', '-' and '_'
+    private static String ALLOWED_INPUT = "[A-Za-zÆØÅæøå\\d/_-]*";
     public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
 
 
@@ -34,12 +36,10 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
         var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        // Regex: may only contain big and small letters, digits, '/', '?', '&', '-' and '_'
-        var regex = "[A-Za-z\\d/?&_-]*";
-
-        if (resourceIdentifier.startsWith("_") || !resourceIdentifier.matches(regex)) {
+        if (resourceIdentifier.startsWith("_") || !resourceIdentifier.matches(ALLOWED_INPUT)) {
             throw new BadRequestException(
-                    "Root operations and indeces starting with '_' are not allowed. Got: " + resourceIdentifier);
+                    "Root operations and indeces starting with '_' or containing anything but letters, digits, '/',"
+                            + " '-' or '_'are not allowed. Got: " + resourceIdentifier);
         }
 
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
