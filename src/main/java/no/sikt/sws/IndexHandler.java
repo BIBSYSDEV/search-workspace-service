@@ -43,7 +43,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         var workspace = RequestUtil.getWorkspace(request);
 
         try {
-            var url = WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);
+            var url = "/" + WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);
 
             logger.info("URL: " + url);
 

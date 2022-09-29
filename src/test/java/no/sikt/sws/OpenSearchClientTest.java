@@ -29,13 +29,13 @@ public class OpenSearchClientTest {
 
         final OpenSearchResponse response = new OpenSearchResponse(mockHttpResponse);
 
-        when(mockOpenSearchClient.sendRequest(PUT, "fredrik-test", null))
+        when(mockOpenSearchClient.sendRequest(PUT, "/" + "fredrik-test", null))
                 .thenReturn(response);
     }
 
     @Test
     void testMockingOfOpenSearchClient() throws IOException {
-        OpenSearchResponse response = mockOpenSearchClient.sendRequest(PUT, "fredrik-test", null);
+        OpenSearchResponse response = mockOpenSearchClient.sendRequest(PUT, "/" + "fredrik-test", null);
 
         assertEquals(200, response.getStatus());
     }
