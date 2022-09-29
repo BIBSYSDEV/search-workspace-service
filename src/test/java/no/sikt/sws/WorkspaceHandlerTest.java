@@ -2,13 +2,9 @@ package no.sikt.sws;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
-import no.unit.nva.commons.json.JsonUtils;
+import no.sikt.sws.testutils.TestUtils;
 import no.unit.nva.stubs.FakeContext;
-import no.unit.nva.testutils.HandlerRequestBuilder;
 import nva.commons.apigateway.GatewayResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +19,6 @@ import java.io.IOException;
 import static com.amazonaws.http.HttpMethodName.GET;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.testutils.TestConstants.*;
-import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -55,11 +50,7 @@ public class WorkspaceHandlerTest extends TestCase {
         when(openSearchClient.sendRequest(GET, "/" + TEST_WORKSPACE_PREFIX + "*", null))
                 .thenReturn(mockResponse);
 
-
-        var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
-                .withHttpMethod(HttpMethod.GET.toString())
-                .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE)
-                .build();
+        var request = TestUtils.buildRequest(HttpMethod.GET, null);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, WorkspaceResponse.class);
