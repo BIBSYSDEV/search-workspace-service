@@ -2,11 +2,9 @@ package no.sikt.sws;
 
 import com.amazonaws.http.HttpMethodName;
 
+
 import no.sikt.sws.exception.SearchException;
 import org.json.JSONObject;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
-
-import software.amazon.awssdk.regions.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +19,6 @@ public class RegisterSnapshotRepoS3 {
 
 
     public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
-
-
 
     public OpenSearchResponse registerRepository() throws SearchException {
         JSONObject jsonSettings = new JSONObject();
