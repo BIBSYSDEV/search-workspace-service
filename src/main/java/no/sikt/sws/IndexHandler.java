@@ -6,6 +6,7 @@ import nva.commons.apigateway.ApiGatewayProxyHandler;
 import nva.commons.apigateway.ProxyResponse;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
+import nva.commons.apigateway.exceptions.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,11 +26,21 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
     }
 
     @Override
-    protected ProxyResponse<String> processProxyInput(String body, RequestInfo request, Context context)
-            throws ApiGatewayException {
+    protected ProxyResponse<String> processProxyInput(
+            String body,
+            RequestInfo request,
+            Context context
+    ) throws ApiGatewayException {
+
+        var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
+
+        if (resourceIdentifier.startsWith("_")) {
+            throw new BadRequestException(
+                    "Root operations and indeces starting with '_' are not allowed. Got: " + resourceIdentifier);
+        }
+
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
-        var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
 
         try {
             var url = WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);

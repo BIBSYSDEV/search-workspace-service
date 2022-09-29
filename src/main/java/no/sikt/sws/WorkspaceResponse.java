@@ -2,8 +2,13 @@ package no.sikt.sws;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.sikt.sws.models.internal.InternalIndexDto;
+import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static no.sikt.sws.constants.ApplicationConstants.API_GATEWAY_URL;
 
@@ -15,7 +20,7 @@ public class WorkspaceResponse {
     public String accountIdentifier;
 
     @JsonProperty("index_list")
-    public JsonNode indexList;
+    Map<String, InternalIndexDto> indexList;
 
     @JsonProperty("create_index_link")
     public String createIndexLink;
@@ -25,7 +30,7 @@ public class WorkspaceResponse {
 
     public WorkspaceResponse(
             String accountIdentifier,
-            JsonNode indexList,
+            Map<String, InternalIndexDto> indexList,
             String createIndexLink
     ) throws JsonProcessingException {
         this.accountIdentifier = accountIdentifier;
@@ -33,11 +38,18 @@ public class WorkspaceResponse {
         this.createIndexLink = createIndexLink;
     }
 
-    public static WorkspaceResponse fromValues(String workspace, String indexList) throws JsonProcessingException {
+    public static WorkspaceResponse fromValues(String workspace, String openSearchIndexList)
+            throws JsonProcessingException {
 
-        JsonNode indexListJson = objectMapper.readTree(indexList);
         String createIndexLink = API_GATEWAY_URL + "/index_name";
+        Map<String, OpenSearchIndexDto> openSearchIndexListMap =
+                objectMapper.readValue(openSearchIndexList, new TypeReference<>() {});
 
-        return new WorkspaceResponse(workspace, indexListJson, createIndexLink);
+        Map<String, InternalIndexDto> internalIndexListMap = openSearchIndexListMap
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, it -> InternalIndexDto.fromOpenSearchIndex(it)));
+
+
+        return new WorkspaceResponse(workspace, internalIndexListMap, createIndexLink);
     }
 }
