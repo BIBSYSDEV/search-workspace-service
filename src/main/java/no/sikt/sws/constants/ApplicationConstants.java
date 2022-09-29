@@ -13,6 +13,8 @@ public final class ApplicationConstants {
 
     public static final String ELASTICSEARCH_REGION = readElasticSearchRegion();
 
+    public static final String BACKUP_ROLE_ARN = readBackupRoleArn();
+
     private static String readOpenSearchEndpointAddress() {
         return ENVIRONMENT.readEnv("OPENSEARCH_ENDPOINT_ADDRESS");
     }
@@ -37,5 +39,8 @@ public final class ApplicationConstants {
         return ENVIRONMENT.readEnv("BACKUP_BUCKET_NAME");
     }
 
+    private static String readBackupRoleArn() {
+        return ENVIRONMENT.readEnv("BACKUP_ROLE_ARN");
+    }
 
 }

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static no.sikt.sws.constants.ApplicationConstants.BACKUP_BUCKET_NAME;
+import static no.sikt.sws.constants.ApplicationConstants.BACKUP_ROLE_ARN;
 
 public class RegisterSnapshotRepoHandler extends ApiGatewayHandler<Void, String> {
     private static final Logger logger = LoggerFactory.getLogger(IndexHandler.class);
@@ -26,7 +27,7 @@ public class RegisterSnapshotRepoHandler extends ApiGatewayHandler<Void, String>
 
     @Override
     protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
-        var settings = new SnapshotSettingsRequestDto(BACKUP_BUCKET_NAME, null, null, "/snapshots");
+        var settings = new SnapshotSettingsRequestDto(BACKUP_BUCKET_NAME, null, BACKUP_ROLE_ARN, "/snapshots");
         var request = new SnapshotRequestDto("s3", settings);
 
         try {
