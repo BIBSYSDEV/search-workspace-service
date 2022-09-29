@@ -30,12 +30,14 @@ public class WorkspaceStripper {
     }
 
     public static String prefixUrl(String index, String workspace) {
+        logger.info("prefixing " + workspace);
         if (index == null) {
-            index = "*";
+            return workspace + "-*";
+
         } else if (index.startsWith("_")) {
             return index;
+
         }
-        logger.info("prefixing " + workspace);
         return workspace + "-" + index;
     }
 
