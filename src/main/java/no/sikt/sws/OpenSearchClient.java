@@ -127,7 +127,7 @@ public class OpenSearchClient {
     }
 
     private URI buildUri(String path) {
-        return URI.create(OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path);
+        return URI.create(OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + path);
     }
 
 
