@@ -83,8 +83,8 @@ public class WorkspaceStripper {
             return null;
         }
         return aliasBody.asText()
-                .replaceAll("(\"index\".*:.*?\")(.+)","$1" + workspacePrefix + "$2")
-                .replaceAll("(\"alias\".*:.*?\")(.+)","$1" + workspacePrefix + "$2");
+                .replaceAll("(\"index\".*:.*?\")(.+\")","$1" + workspacePrefix + "-$2")
+                .replaceAll("(\"alias\".*:.*?\")(.+\")","$1" + workspacePrefix + "-$2");
     }
 
 }
