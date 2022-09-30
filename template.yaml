@@ -134,7 +134,7 @@ Resources:
                 - lambda.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: writeLog
+        - PolicyName: writeLogFOrSNapshot
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -144,7 +144,7 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
-        - PolicyName: allOpenSearch
+        - PolicyName: accessOpensearchFull
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -156,7 +156,7 @@ Resources:
                   - es:ESHttpGet
                   - es:ESHttpHead
                 Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
-        - PolicyName: invokeLambda
+        - PolicyName: invokeLambdaSnapshot
           PolicyDocument:
             Version: 2012-10-17
             Statement:
