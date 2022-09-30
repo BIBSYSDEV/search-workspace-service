@@ -47,7 +47,7 @@ public class WorkspaceHandlerTest extends TestCase {
     void callToOpenSearchMapsToCorrectResponse() throws IOException {
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, OPEN_SEARCH_INDEX_LIST);
 
-        when(openSearchClient.sendRequest(GET, "/" + TEST_WORKSPACE_PREFIX + "*", null))
+        when(openSearchClient.sendRequest(GET, TEST_WORKSPACE_PREFIX + "*", null))
                 .thenReturn(mockResponse);
 
         var request = TestUtils.buildRequest(HttpMethod.GET, null);
