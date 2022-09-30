@@ -23,7 +23,7 @@ public class WorkspaceStripper {
     public static final String REQUIRED_PARAMETER_IS_NULL = "required parameter is null -> ";
 
     // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
-    public static String removePrefix(String workspacePrefix, String responseBody) throws IllegalArgumentException {
+    public static String removePrefix(String workspacePrefix, String responseBody)  {
         if (responseBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
                     + ((responseBody == null) ? "[responseBody] " : "")
@@ -49,7 +49,7 @@ public class WorkspaceStripper {
     }
 
     public static String prefixBody(String workspacePrefix, String resourceIdentifier, String gatewayBody)
-            throws BadRequestException, IllegalStateException {
+            throws BadRequestException {
         var getEnumt = OpenSearchCommand.fromString(resourceIdentifier);
         logger.info(getEnumt.name());
         switch (getEnumt) {
@@ -69,8 +69,7 @@ public class WorkspaceStripper {
     }
 
     // replace {index} with {workspace}-{index} from responseBody
-    public static String prefixIndexesBody(String workspacePrefix, String resourceIdentifier,String gatewayBody)
-            throws IllegalArgumentException {
+    public static String prefixIndexesBody(String workspacePrefix, String resourceIdentifier,String gatewayBody) {
 
         if (gatewayBody == null || resourceIdentifier == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
@@ -86,8 +85,7 @@ public class WorkspaceStripper {
     }
 
 
-    protected static String prefixIndexesBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody)
-            throws IllegalArgumentException {
+    protected static String prefixIndexesBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody) {
         if (gatewayBulkBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
                     + ((gatewayBulkBody == null) ? "[gatewayBulkBody] " : "")
@@ -113,8 +111,7 @@ public class WorkspaceStripper {
         }).collect(Collectors.joining("\n"));
     }
 
-    protected static String prefixAliasBody(String workspacePrefix,String gatewayAliasBody)
-            throws IllegalArgumentException {
+    protected static String prefixAliasBody(String workspacePrefix,String gatewayAliasBody) {
         if (gatewayAliasBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
                     + ((gatewayAliasBody == null) ? "[gatewayAliasBody] " : "")
