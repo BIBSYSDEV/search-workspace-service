@@ -73,7 +73,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             return new ProxyResponse<>(response.getStatus(), responseBody);
         } catch (BadRequestException be) {
             logger.error(be.getLocalizedMessage());
-            throw new SearchException(be.getMessage(), be);
+            throw be;
         } catch (Exception e) {
             logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
