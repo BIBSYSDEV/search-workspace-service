@@ -75,7 +75,7 @@ public class IndexHandlerTest extends TestCase {
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
         when(openSearchClient.sendRequest(
                 eq(POST),
-                eq("/" + TEST_WORKSPACE_PREFIX + TEST_INDEX_1 + "/_mapping"),
+                eq(TEST_WORKSPACE_PREFIX + TEST_INDEX_1 + "/_mapping"),
                 argThat(new JsonStringMatcher(body.toString())))
         ).thenReturn(mockResponse);
 
