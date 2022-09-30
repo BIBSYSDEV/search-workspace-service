@@ -1,7 +1,7 @@
 [
     {
       "name": "Bulk POST create index",
-      "indexName": null,
+      "indexName": "_bulk",
       "requestGateway": {
         "method": "POST",
         "url": "_bulk",
@@ -123,7 +123,7 @@
     },
     {
     "name": "Bulk POST create index with evil stupid names",
-    "indexName": null,
+    "indexName": "_bulk",
     "requestGateway": {
       "method": "POST",
       "url": "_bulk",

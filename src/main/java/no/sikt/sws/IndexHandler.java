@@ -40,26 +40,32 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         var workspace = RequestUtil.getWorkspace(request);
 
         var searchCommand = OpenSearchCommand.fromString(resourceIdentifier);
-        if (searchCommand.ordinal() > OpenSearchCommand.OTHER.ordinal()) {
-            validateResourceIdentifier(resourceIdentifier);
-        }
+
 
         try {
-            var url = "/" + WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);
+            if (searchCommand.equals(OpenSearchCommand.NOT_IMPLEMENTED)
+                || searchCommand.equals(OpenSearchCommand.INVALID)) {
 
-            var requestBody = WorkspaceStripper.prefixBody(body, workspace, resourceIdentifier);
+                validateResourceIdentifier(resourceIdentifier);
+            }
 
+            var url = "/" + WorkspaceStripper.prefixUrl(workspace, resourceIdentifier);
             logger.info("URL: " + url);
+
+            var requestBody = WorkspaceStripper.prefixBody(workspace, resourceIdentifier, body);
 
             var response = openSearchClient.sendRequest(httpMethod, url, requestBody);
 
             logger.info("response-code:" + response.getStatus());
             logger.info("raw response-body:" + response.getBody());
 
-            var responseBody = WorkspaceStripper.remove(response.getBody(), workspace);
+            var responseBody = WorkspaceStripper.removePrefix(workspace, response.getBody());
             logger.info("stripped response-body:" + responseBody);
 
             return new ProxyResponse<>(response.getStatus(), responseBody);
+        } catch (BadRequestException be) {
+            logger.error(be.getLocalizedMessage());
+            throw be;
         } catch (Exception e) {
             logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);

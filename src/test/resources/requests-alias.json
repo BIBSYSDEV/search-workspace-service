@@ -1,6 +1,7 @@
 [
   {
     "name": "Alias",
+    "indexName": "_alias",
     "requestGateway": {
       "method": "POST",
       "url": "_alias",

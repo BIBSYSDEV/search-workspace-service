@@ -2,8 +2,13 @@ package no.sikt.sws;
 
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
-import org.joda.time.*;
-import org.junit.jupiter.api.*;
+import org.joda.time.Instant;
+import org.joda.time.Period;
+import org.joda.time.ReadableInstant;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WorkspaceStripperTest {
@@ -113,7 +119,7 @@ public class WorkspaceStripperTest {
     void assertResponseStripping(TestCaseSws testCase) {
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
-        var resultResponse = WorkspaceStripper.remove(openSearchResponse, WORKSPACEPREFIX);
+        var resultResponse = WorkspaceStripper.removePrefix(WORKSPACEPREFIX,openSearchResponse);
 
         assertEquals(expectedResponse,resultResponse);
 
@@ -124,7 +130,7 @@ public class WorkspaceStripperTest {
     void assertUrlPrefixing(TestCaseSws testCase) {
         var gatewayUrl = testCase.getRequestGateway().getUrl();
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
-        var resultUrl = WorkspaceStripper.prefixUrl(gatewayUrl, WORKSPACEPREFIX);
+        var resultUrl = WorkspaceStripper.prefixUrl(WORKSPACEPREFIX,gatewayUrl);
 
         logger.info(gatewayUrl + "->" + expectedUrl);
 
@@ -135,10 +141,11 @@ public class WorkspaceStripperTest {
     void assertBodyPrefixAlias(TestCaseSws testCase) {
         var expectedBody = testCase.getRequestOpensearch().getBody();
         var gatewayBody = testCase.getRequestGateway().getBody();
-        var resultBody = WorkspaceStripper.prefixAliasBody(gatewayBody, WORKSPACEPREFIX);
+        var indexName = testCase.getIndexName();
+        var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX,indexName,gatewayBody));
 
-        assertEquals(expectedBody,resultBody);
-        logger.info(resultBody);
+        assertEquals(expectedBody,resultBody.get());
+        logger.info(resultBody.get());
 
     }
 
@@ -146,19 +153,10 @@ public class WorkspaceStripperTest {
         var indexName = testCase.getIndexName();
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
-        if (indexName == null) {
-            logger.info("no index name, presuming bulk inserts");
-            var gatewayBody = testCase.getRequestGateway().getBulkBody();
-            var resultBody = WorkspaceStripper.prefixIndexesBulkBody(gatewayBody, WORKSPACEPREFIX);
-            assertEquals(expectedBody,resultBody);
-            logger.info(resultBody);
-        } else {
-            logger.info(indexName);
-            var gatewayBody = testCase.getRequestGateway().getBody();
-            var resultBody = WorkspaceStripper.prefixIndexesBody(gatewayBody, WORKSPACEPREFIX, indexName);
-            assertEquals(expectedBody,resultBody);
-            logger.info(resultBody);
-        }
+        var gatewayBody = testCase.getRequestGateway().getBody();
+        var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX, indexName, gatewayBody));
+
+        assertEquals(expectedBody,resultBody.get());
 
         logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
     }

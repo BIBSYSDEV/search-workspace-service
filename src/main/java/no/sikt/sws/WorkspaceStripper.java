@@ -22,40 +22,40 @@ public class WorkspaceStripper {
     public static final String INDEX = "_index";
 
     // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
-    public static String remove(String body, String workspace) {
-        if (body == null) {
+    public static String removePrefix(String workspacePrefix, String responseBody) {
+        if (responseBody == null) {
             return null;
         }
 
         //Regex that matches '{workspace}-' preceded by ' ', '/' or '"'
-        var regex = "(?<=[ /\"])" + workspace + "-";
+        var regex = "(?<=[ /\"])" + workspacePrefix + "-";
 
-        return body.replaceAll(regex, "");
+        return responseBody.replaceAll(regex, "");
     }
 
-    public static String prefixUrl(String index, String workspace) {
-        logger.info("prefixing " + workspace);
-        if (index == null) {
-            return workspace + "-*";
+    public static String prefixUrl(String workspacePrefix, String resourceIdentifier) {
+        logger.info("prefixing " + workspacePrefix);
+        if (resourceIdentifier == null) {
+            return workspacePrefix + "-*";
 
-        } else if (index.startsWith("_")) {
-            return index;
+        } else if (resourceIdentifier.startsWith("_")) {
+            return resourceIdentifier;
 
         }
-        return workspace + "-" + index;
+        return workspacePrefix + "-" + resourceIdentifier;
     }
 
-    public static String prefixBody(String resourceIdentifier, String workspace, String body)
+    public static String prefixBody(String workspacePrefix, String resourceIdentifier, String gatewayBody)
             throws BadRequestException, IllegalStateException {
         var getEnumt = OpenSearchCommand.fromString(resourceIdentifier);
-
+        logger.info(getEnumt.name());
         switch (getEnumt) {
             case ALIAS:
-                return WorkspaceStripper.prefixAliasBody(body,workspace);
+                return WorkspaceStripper.prefixAliasBody(workspacePrefix,gatewayBody);
             case BULK:
-                return WorkspaceStripper.prefixIndexesBulkBody(getBulkBody(body),workspace);
+                return WorkspaceStripper.prefixIndexesBulkBody(workspacePrefix,getBulkBody(gatewayBody));
             case OTHER:
-                return body;
+                return WorkspaceStripper.prefixIndexesBody(workspacePrefix,resourceIdentifier,gatewayBody);
             case NOT_IMPLEMENTED:
                 throw new BadRequestException("Not implemented " + resourceIdentifier);
             case INVALID:
@@ -66,23 +66,23 @@ public class WorkspaceStripper {
     }
 
     // replace {index} with {workspace}-{index} from responseBody
-    public static String prefixIndexesBody(String body, String workspace, String index) {
-        if (body == null || index == null || workspace == null) {
+    public static String prefixIndexesBody(String workspacePrefix, String index,String gatewayBody) {
+        if (gatewayBody == null || index == null || workspacePrefix == null) {
             return null;
         }
 
         return attempt(() -> {
             var strippedIndex = Arrays.stream(index.split("/")).findFirst();
-            return body.replaceAll(index, workspace + "-" + strippedIndex);
+            return gatewayBody.replaceAll(index, workspacePrefix + "-" + strippedIndex);
         }).orElseThrow();
     }
 
 
-    protected static String prefixIndexesBulkBody(List<JsonNode> gatewayBody, String workspacePrefix) {
-        if (gatewayBody == null || workspacePrefix == null) {
+    protected static String prefixIndexesBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody) {
+        if (gatewayBulkBody == null || workspacePrefix == null) {
             return null;
         }
-        return gatewayBody.stream().map(item -> {
+        return gatewayBulkBody.stream().map(item -> {
             String indexName;
             if (item.has("index")) {
                 indexName = item.get("index").get(INDEX).textValue();
@@ -102,17 +102,17 @@ public class WorkspaceStripper {
         }).collect(Collectors.joining("\n"));
     }
 
-    protected static String prefixAliasBody(String aliasBody, String workspacePrefix) {
-        if (aliasBody == null || workspacePrefix == null) {
+    protected static String prefixAliasBody(String workspacePrefix,String gatewayAliasBody) {
+        if (gatewayAliasBody == null || workspacePrefix == null) {
             return null;
         }
-        return aliasBody
+        return gatewayAliasBody
                 .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
                 .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
     }
 
-    private static List<JsonNode> getBulkBody(String body) {
-        return Arrays.stream(body.split("\n"))
+    private static List<JsonNode> getBulkBody(String bulkbody) {
+        return Arrays.stream(bulkbody.split("\n"))
                 .map(s -> {
                     try {
                         return JsonUtils.dtoObjectMapper.readValue(s, JsonNode.class);

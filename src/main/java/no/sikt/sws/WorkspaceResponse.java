@@ -24,21 +24,18 @@ public class WorkspaceResponse {
 
     @JsonProperty("create_index_link")
     public String createIndexLink;
-
-    public WorkspaceResponse() throws JsonProcessingException {
-    }
-
+    
     public WorkspaceResponse(
             String accountIdentifier,
             Map<String, InternalIndexDto> indexList,
             String createIndexLink
-    ) throws JsonProcessingException {
+    ) {
         this.accountIdentifier = accountIdentifier;
         this.indexList = indexList;
         this.createIndexLink = createIndexLink;
     }
 
-    public static WorkspaceResponse fromValues(String workspace, String openSearchIndexList)
+    public static WorkspaceResponse fromValues(String workspacePrefix, String openSearchIndexList)
             throws JsonProcessingException {
 
         String createIndexLink = API_GATEWAY_URL + "/index_name";
@@ -47,9 +44,9 @@ public class WorkspaceResponse {
 
         Map<String, InternalIndexDto> internalIndexListMap = openSearchIndexListMap
                 .entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, it -> InternalIndexDto.fromOpenSearchIndex(it)));
+                .collect(Collectors.toMap(Map.Entry::getKey, InternalIndexDto::fromOpenSearchIndex));
 
 
-        return new WorkspaceResponse(workspace, internalIndexListMap, createIndexLink);
+        return new WorkspaceResponse(workspacePrefix, internalIndexListMap, createIndexLink);
     }
 }

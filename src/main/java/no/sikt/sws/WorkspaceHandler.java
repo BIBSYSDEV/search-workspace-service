@@ -49,7 +49,7 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
 
-            var responseBody = WorkspaceStripper.remove(response.getBody(), workspace);
+            var responseBody = WorkspaceStripper.removePrefix(workspace,response.getBody());
             logger.info("body-stripped:" + responseBody);
             return responseBody;
         } catch (Exception e) {
