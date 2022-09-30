@@ -173,7 +173,7 @@ Resources:
                   - s3:GetObject
                   - s3:PutObject
                   - s3:DeleteObject
-                Resource: !Sub  "arn:aws:s3:::${BackupBucketName}/*"
+                Resource: !Sub  'arn:aws:s3:::${BackupBucketName}/*'
         - PolicyName: lists3Bucket
           PolicyDocument:
             Version: 2012-10-17
@@ -181,7 +181,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - s3: ListBucket"
-                Resource: !Sub  "arn:aws:s3:::${BackupBucketName}"
+                Resource: !Sub  'arn:aws:s3:::${BackupBucketName}'
 
 
 
