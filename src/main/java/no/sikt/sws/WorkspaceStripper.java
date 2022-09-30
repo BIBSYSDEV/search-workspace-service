@@ -15,6 +15,7 @@ import static nva.commons.core.attempt.Try.attempt;
 public class WorkspaceStripper {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceStripper.class);
+    public static final String INDEX = "_index";
 
     // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
     public static String remove(String body, String workspace) {
@@ -29,12 +30,14 @@ public class WorkspaceStripper {
     }
 
     public static String prefixUrl(String index, String workspace) {
+        logger.info("prefixing " + workspace);
         if (index == null) {
-            index = "*";
+            return workspace + "-*";
+
         } else if (index.startsWith("_")) {
             return index;
+
         }
-        logger.info("prefixing " + workspace);
         return workspace + "-" + index;
     }
 
@@ -51,20 +54,20 @@ public class WorkspaceStripper {
     }
 
 
-    public static String prefixIndexesBody(List<JsonNode> gatewayBody, String workspacePrefix) {
+    public static String prefixIndexesBulkBody(List<JsonNode> gatewayBody, String workspacePrefix) {
         if (gatewayBody == null || workspacePrefix == null) {
             return null;
         }
         return gatewayBody.stream().map(item -> {
             String indexName;
             if (item.has("index")) {
-                indexName = item.get("index").get("_index").textValue();
+                indexName = item.get("index").get(INDEX).textValue();
             } else if (item.has("delete")) {
-                indexName = item.get("delete").get("_index").textValue();
+                indexName = item.get("delete").get(INDEX).textValue();
             } else if (item.has("update")) {
-                indexName = item.get("update").get("_index").textValue();
+                indexName = item.get("update").get(INDEX).textValue();
             } else if (item.has("create")) {
-                indexName = item.get("create").get("_index").textValue();
+                indexName = item.get("create").get(INDEX).textValue();
             } else {
                 return item.toString();
             }
@@ -75,5 +78,13 @@ public class WorkspaceStripper {
         }).collect(Collectors.joining("\n"));
     }
 
+    public static String prefixAliasBody(String aliasBody, String workspacePrefix) {
+        if (aliasBody == null || workspacePrefix == null) {
+            return null;
+        }
+        return aliasBody
+                .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
+                .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
+    }
 
 }

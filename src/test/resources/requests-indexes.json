@@ -15,7 +15,7 @@
     "response": {
       "workspace-mockname-index1": {
         "aliases": {
-          "sample-alias1": {}
+          "workspace-mockname-sample-alias1": {}
         },
         "mappings": {
           "properties": {

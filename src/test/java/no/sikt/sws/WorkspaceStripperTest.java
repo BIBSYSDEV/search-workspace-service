@@ -100,6 +100,16 @@ public class WorkspaceStripperTest {
 
     }
 
+    @Test
+    void assertAliasPrefixing() {
+        var filename = "requests-alias.json";
+
+        new TestCaseLoader(filename)
+            .getTestCases().forEach(this::assertBodyPrefixAlias);
+    }
+
+
+
     void assertResponseStripping(TestCaseSws testCase) {
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
@@ -122,6 +132,16 @@ public class WorkspaceStripperTest {
 
     }
 
+    void assertBodyPrefixAlias(TestCaseSws testCase) {
+        var expectedBody = testCase.getRequestOpensearch().getBody();
+        var gatewayBody = testCase.getRequestGateway().getBody();
+        var resultBody = WorkspaceStripper.prefixAliasBody(gatewayBody, WORKSPACEPREFIX);
+
+        assertEquals(expectedBody,resultBody);
+        logger.info(resultBody);
+
+    }
+
     void assertBodyPrefixing(TestCaseSws testCase) {
         var indexName = testCase.getIndexName();
         var expectedBody = testCase.getRequestOpensearch().getBody();
@@ -129,7 +149,7 @@ public class WorkspaceStripperTest {
         if (indexName == null) {
             logger.info("no index name, presuming bulk inserts");
             var gatewayBody = testCase.getRequestGateway().getBulkBody();
-            var resultBody = WorkspaceStripper.prefixIndexesBody(gatewayBody, WORKSPACEPREFIX);
+            var resultBody = WorkspaceStripper.prefixIndexesBulkBody(gatewayBody, WORKSPACEPREFIX);
             assertEquals(expectedBody,resultBody);
             logger.info(resultBody);
         } else {

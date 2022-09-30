@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
     public static final String RESOURCE_IDENTIFIER = "resource";
+    // Regex: may only contain big and small latin letters, norwegian letters, digits, '/', '-' and '_'
+    private static final String ALLOWED_INPUT = "[A-Za-zÆØÅæøå\\d/_-]*";
     public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
 
 
@@ -34,20 +36,28 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
         var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
 
-        if (resourceIdentifier.startsWith("_")) {
+        if (!"_alias".equals(resourceIdentifier)
+            &&  resourceIdentifier.startsWith("_")
+            || !resourceIdentifier.matches(ALLOWED_INPUT)) {
             throw new BadRequestException(
-                    "Root operations and indeces starting with '_' are not allowed. Got: " + resourceIdentifier);
+                    "Root operations and indeces starting with '_' or containing anything but letters, digits, '/',"
+                            + " '-' or '_'are not allowed. Got: " + resourceIdentifier);
         }
 
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
 
         try {
-            var url = WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);
+            var url = "/" + WorkspaceStripper.prefixUrl(resourceIdentifier, workspace);
+            var requestbody = body;
+
+            if ("_alias".equals(resourceIdentifier)) {
+                requestbody = WorkspaceStripper.prefixAliasBody(body, workspace);
+            }
 
             logger.info("URL: " + url);
 
-            var response = openSearchClient.sendRequest(httpMethod, url, body);
+            var response = openSearchClient.sendRequest(httpMethod, url, requestbody);
 
             logger.info("response-code:" + response.getStatus());
             logger.info("raw response-body:" + response.getBody());
