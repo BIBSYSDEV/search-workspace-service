@@ -21,19 +21,22 @@ public class WorkspaceStripper {
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceStripper.class);
     public static final String INDEX = "_index";
     public static final String REQUIRED_PARAMETER_IS_NULL = "required parameter is null -> ";
+    public static final String WORKSPACE_PREFIX = "[workspacePrefix]";
+    public static final String RESOURCE_IDENTIFIER = "[resourceIdentifier] ";
+    public static final String EMPTY_STRING = "";
 
     // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
     public static String removePrefix(String workspacePrefix, String responseBody)  {
         if (responseBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
-                    + ((responseBody == null) ? "[responseBody] " : "")
-                    + ((workspacePrefix == null) ? "[workspacePrefix]" : ""));
+                    + ((responseBody == null) ? "[responseBody] " : EMPTY_STRING)
+                    + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
         }
 
         //Regex that matches '{workspace}-' preceded by ' ', '/' or '"'
         var regex = "(?<=[ /\"])" + workspacePrefix + "-";
 
-        return responseBody.replaceAll(regex, "");
+        return responseBody.replaceAll(regex, EMPTY_STRING);
     }
 
     public static String prefixUrl(String workspacePrefix, String resourceIdentifier) {
@@ -73,9 +76,9 @@ public class WorkspaceStripper {
 
         if (gatewayBody == null || resourceIdentifier == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
-                    + ((gatewayBody == null) ? "[gatewayBody] " : "")
-                    + ((resourceIdentifier == null) ? "[resourceIdentifier] " : "")
-                    + ((workspacePrefix == null) ? "[workspacePrefix]" : ""));
+                    + ((gatewayBody == null) ? "[gatewayBody] " : EMPTY_STRING)
+                    + ((resourceIdentifier == null) ? RESOURCE_IDENTIFIER : EMPTY_STRING)
+                    + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
         }
 
         return attempt(() -> {
@@ -88,8 +91,8 @@ public class WorkspaceStripper {
     protected static String prefixIndexesBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody) {
         if (gatewayBulkBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
-                    + ((gatewayBulkBody == null) ? "[gatewayBulkBody] " : "")
-                    + ((workspacePrefix == null) ? "[workspacePrefix]" : ""));
+                    + ((gatewayBulkBody == null) ? "[gatewayBulkBody] " : EMPTY_STRING)
+                    + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
         }
         return gatewayBulkBody.stream().map(item -> {
             String indexName;
@@ -114,8 +117,8 @@ public class WorkspaceStripper {
     protected static String prefixAliasBody(String workspacePrefix,String gatewayAliasBody) {
         if (gatewayAliasBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
-                    + ((gatewayAliasBody == null) ? "[gatewayAliasBody] " : "")
-                    + ((workspacePrefix == null) ? "[workspacePrefix]" : ""));
+                    + ((gatewayAliasBody == null) ? "[gatewayAliasBody] " : EMPTY_STRING)
+                    + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
         }
         return gatewayAliasBody
                 .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
