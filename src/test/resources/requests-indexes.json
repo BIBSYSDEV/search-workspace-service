@@ -15,6 +15,108 @@
     "response": {
       "workspace-mockname-index1": {
         "aliases": {
+          "workspace-mockname-sample-alias1": {}
+        },
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "integer"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "test": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1662982493727",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "nXsprbMMTHuvByW3rG3u8Q",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-index1"
+          }
+        }
+      }
+    },
+    "responseStripped": {
+      "index1": {
+        "aliases": {
+          "sample-alias1": {}
+        },
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "integer"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "test": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1662982493727",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "nXsprbMMTHuvByW3rG3u8Q",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "index1"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "GET index by name",
+    "indexName": "index1",
+    "requestGateway": {
+      "method": "GET",
+      "url": "index1",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-index1",
+      "body": null
+    },
+    "response": {
+      "workspace-mockname-index1": {
+        "aliases": {
           "sample-alias1": {}
         },
         "mappings": {
@@ -102,29 +204,385 @@
     }
   },
   {
-    "name": "Post index, failed",
-    "indexName": "index2",
+    "name": "GET (all) indexes (/ -> /*) ",
+    "indexName": null,
     "requestGateway": {
-      "method": "POST",
-      "url": "index2",
+      "method": "GET",
+      "url": "",
       "body": null
     },
     "requestOpensearch": {
-      "method": "POST",
-      "url": "workspace-mockname-index2",
+      "method": "GET",
+      "url": "workspace-mockname-*",
       "body": null
     },
     "response": {
-      "error": "Incorrect HTTP method for uri [/workspace-mockname-index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
-      "status": 405
+      "workspace-mockname-index-3": {
+        "aliases": {},
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "long"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663056104636",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "6jNJSx6QR9Oj6QPrnIA2Bg",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-index-3"
+          }
+        }
+      },
+      "workspace-mockname-logs-2020-01-01": {
+        "aliases": {
+          "my_logs": {}
+        },
+        "mappings": {
+          "properties": {
+            "timestamp": {
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+            },
+            "value": {
+              "type": "double"
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663057237550",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "Ym1eaJ7YQJKLOiRc75bhEQ",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-logs-2020-01-01"
+          }
+        }
+      },
+      "workspace-mockname-test-index66": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663056916666",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "mYSFekVmS_ejFT7yoGnNmw",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-test-index66"
+          }
+        }
+      },
+      "workspace-mockname-test1-index-3": {
+        "aliases": {},
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "long"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663056266820",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "7JE2G_-_QWChqcdrPvnFLA",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-test1-index-3"
+          }
+        }
+      },
+      "workspace-mockname-test1-index1": {
+        "aliases": {
+          "sample-alias1": {}
+        },
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "integer"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "test": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1662982493727",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "nXsprbMMTHuvByW3rG3u8Q",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-test1-index1"
+          }
+        }
+      },
+      "workspace-mockname-test1-index13": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663156169174",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "ZsPuLpddTE-iomAd4z8Vaw",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-test1-index13"
+          }
+        }
+      },
+      "workspace-mockname-testindex": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663156033091",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "S4pzS-5VRXmEYy5mVnUrmQ",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-testindex"
+          }
+        }
+      }
     },
     "responseStripped": {
-      "error": "Incorrect HTTP method for uri [/index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
-      "status": 405
+      "index-3": {
+        "aliases": {},
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "long"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663056104636",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "6jNJSx6QR9Oj6QPrnIA2Bg",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "index-3"
+          }
+        }
+      },
+      "logs-2020-01-01": {
+        "aliases": {
+          "my_logs": {}
+        },
+        "mappings": {
+          "properties": {
+            "timestamp": {
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+            },
+            "value": {
+              "type": "double"
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663057237550",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "Ym1eaJ7YQJKLOiRc75bhEQ",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "logs-2020-01-01"
+          }
+        }
+      },
+      "test-index66": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663056916666",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "mYSFekVmS_ejFT7yoGnNmw",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "test-index66"
+          }
+        }
+      },
+      "test1-index-3": {
+        "aliases": {},
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "long"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663056266820",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "7JE2G_-_QWChqcdrPvnFLA",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "test1-index-3"
+          }
+        }
+      },
+      "test1-index1": {
+        "aliases": {
+          "sample-alias1": {}
+        },
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "integer"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "test": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1662982493727",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "nXsprbMMTHuvByW3rG3u8Q",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "test1-index1"
+          }
+        }
+      },
+      "test1-index13": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663156169174",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "ZsPuLpddTE-iomAd4z8Vaw",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "test1-index13"
+          }
+        }
+      },
+      "testindex": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663156033091",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "S4pzS-5VRXmEYy5mVnUrmQ",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "testindex"
+          }
+        }
+      }
     }
   },
   {
-    "name": "Put index, without template",
+    "name": "PUT index, without template",
     "indexName": "index2",
     "requestGateway": {
       "method": "PUT",
@@ -148,7 +606,7 @@
     }
   },
   {
-    "name": "Put index, without template but with stupid name",
+    "name": "PUT index, without template but with stupid name",
     "indexName": "workspace-mockname-index2-index2",
     "requestGateway": {
       "method": "PUT",
@@ -172,7 +630,7 @@
     }
   },
   {
-    "name": "Put index, without template but with another stupid name",
+    "name": "PUT index, without template but with another stupid name",
     "indexName": "workspace-mockname",
     "requestGateway": {
       "method": "PUT",
@@ -196,7 +654,7 @@
     }
   },
   {
-    "name": "Put index, without template but with stupid body",
+    "name": "PUT index, without template but with stupid body",
     "indexName": "workspace-mockname",
     "requestGateway": {
       "method": "PUT",
@@ -219,6 +677,122 @@
       "shards_acknowledged": true,
       "index": "workspace-mockname",
       "stupidField": "someword index1"
+    }
+  },
+  {
+    "name": "PUT index by name, without template",
+    "indexName": "index2",
+    "requestGateway": {
+      "method": "PUT",
+      "url": "index2",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-index2",
+      "body": null
+    },
+    "response":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "workspace-mockname-index2"
+    },
+    "responseStripped":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "index2"
+    }
+  },
+  {
+    "name": "PUT index, without template but with stupid name",
+    "indexName": "workspace-mockname-index2-index2",
+    "requestGateway": {
+      "method": "PUT",
+      "url": "workspace-mockname-index2-index2",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-workspace-mockname-index2-index2",
+      "body": null
+    },
+    "response":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "workspace-mockname-workspace-mockname-index2-index2"
+    },
+    "responseStripped":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "workspace-mockname-index2-index2"
+    }
+  },
+  {
+    "name": "PUT index by Name, without template but with another stupid name",
+    "indexName": "workspace-mockname",
+    "requestGateway": {
+      "method": "PUT",
+      "url": "workspace-mockname",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-workspace-mockname",
+      "body": null
+    },
+    "response":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "workspace-mockname-workspace-mockname"
+    },
+    "responseStripped":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "workspace-mockname"
+    }
+  },
+  {
+    "name": "POST index, failed",
+    "indexName": "index2",
+    "requestGateway": {
+      "method": "POST",
+      "url": "index2",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "POST",
+      "url": "workspace-mockname-index2",
+      "body": null
+    },
+    "response": {
+      "error": "Incorrect HTTP method for uri [/workspace-mockname-index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
+      "status": 405
+    },
+    "responseStripped": {
+      "error": "Incorrect HTTP method for uri [/index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
+      "status": 405
+    }
+  },
+  {
+    "name": "POST index by Name, failed",
+    "indexName": "index2",
+    "requestGateway": {
+      "method": "POST",
+      "url": "index2",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "POST",
+      "url": "workspace-mockname-index2",
+      "body": null
+    },
+    "response":{
+      "error": "Incorrect HTTP method for uri [/workspace-mockname-index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
+      "status": 405
+    },
+    "responseStripped":{
+      "error": "Incorrect HTTP method for uri [/index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
+      "status": 405
     }
   }
 ]

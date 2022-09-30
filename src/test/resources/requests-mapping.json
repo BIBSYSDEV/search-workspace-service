@@ -1,18 +1,26 @@
 [
   {
-    "name": "Mapping",
-    "indexName": null,
+    "name": "Create mapping",
+    "indexName": "index1",
     "requestGateway": {
-      "method": "GET",
-      "url": null,
-      "body": ""
+      "method": "PUT",
+      "url": "index1/_mapping",
+      "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
     },
     "requestOpensearch": {
       "method": "GET",
-      "url": null,
-      "body": ""
+      "url": "workspace-mockname-index1/_mapping",
+      "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
     },
-    "response": {},
-    "responseStripped": {}
+    "response": {
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "workspace-mockname-index1"
+    },
+    "responseStripped": {
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "index1"
+    }
   }
 ]

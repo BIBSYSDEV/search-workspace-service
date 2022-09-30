@@ -1,10 +1,8 @@
 package no.sikt.sws.testutils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import javax.annotation.Nullable;
 import java.io.Serializable;
 
 import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
@@ -33,7 +31,17 @@ public class TestCaseSws implements Serializable {
         return name;
     }
 
+    public String getIndexName() {
+        return indexName;
+    }
 
+    public TestRequestSws getRequestGateway() {
+        return requestGateway;
+    }
+
+    public TestRequestSws getRequestOpensearch() {
+        return requestOpensearch;
+    }
 
     public String getResponse() {
         return response != null ? response.toPrettyString() : null;
@@ -61,17 +69,6 @@ public class TestCaseSws implements Serializable {
         return this.name;
     }
 
-    public TestRequestSws getRequestGateway() {
-        return requestGateway;
-    }
-
-    public TestRequestSws getRequestOpensearch() {
-        return requestOpensearch;
-    }
-
-    public String getIndexName() {
-        return indexName;
-    }
 
     public static TestCaseSws fromJson(JsonNode jsonNode) {
         try {

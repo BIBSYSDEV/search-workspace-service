@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Alias",
+    "indexName": "_alias",
+    "requestGateway": {
+      "method": "POST",
+      "url": "_alias",
+      "body": "{\"actions\":[{\"add\":{\"index\":\"movies\",\"alias\":\"movies-alias1\"}},{\"remove\":{\"index\":\"old-index\",\"alias\":\"old-index-alias\"}}]}"
+    },
+    "requestOpensearch": {
+      "method": "POST",
+      "url": "_alias",
+      "body": "{\"actions\":[{\"add\":{\"index\":\"workspace-mockname-movies\",\"alias\":\"workspace-mockname-movies-alias1\"}},{\"remove\":{\"index\":\"workspace-mockname-old-index\",\"alias\":\"workspace-mockname-old-index-alias\"}}]}"
+    },
+    "response": {"acknowledged": true},
+    "responseStripped": {"acknowledged": true}
+  }
+]
+
