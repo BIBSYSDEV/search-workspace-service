@@ -53,7 +53,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
                 validateResourceIdentifier(resourceIdentifier);
             }
 
-            var url = "/" + WorkspaceStripper.prefixUrl(workspace, resourceIdentifier);
+            var url = WorkspaceStripper.prefixUrl(workspace, resourceIdentifier);
             logger.info("URL: " + url);
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
@@ -73,7 +73,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             return new ProxyResponse<>(response.getStatus(), responseBody);
         } catch (BadRequestException be) {
             logger.error(be.getLocalizedMessage());
-            throw be;
+            throw new SearchException(be.getMessage(), be);
         } catch (Exception e) {
             logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);

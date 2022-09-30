@@ -53,7 +53,7 @@ public class IndexHandlerTest extends TestCase {
 
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
 
-        when(openSearchClient.sendRequest(GET, "/" + TEST_WORKSPACE_PREFIX + TEST_INDEX_1 + "/_mapping", null))
+        when(openSearchClient.sendRequest(GET, TEST_WORKSPACE_PREFIX + TEST_INDEX_1 + "/_mapping", null))
                 .thenReturn(mockResponse);
 
 
