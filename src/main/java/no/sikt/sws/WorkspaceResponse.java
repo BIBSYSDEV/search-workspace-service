@@ -24,7 +24,11 @@ public class WorkspaceResponse {
 
     @JsonProperty("create_index_link")
     public String createIndexLink;
-    
+
+    @SuppressWarnings("unused")
+    public WorkspaceResponse() {
+    }
+
     public WorkspaceResponse(
             String accountIdentifier,
             Map<String, InternalIndexDto> indexList,

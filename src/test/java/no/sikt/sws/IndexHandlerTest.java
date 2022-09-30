@@ -17,14 +17,12 @@ import org.mockito.MockitoAnnotations;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static com.amazonaws.http.HttpMethodName.POST;
-import static com.amazonaws.http.HttpMethodName.PUT;
+import static com.amazonaws.http.HttpMethodName.*;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
 import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
-import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
-import static no.sikt.sws.testutils.TestUtils.buildRequest;
+import static no.sikt.sws.testutils.TestUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -55,13 +53,13 @@ public class IndexHandlerTest extends TestCase {
 
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
 
-        when(openSearchClient.sendRequest(PUT, "/" + TEST_WORKSPACE_PREFIX + TEST_INDEX_1 + "/_mapping", null))
+        when(openSearchClient.sendRequest(GET, "/" + TEST_WORKSPACE_PREFIX + TEST_INDEX_1 + "/_mapping", null))
                 .thenReturn(mockResponse);
 
 
         var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_mapping");
 
-        var request = buildRequest(HttpMethod.PUT, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);

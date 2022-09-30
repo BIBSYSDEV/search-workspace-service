@@ -20,11 +20,14 @@ public class WorkspaceStripper {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceStripper.class);
     public static final String INDEX = "_index";
+    public static final String REQUIRED_PARAMETER_IS_NULL = "required parameter is null -> ";
 
     // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
-    public static String removePrefix(String workspacePrefix, String responseBody) {
-        if (responseBody == null) {
-            return null;
+    public static String removePrefix(String workspacePrefix, String responseBody) throws IllegalArgumentException {
+        if (responseBody == null || workspacePrefix == null) {
+            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
+                    + ((responseBody == null) ? "[responseBody] " : "")
+                    + ((workspacePrefix == null) ? "[workspacePrefix]" : ""));
         }
 
         //Regex that matches '{workspace}-' preceded by ' ', '/' or '"'
@@ -66,21 +69,29 @@ public class WorkspaceStripper {
     }
 
     // replace {index} with {workspace}-{index} from responseBody
-    public static String prefixIndexesBody(String workspacePrefix, String index,String gatewayBody) {
-        if (gatewayBody == null || index == null || workspacePrefix == null) {
-            return null;
+    public static String prefixIndexesBody(String workspacePrefix, String resourceIdentifier,String gatewayBody)
+            throws IllegalArgumentException {
+
+        if (gatewayBody == null || resourceIdentifier == null || workspacePrefix == null) {
+            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
+                    + ((gatewayBody == null) ? "[gatewayBody] " : "")
+                    + ((resourceIdentifier == null) ? "[resourceIdentifier] " : "")
+                    + ((workspacePrefix == null) ? "[workspacePrefix]" : ""));
         }
 
         return attempt(() -> {
-            var strippedIndex = Arrays.stream(index.split("/")).findFirst();
-            return gatewayBody.replaceAll(index, workspacePrefix + "-" + strippedIndex);
+            var strippedIndex = Arrays.stream(resourceIdentifier.split("/")).findFirst();
+            return gatewayBody.replaceAll(resourceIdentifier, workspacePrefix + "-" + strippedIndex);
         }).orElseThrow();
     }
 
 
-    protected static String prefixIndexesBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody) {
+    protected static String prefixIndexesBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody)
+            throws IllegalArgumentException {
         if (gatewayBulkBody == null || workspacePrefix == null) {
-            return null;
+            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
+                    + ((gatewayBulkBody == null) ? "[gatewayBulkBody] " : "")
+                    + ((workspacePrefix == null) ? "[workspacePrefix]" : ""));
         }
         return gatewayBulkBody.stream().map(item -> {
             String indexName;
@@ -102,9 +113,12 @@ public class WorkspaceStripper {
         }).collect(Collectors.joining("\n"));
     }
 
-    protected static String prefixAliasBody(String workspacePrefix,String gatewayAliasBody) {
+    protected static String prefixAliasBody(String workspacePrefix,String gatewayAliasBody)
+            throws IllegalArgumentException {
         if (gatewayAliasBody == null || workspacePrefix == null) {
-            return null;
+            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
+                    + ((gatewayAliasBody == null) ? "[gatewayAliasBody] " : "")
+                    + ((workspacePrefix == null) ? "[workspacePrefix]" : ""));
         }
         return gatewayAliasBody
                 .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")

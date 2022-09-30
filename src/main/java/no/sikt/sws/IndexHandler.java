@@ -11,6 +11,10 @@ import nva.commons.apigateway.exceptions.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.amazonaws.http.HttpMethodName.POST;
+import static com.amazonaws.http.HttpMethodName.PUT;
+import static no.sikt.sws.WorkspaceStripper.REQUIRED_PARAMETER_IS_NULL;
+
 /**
  * Created for checking if external libraries have been imported properly.
  */
@@ -52,7 +56,11 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             var url = "/" + WorkspaceStripper.prefixUrl(workspace, resourceIdentifier);
             logger.info("URL: " + url);
 
-            var requestBody = WorkspaceStripper.prefixBody(workspace, resourceIdentifier, body);
+            if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
+                throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "[requestBody]");
+            }
+            var requestBody =
+                    (body != null) ? WorkspaceStripper.prefixBody(workspace, resourceIdentifier, body) : null;
 
             var response = openSearchClient.sendRequest(httpMethod, url, requestBody);
 
