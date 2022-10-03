@@ -133,7 +133,7 @@ Resources:
               Service:
                 - lambda.amazonaws.com
               AWS:
-                - "*"
+                - "arn:aws:sts::671402871606:assumed-role/cp-sts-grant-role/*"
             Action: sts:AssumeRole
       Policies:
         - PolicyName: writeLog
