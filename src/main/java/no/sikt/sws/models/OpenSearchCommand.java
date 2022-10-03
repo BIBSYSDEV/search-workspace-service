@@ -11,7 +11,7 @@ public enum OpenSearchCommand {
     NOT_IMPLEMENTED("_%"),
     INVALID("invalid");
 
-    private static final String ALLOWED_INPUT = "[A-ZÆØÅa-zæøå\\d/_-]*";
+    private static final String ALLOWED_INPUT = "^(?!_)[A-ZÆØÅa-zæøå\\d/_-]*";
 
     private final String val;
 
