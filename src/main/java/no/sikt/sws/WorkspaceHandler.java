@@ -43,13 +43,13 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
 
     private String getIndexList(String workspace) throws SearchException {
         try {
-            var url = "/" + workspace + "-*";
+            var url = workspace + "-*";
             logger.info("URL: " + url);
             var response = openSearchClient.sendRequest(GET, url, null);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
 
-            var responseBody = WorkspaceStripper.remove(response.getBody(), workspace);
+            var responseBody = WorkspaceStripper.removePrefix(workspace,response.getBody());
             logger.info("body-stripped:" + responseBody);
             return responseBody;
         } catch (Exception e) {
