@@ -18,7 +18,7 @@ import static no.sikt.sws.constants.ApplicationConstants.BACKUP_BUCKET_NAME;
 import static no.sikt.sws.constants.ApplicationConstants.BACKUP_ROLE_ARN;
 
 public class RegisterSnapshotRepoHandler extends ApiGatewayHandler<Void, String> {
-    private static final Logger logger = LoggerFactory.getLogger(IndexHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegisterSnapshotRepoHandler.class);
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
     public RegisterSnapshotRepoHandler() {
