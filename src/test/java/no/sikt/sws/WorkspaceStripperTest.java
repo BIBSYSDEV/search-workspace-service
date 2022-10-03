@@ -141,7 +141,7 @@ public class WorkspaceStripperTest {
     void assertBodyPrefixAlias(TestCaseSws testCase) {
         var expectedBody = testCase.getRequestOpensearch().getBody();
         var gatewayBody = testCase.getRequestGateway().getBody();
-        var indexName = testCase.getIndexName();
+        var indexName = testCase.getRequestGateway().getUrl();
         var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX,indexName,gatewayBody));
 
         assertEquals(expectedBody,resultBody.get());
@@ -150,7 +150,7 @@ public class WorkspaceStripperTest {
     }
 
     void assertBodyPrefixing(TestCaseSws testCase) {
-        var indexName = testCase.getIndexName();
+        var indexName = testCase.getRequestGateway().getUrl();
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
         var gatewayBody = testCase.getRequestGateway().getBody();

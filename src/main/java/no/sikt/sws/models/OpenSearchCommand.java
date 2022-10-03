@@ -11,7 +11,7 @@ public enum OpenSearchCommand {
     NOT_IMPLEMENTED("_%"),
     INVALID("invalid");
 
-    private static final String ALLOWED_INPUT = "[a-zæøå\\d/_-]*";
+    private static final String ALLOWED_INPUT = "[A-ZÆØÅa-zæøå\\d/_-]*";
 
     private final String val;
 
@@ -29,7 +29,7 @@ public enum OpenSearchCommand {
             return INVALID;
         }
         var result = Arrays.stream(OpenSearchCommand.values())
-                .filter(p -> resourceIdentifier.equals(p.val) || resourceIdentifier.startsWith(p.val))
+                .filter(p -> resourceIdentifier.endsWith(p.val) || resourceIdentifier.startsWith(p.val))
                         .findFirst()
                         .orElse(OpenSearchCommand.OTHER);
         if (result == OTHER && !resourceIdentifier.matches(ALLOWED_INPUT)) {
