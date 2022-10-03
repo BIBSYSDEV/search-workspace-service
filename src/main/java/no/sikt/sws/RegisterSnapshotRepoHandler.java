@@ -33,7 +33,7 @@ public class RegisterSnapshotRepoHandler extends ApiGatewayHandler<Void, String>
         try {
             logger.info(BACKUP_BUCKET_NAME);
             var requestStr = JsonUtils.dtoObjectMapper.writeValueAsString(request);
-            var snapshotRepoName = "initial-snapshot";
+            var snapshotRepoName = "initialsnapshot";
             var response = openSearchClient.sendRequest(HttpMethodName.PUT,
                     "_snapshot/" + snapshotRepoName,
                     requestStr);
