@@ -163,6 +163,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - lambda:InvokeFunction
+                  - iam:PassRole
                 Resource: "*"
         - PolicyName: snapshotS3Repo
           PolicyDocument:
