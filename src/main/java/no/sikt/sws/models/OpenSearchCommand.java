@@ -1,5 +1,6 @@
 package no.sikt.sws.models;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
 
 
@@ -28,13 +29,19 @@ public enum OpenSearchCommand {
         if (resourceIdentifier == null || resourceIdentifier.isEmpty()) {
             return INVALID;
         }
+        //find last item in resourceIdentifier, if only one item (none), use resourceIdentifier
+        var resource = new ArrayDeque<>(Arrays.asList(resourceIdentifier.split("/"))).getLast();
+        String finalResource = resource.isEmpty() ? resourceIdentifier : resource;
+
         var result = Arrays.stream(OpenSearchCommand.values())
-                .filter(p -> resourceIdentifier.endsWith(p.val) || resourceIdentifier.startsWith(p.val))
+                .filter(p -> finalResource.equals(p.val) || resourceIdentifier.startsWith(p.val))
                         .findFirst()
                         .orElse(OpenSearchCommand.OTHER);
+
         if (result == OTHER && !resourceIdentifier.matches(ALLOWED_INPUT)) {
             result = INVALID;
         }
+
         return result;
     }
 
