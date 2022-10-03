@@ -133,6 +133,9 @@ Resources:
               Service:
                 - lambda.amazonaws.com
             Action: sts:AssumeRole
+          - Effect: Allow
+            Resource: "*"
+            Action: sts:AssumeRole
       Policies:
         - PolicyName: writeLog
           PolicyDocument:
