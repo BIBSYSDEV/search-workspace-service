@@ -1,7 +1,6 @@
 [
   {
     "name": "Search q=test",
-    "indexName": "index1",
     "requestGateway": {
       "method": "GET",
       "url": "index1/_search?q=test",
@@ -107,7 +106,6 @@
   },
   {
     "name": "Search no such indexname",
-    "indexName": "",
     "requestGateway": {
       "method": "GET",
       "url": "nonexisting-index-name/_search",

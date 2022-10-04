@@ -1,7 +1,6 @@
 [
   {
     "name": "GET single index by name, simple data",
-    "indexName": "index1",
     "requestGateway": {
       "method": "GET",
       "url": "index1",
@@ -103,7 +102,6 @@
   },
   {
     "name": "GET single index by name, complicated mapping and aliases",
-    "indexName": "evil",
     "requestGateway": {
       "method": "GET",
       "url": "evil",
@@ -169,7 +167,6 @@
   },
   {
     "name": "GET (all) indexes (/ -> /*) ",
-    "indexName": null,
     "requestGateway": {
       "method": "GET",
       "url": "*",
@@ -547,7 +544,6 @@
   },
   {
     "name": "PUT index, without template",
-    "indexName": "index2",
     "requestGateway": {
       "method": "PUT",
       "url": "index2",
@@ -571,7 +567,6 @@
   },
   {
     "name": "PUT index, without template but with stupid name",
-    "indexName": "workspace-mockname-index2-index2",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname-index2-index2",
@@ -595,7 +590,6 @@
   },
   {
     "name": "PUT index, without template but with another stupid name",
-    "indexName": "workspace-mockname",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname",
@@ -619,7 +613,6 @@
   },
   {
     "name": "PUT index, without template but with stupid body",
-    "indexName": "workspace-mockname",
     "requestGateway": {
       "method": "PUT",
       "url": "index1",
@@ -645,7 +638,6 @@
   },
   {
     "name": "PUT index by name, without template",
-    "indexName": "index2",
     "requestGateway": {
       "method": "PUT",
       "url": "index2",
@@ -669,7 +661,6 @@
   },
   {
     "name": "PUT index, without template but with stupid name",
-    "indexName": "workspace-mockname-index2-index2",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname-index2-index2",
@@ -693,7 +684,6 @@
   },
   {
     "name": "PUT index by Name, without template but with another stupid name",
-    "indexName": "workspace-mockname",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname",
@@ -717,7 +707,6 @@
   },
   {
     "name": "POST index, failed",
-    "indexName": "index2",
     "requestGateway": {
       "method": "POST",
       "url": "index2",
@@ -739,7 +728,6 @@
   },
   {
     "name": "POST index by Name, failed",
-    "indexName": "index2",
     "requestGateway": {
       "method": "POST",
       "url": "index2",
@@ -761,7 +749,6 @@
   },
   {
     "name": "PUT index by name, with template",
-    "indexName": "csassdaas",
     "requestGateway": {
       "method": "PUT",
       "url": "evil",

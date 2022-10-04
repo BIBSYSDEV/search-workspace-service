@@ -1,7 +1,6 @@
 [
   {
     "name": "Bulk POST insert docs without path",
-    "indexName": "",
     "requestGateway": {
       "method": "POST",
       "url": "_bulk",
@@ -123,7 +122,6 @@
   },
   {
     "name": "Bulk POST insert docs with path",
-    "indexName": "",
     "requestGateway": {
       "method": "POST",
       "url": "index-name/_bulk",
@@ -245,7 +243,6 @@
   },
   {
     "name": "Bulk POST insert docs with tricky-path",
-    "indexName": "",
     "requestGateway": {
       "method": "POST",
       "url": "sondres_index_for_bulk/_bulk",
@@ -367,7 +364,6 @@
   },
   {
     "name": "Bulk POST create index with evil stupid names",
-    "indexName": "_bulk",
     "requestGateway": {
       "method": "POST",
       "url": "_bulk",

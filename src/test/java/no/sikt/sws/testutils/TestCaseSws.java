@@ -12,9 +12,6 @@ public class TestCaseSws implements Serializable {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("indexName")
-    private String indexName;
-
     @JsonProperty("requestGateway")
     private TestRequestSws requestGateway;
 
@@ -29,10 +26,6 @@ public class TestCaseSws implements Serializable {
 
     public String getName() {
         return name;
-    }
-
-    public String getIndexName() {
-        return indexName;
     }
 
     public TestRequestSws getRequestGateway() {
