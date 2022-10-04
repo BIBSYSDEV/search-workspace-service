@@ -12,6 +12,9 @@ public class TestCaseSws implements Serializable {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("disabled")
+    private boolean disabled;
+
     @JsonProperty("requestGateway")
     private TestRequestSws requestGateway;
 
@@ -26,6 +29,10 @@ public class TestCaseSws implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
     }
 
     public TestRequestSws getRequestGateway() {
