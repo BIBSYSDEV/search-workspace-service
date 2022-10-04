@@ -34,7 +34,7 @@ public class WorkspaceStripper {
         }
 
         //Regex that matches '{workspace}-' preceded by ' ', '/' or '"'
-        var regex = "(?<=[ /\"])" + workspacePrefix + "-";
+        var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
 
         return responseBody.replaceAll(regex, EMPTY_STRING);
     }
