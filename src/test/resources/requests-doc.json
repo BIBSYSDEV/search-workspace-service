@@ -59,7 +59,7 @@
   },
   {
     "name": "Doc GET with id, should not touch doc-body",
-    "disabled": true,
+    "enabled": false,
     "requestGateway": {
       "method": "GET",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",

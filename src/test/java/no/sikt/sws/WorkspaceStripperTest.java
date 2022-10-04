@@ -109,33 +109,30 @@ public class WorkspaceStripperTest {
 
 
     void assertResponseStripping(TestCaseSws testCase) {
-        Assumptions.assumeFalse(testCase.isDisabled());
+        logger.info(testCase.getName());
+        Assumptions.assumeTrue(testCase.isEnabled());
 
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
         var resultResponse = WorkspaceStripper.removePrefix(WORKSPACEPREFIX,openSearchResponse);
 
         assertEquals(expectedResponse,resultResponse);
-
-        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
-        logger.info(resultResponse);
     }
 
     void assertUrlPrefixing(TestCaseSws testCase) {
-        Assumptions.assumeFalse(testCase.isDisabled());
+        logger.info(testCase.getName());
+        Assumptions.assumeTrue(testCase.isEnabled());
 
         var gatewayUrl = testCase.getRequestGateway().getUrl();
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
         var resultUrl = WorkspaceStripper.prefixUrl(WORKSPACEPREFIX,gatewayUrl);
 
-        logger.info(gatewayUrl + "->" + expectedUrl);
-
         assertEquals(expectedUrl,resultUrl);
-
     }
 
     void assertBodyPrefixAlias(TestCaseSws testCase) {
-        Assumptions.assumeFalse(testCase.isDisabled());
+        logger.info(testCase.getName());
+        Assumptions.assumeTrue(testCase.isEnabled());
 
         var expectedBody = testCase.getRequestOpensearch().getBody();
         var gatewayBody = testCase.getRequestGateway().getBody();
@@ -143,12 +140,11 @@ public class WorkspaceStripperTest {
         var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX,indexName,gatewayBody));
 
         assertEquals(expectedBody,resultBody.get());
-        logger.info(resultBody.get());
-
     }
 
     void assertBodyPrefixing(TestCaseSws testCase) {
-        Assumptions.assumeFalse(testCase.isDisabled());
+        logger.info(testCase.getName());
+        Assumptions.assumeTrue(testCase.isEnabled());
 
         var indexName = testCase.getRequestGateway().getUrl();
         var expectedBody = testCase.getRequestOpensearch().getBody();
@@ -158,7 +154,6 @@ public class WorkspaceStripperTest {
 
         assertEquals(expectedBody,resultBody.get());
 
-        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
     }
 
 }

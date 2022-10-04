@@ -749,7 +749,7 @@
   },
   {
     "name": "PUT index by name, with template",
-    "disabled": true,
+    "enabled": false,
     "requestGateway": {
       "method": "PUT",
       "url": "evil",
