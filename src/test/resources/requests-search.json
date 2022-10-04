@@ -104,5 +104,61 @@
         ]
       }
     }
+  },
+  {
+    "name": "Search no such indexname",
+    "indexName": "",
+    "requestGateway": {
+      "method": "GET",
+      "url": "nonexisting-index-name/_search",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-nonexisting-index-name/_search",
+      "body": null
+    },
+    "response":{
+      "error": {
+        "root_cause": [
+          {
+            "type": "index_not_found_exception",
+            "reason": "no such index [workspace-mockname-nonexisting-index-name]",
+            "index": "workspace-mockname-nonexisting-index-name",
+            "resource.id": "workspace-mockname-nonexisting-index-name",
+            "resource.type": "index_or_alias",
+            "index_uuid": "_na_"
+          }
+        ],
+        "type": "index_not_found_exception",
+        "reason": "no such index [workspace-mockname-nonexisting-index-name]",
+        "index": "workspace-mockname-nonexisting-index-name",
+        "resource.id": "workspace-mockname-nonexisting-index-name",
+        "resource.type": "index_or_alias",
+        "index_uuid": "_na_"
+      },
+      "status": 404
+    },
+    "responseStripped": {
+      "error": {
+        "root_cause": [
+          {
+            "type": "index_not_found_exception",
+            "reason": "no such index [nonexisting-index-name]",
+            "index": "nonexisting-index-name",
+            "resource.id": "nonexisting-index-name",
+            "resource.type": "index_or_alias",
+            "index_uuid": "_na_"
+          }
+        ],
+        "type": "index_not_found_exception",
+        "reason": "no such index [nonexisting-index-name]",
+        "index": "nonexisting-index-name",
+        "resource.id": "nonexisting-index-name",
+        "resource.type": "index_or_alias",
+        "index_uuid": "_na_"
+      },
+      "status": 404
+    }
   }
 ]
