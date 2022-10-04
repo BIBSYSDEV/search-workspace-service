@@ -58,6 +58,41 @@
     }
   },
   {
+    "name": "Doc GET with id, should not touch doc-body",
+    "requestGateway": {
+      "method": "GET",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "response": {
+      "_index": "workspace-mockname-index1",
+      "_id": "wA2eMYMB7qJ3vkuEet4E",
+      "_version": 2,
+      "_seq_no": 5,
+      "_primary_term": 1,
+      "found": true,
+      "_source": {
+        "workspace-mockname-index1": "workspace-mockname-index1"
+      }
+    },
+    "responseStripped": {
+      "_index": "index1",
+      "_id": "wA2eMYMB7qJ3vkuEet4E",
+      "_version": 2,
+      "_seq_no": 5,
+      "_primary_term": 1,
+      "found": true,
+      "_source": {
+        "workspace-mockname-index1": "workspace-mockname-index1"
+      }
+    }
+  },
+  {
     "name": "Doc PATCH with id, failed",
     "requestGateway": {
       "method": "PATCH",
@@ -118,7 +153,7 @@
     }
   },
   {
-    "name": "Doc PUT with id",
+    "name": "Doc PUT with id no body",
     "requestGateway": {
       "method": "PUT",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -141,7 +176,7 @@
     }
   },
   {
-    "name": "Doc PUT with id",
+    "name": "Doc PUT with id and body",
     "requestGateway": {
       "method": "PUT",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",

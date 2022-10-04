@@ -1,6 +1,6 @@
 [
   {
-    "name": "Search q=test",
+    "name": "Search by queryparameter",
     "requestGateway": {
       "method": "GET",
       "url": "index1/_search?q=test",
@@ -98,6 +98,73 @@
             "_source": {
               "navn": "Test-2",
               "age": 333
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "Search by post",
+    "requestGateway": {
+      "method": "POST",
+      "url": "evil/_search",
+      "body": "{\n  \"query\": { \"match\": { \"workspace-mockname-evil\": \"workspace-mockname-evil\" } }\n}"
+    },
+    "requestOpensearch": {
+      "method": "POST",
+      "url": "workspace-mockname-evil/_search",
+      "body": "{\n  \"query\": { \"match\": { \"workspace-mockname-evil\": \"workspace-mockname-evil\" } }\n}"
+    },
+    "response": {
+      "took": 3,
+      "timed_out": false,
+      "_shards": {
+        "total": 2,
+        "successful": 2,
+        "skipped": 0,
+        "failed": 0
+      },
+      "hits": {
+        "total": {
+          "value": 3,
+          "relation": "eq"
+        },
+        "max_score": 0.2876821,
+        "hits": [
+          {
+            "_index": "workspace-mockname-evil",
+            "_id": "vg2YMYMB7qJ3vkuE-t7B",
+            "_score": 0.2876821,
+            "_source": {
+              "workspace-mockname-evil": "workspace-mockname-evil"
+            }
+          }
+        ]
+      }
+    },
+    "responseStripped": {
+      "took": 3,
+      "timed_out": false,
+      "_shards": {
+        "total": 2,
+        "successful": 2,
+        "skipped": 0,
+        "failed": 0
+      },
+      "hits": {
+        "total": {
+          "value": 3,
+          "relation": "eq"
+        },
+        "max_score": 0.2876821,
+        "hits": [
+          {
+            "_index": "evil",
+            "_id": "vg2YMYMB7qJ3vkuE-t7B",
+            "_score": 0.2876821,
+            "_source": {
+              "workspace-mockname-evil": "workspace-mockname-evil"
             }
           }
         ]
