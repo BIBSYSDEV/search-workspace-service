@@ -95,14 +95,19 @@ public class WorkspaceStripperTest {
     @Test
     void runSingleTestcase() {
         var filename = "requests-indexes.json";
-        var testName = "PUT index, without template but with stupid name";
+        var testName = "PUT index by name, with template";
 
         var testCase = new TestCaseLoader(filename)
                 .getTestCase(testName);
 
-        // assertBulkBodyPrefixing(testCase);
-        assertUrlPrefixing(testCase);
-        assertResponseStripping(testCase);
+        if (testCase.isRequestBodyTest()) {
+            assertBodyPrefixing(testCase);
+            assertUrlPrefixing(testCase);
+        }
+
+        if (testCase.isResponseTest()) {
+            assertResponseStripping(testCase);
+        }
 
     }
 

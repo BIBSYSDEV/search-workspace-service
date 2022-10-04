@@ -74,7 +74,7 @@ public class TestCaseSws implements Serializable {
         try {
             return dtoObjectMapper.treeToValue(jsonNode, TestCaseSws.class);
         } catch (Exception e) {
-            System.out.println("Could not passe json as TestCase: " + jsonNode.toString());
+            System.out.println("Could not parse json as TestCase: " + jsonNode.toString());
             throw new RuntimeException(e);
         }
     }
