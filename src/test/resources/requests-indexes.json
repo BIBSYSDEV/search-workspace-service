@@ -102,6 +102,7 @@
   },
   {
     "name": "GET single index by name, complicated mapping and aliases",
+    "enabled": false,
     "requestGateway": {
       "method": "GET",
       "url": "evil",
@@ -113,13 +114,13 @@
       "body": null
     },
     "response": {
-      "evil": {
+      "workspace-mockname-evil": {
         "aliases": {
           "workspace-mockname-workspace-mockname-evil-alias": {}
         },
         "mappings": {
           "properties": {
-            "workspace-mockname-workspace-mockname-evil-mapping": {
+            "workspace-mockname-evil-mapping": {
               "type": "integer"
             }
           }
@@ -133,7 +134,7 @@
             "version": {
               "created": "135248027"
             },
-            "provided_name": "evil"
+            "provided_name": "workspace-mockname-evil"
           }
         }
       }
@@ -749,6 +750,7 @@
   },
   {
     "name": "PUT index by name, with template",
+    "enabled": false,
     "requestGateway": {
       "method": "PUT",
       "url": "evil",
@@ -757,7 +759,7 @@
     "requestOpensearch": {
       "method": "PUT",
       "url": "workspace-mockname-evil",
-      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-workspace-mockname-evil-alias\": {}\n  }\n}"
+      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-workspace-mockname-evil-alias\": {}\n  }\n}"
     }
   }
 ]

@@ -117,6 +117,9 @@ public class WorkspaceStripperTest {
         var resultResponse = WorkspaceStripper.removePrefix(WORKSPACEPREFIX,openSearchResponse);
 
         assertEquals(expectedResponse,resultResponse);
+
+        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
+        logger.info(resultResponse);
     }
 
     void assertUrlPrefixing(TestCaseSws testCase) {
@@ -126,6 +129,8 @@ public class WorkspaceStripperTest {
         var gatewayUrl = testCase.getRequestGateway().getUrl();
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
         var resultUrl = WorkspaceStripper.prefixUrl(WORKSPACEPREFIX,gatewayUrl);
+
+        logger.info(gatewayUrl + "->" + expectedUrl);
 
         assertEquals(expectedUrl,resultUrl);
     }
@@ -140,6 +145,7 @@ public class WorkspaceStripperTest {
         var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX,indexName,gatewayBody));
 
         assertEquals(expectedBody,resultBody.get());
+        logger.info(resultBody.get());
     }
 
     void assertBodyPrefixing(TestCaseSws testCase) {
@@ -153,6 +159,8 @@ public class WorkspaceStripperTest {
         var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX, indexName, gatewayBody));
 
         assertEquals(expectedBody,resultBody.get());
+
+        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
 
     }
 
