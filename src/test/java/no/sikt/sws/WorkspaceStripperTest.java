@@ -5,10 +5,7 @@ import no.sikt.sws.testutils.TestCaseSws;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.ReadableInstant;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,32 +27,21 @@ public class WorkspaceStripperTest {
         logger.info("Test cases loading");
         var streamBuilder = Stream.<TestCaseSws>builder();
 
-        new TestCaseLoader("requests-mapping.json")
-                .getTestCases()
-                .forEach(streamBuilder::add);
-
-        new TestCaseLoader("requests-search.json")
-                .getTestCases()
-                .forEach(streamBuilder::add);
-
-        new TestCaseLoader("requests-bulk.json")
-                .getTestCases()
-                .forEach(streamBuilder::add);
-
-        new TestCaseLoader("requests-doc.json")
-                .getTestCases()
-                .forEach(streamBuilder::add);
-
-        new TestCaseLoader("requests-indexes.json")
-                .getTestCases()
-                .forEach(streamBuilder::add);
-
-        new TestCaseLoader("requests-cat.json")
-                .getTestCases()
-                .forEach(streamBuilder::add);
+        loadTestCases(streamBuilder, "requests-mapping.json");
+        loadTestCases(streamBuilder, "requests-search.json");
+        loadTestCases(streamBuilder, "requests-bulk.json");
+        loadTestCases(streamBuilder, "requests-doc.json");
+        loadTestCases(streamBuilder, "requests-indexes.json");
+        loadTestCases(streamBuilder, "requests-cat.json");
 
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
         return streamBuilder.build();
+    }
+
+    private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {
+        new TestCaseLoader(filename)
+                .getTestCases()
+                .forEach(streamBuilder::add);
     }
 
     @TestFactory
@@ -92,17 +78,23 @@ public class WorkspaceStripperTest {
      * Using for debuging a single test-case. Change the filename, testcase,
      * and assert-function on the last line as needed
      */
+    @Disabled
     @Test
     void runSingleTestcase() {
         var filename = "requests-indexes.json";
-        var testName = "PUT index, without template but with stupid name";
+        var testName = "PUT index by name, with template";
 
         var testCase = new TestCaseLoader(filename)
                 .getTestCase(testName);
 
-        // assertBulkBodyPrefixing(testCase);
-        assertUrlPrefixing(testCase);
-        assertResponseStripping(testCase);
+        if (testCase.isRequestBodyTest()) {
+            assertBodyPrefixing(testCase);
+            assertUrlPrefixing(testCase);
+        }
+
+        if (testCase.isResponseTest()) {
+            assertResponseStripping(testCase);
+        }
 
     }
 
@@ -117,6 +109,9 @@ public class WorkspaceStripperTest {
 
 
     void assertResponseStripping(TestCaseSws testCase) {
+        logger.info(testCase.getName());
+        Assumptions.assumeTrue(testCase.isEnabled());
+
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
         var resultResponse = WorkspaceStripper.removePrefix(WORKSPACEPREFIX,openSearchResponse);
@@ -128,6 +123,9 @@ public class WorkspaceStripperTest {
     }
 
     void assertUrlPrefixing(TestCaseSws testCase) {
+        logger.info(testCase.getName());
+        Assumptions.assumeTrue(testCase.isEnabled());
+
         var gatewayUrl = testCase.getRequestGateway().getUrl();
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
         var resultUrl = WorkspaceStripper.prefixUrl(WORKSPACEPREFIX,gatewayUrl);
@@ -135,10 +133,12 @@ public class WorkspaceStripperTest {
         logger.info(gatewayUrl + "->" + expectedUrl);
 
         assertEquals(expectedUrl,resultUrl);
-
     }
 
     void assertBodyPrefixAlias(TestCaseSws testCase) {
+        logger.info(testCase.getName());
+        Assumptions.assumeTrue(testCase.isEnabled());
+
         var expectedBody = testCase.getRequestOpensearch().getBody();
         var gatewayBody = testCase.getRequestGateway().getBody();
         var indexName = testCase.getRequestGateway().getUrl();
@@ -146,10 +146,12 @@ public class WorkspaceStripperTest {
 
         assertEquals(expectedBody,resultBody.get());
         logger.info(resultBody.get());
-
     }
 
     void assertBodyPrefixing(TestCaseSws testCase) {
+        logger.info(testCase.getName());
+        Assumptions.assumeTrue(testCase.isEnabled());
+
         var indexName = testCase.getRequestGateway().getUrl();
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
@@ -159,6 +161,7 @@ public class WorkspaceStripperTest {
         assertEquals(expectedBody,resultBody.get());
 
         logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
+
     }
 
 }

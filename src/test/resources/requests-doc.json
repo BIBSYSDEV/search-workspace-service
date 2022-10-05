@@ -1,7 +1,6 @@
 [
   {
     "name": "Doc GET without id, failed",
-    "indexName": "index1",
     "requestGateway": {
       "method": "GET",
       "url": "index1/_doc",
@@ -23,7 +22,6 @@
   },
   {
     "name": "Doc GET with id",
-    "indexName": "index1",
     "requestGateway": {
       "method": "GET",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -60,8 +58,43 @@
     }
   },
   {
+    "name": "Doc GET with id, should not touch doc-body",
+    "enabled": false,
+    "requestGateway": {
+      "method": "GET",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "response": {
+      "_index": "workspace-mockname-index1",
+      "_id": "wA2eMYMB7qJ3vkuEet4E",
+      "_version": 2,
+      "_seq_no": 5,
+      "_primary_term": 1,
+      "found": true,
+      "_source": {
+        "workspace-mockname-index1": "workspace-mockname-index1"
+      }
+    },
+    "responseStripped": {
+      "_index": "index1",
+      "_id": "wA2eMYMB7qJ3vkuEet4E",
+      "_version": 2,
+      "_seq_no": 5,
+      "_primary_term": 1,
+      "found": true,
+      "_source": {
+        "workspace-mockname-index1": "workspace-mockname-index1"
+      }
+    }
+  },
+  {
     "name": "Doc PATCH with id, failed",
-    "indexName": "index1",
     "requestGateway": {
       "method": "PATCH",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -83,7 +116,6 @@
   },
   {
     "name": "Doc POST with id",
-    "indexName": "index1",
     "requestGateway": {
       "method": "POST",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -122,8 +154,7 @@
     }
   },
   {
-    "name": "Doc PUT with id",
-    "indexName": "index1",
+    "name": "Doc PUT with id no body",
     "requestGateway": {
       "method": "PUT",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -146,8 +177,7 @@
     }
   },
   {
-    "name": "Doc PUT with id",
-    "indexName": "index1",
+    "name": "Doc PUT with id and body",
     "requestGateway": {
       "method": "PUT",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -186,8 +216,46 @@
     }
   },
   {
+    "name": "Doc PUT with id and body, should not touch doc-body",
+    "requestGateway": {
+      "method": "PUT",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body": "{ \"index1\": \"index1\"}"
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body": "{ \"index1\": \"index1\"}"
+    },
+    "response":  {
+      "_index": "workspace-mockname-index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 6,
+      "result": "updated",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 8,
+      "_primary_term": 2
+    },
+    "responseStripped":  {
+      "_index": "index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 6,
+      "result": "updated",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 8,
+      "_primary_term": 2
+    }
+  },
+  {
     "name": "Doc PUT into index, fail",
-    "indexName": "index1",
     "requestGateway": {
       "method": "PUT",
       "url": "index1/_doc",
@@ -209,7 +277,6 @@
   },
   {
     "name": "Doc DELETE with invalid id",
-    "indexName": "index1",
     "requestGateway": {
       "method": "DELETE",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -249,7 +316,6 @@
   },
   {
     "name": "Doc DELETE with id",
-    "indexName": "index1",
     "requestGateway": {
       "method": "DELETE",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",

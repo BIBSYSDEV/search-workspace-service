@@ -1,7 +1,6 @@
 [
   {
     "name": "Create mapping",
-    "indexName": "index1",
     "requestGateway": {
       "method": "PUT",
       "url": "index1/_mapping",
@@ -25,7 +24,6 @@
   },
   {
     "name": "Create mapping in silly_index_name",
-    "indexName": "index1_sondres_index_for_mapping",
     "requestGateway": {
       "method": "PUT",
       "url": "index1_sondres_index_for_mapping/_mapping",

@@ -12,8 +12,8 @@ public class TestCaseSws implements Serializable {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("indexName")
-    private String indexName;
+    @JsonProperty("enabled")
+    private boolean enabled = true;
 
     @JsonProperty("requestGateway")
     private TestRequestSws requestGateway;
@@ -31,8 +31,8 @@ public class TestCaseSws implements Serializable {
         return name;
     }
 
-    public String getIndexName() {
-        return indexName;
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public TestRequestSws getRequestGateway() {
@@ -74,7 +74,7 @@ public class TestCaseSws implements Serializable {
         try {
             return dtoObjectMapper.treeToValue(jsonNode, TestCaseSws.class);
         } catch (Exception e) {
-            System.out.println("Could not passe json as TestCase: " + jsonNode.toString());
+            System.out.println("Could not parse json as TestCase: " + jsonNode.toString());
             throw new RuntimeException(e);
         }
     }

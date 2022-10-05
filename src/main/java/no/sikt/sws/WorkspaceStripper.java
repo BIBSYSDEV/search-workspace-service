@@ -82,7 +82,7 @@ public class WorkspaceStripper {
         }
 
         return attempt(() -> {
-            var strippedIndex = Arrays.stream(resourceIdentifier.split("/")).findFirst();
+            var strippedIndex = Arrays.stream(resourceIdentifier.split("/")).findFirst().orElseThrow();
             return gatewayBody.replaceAll(resourceIdentifier, workspacePrefix + "-" + strippedIndex);
         }).orElseThrow();
     }
