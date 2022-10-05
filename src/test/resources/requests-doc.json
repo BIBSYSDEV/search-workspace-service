@@ -216,6 +216,45 @@
     }
   },
   {
+    "name": "Doc PUT with id and body, should not touch doc-body",
+    "requestGateway": {
+      "method": "PUT",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body": "{ \"index1\": \"index1\"}"
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body": "{ \"index1\": \"index1\"}"
+    },
+    "response":  {
+      "_index": "workspace-mockname-index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 6,
+      "result": "updated",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 8,
+      "_primary_term": 2
+    },
+    "responseStripped":  {
+      "_index": "index1",
+      "_id": "vw2ZMYMB7qJ3vkuEHt6j",
+      "_version": 6,
+      "result": "updated",
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "_seq_no": 8,
+      "_primary_term": 2
+    }
+  },
+  {
     "name": "Doc PUT into index, fail",
     "requestGateway": {
       "method": "PUT",
