@@ -1,9 +1,9 @@
-package no.sikt.sws;
+package no.sikt.sws.models;
 
 import com.amazonaws.http.HttpMethodName;
-
-
 import com.amazonaws.services.lambda.runtime.Context;
+import no.sikt.sws.OpenSearchClient;
+import no.sikt.sws.RegisterSnapshotRepoHandler;
 import no.sikt.sws.exception.SearchException;
 import no.sikt.sws.models.opensearch.SnapshotRequestDto;
 import no.sikt.sws.models.opensearch.SnapshotSettingsRequestDto;
@@ -14,29 +14,31 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static no.sikt.sws.constants.ApplicationConstants.BACKUP_BUCKET_NAME;
-import static no.sikt.sws.constants.ApplicationConstants.BACKUP_ROLE_ARN;
+import java.sql.Timestamp;
 
-public class RegisterSnapshotRepoHandler extends ApiGatewayHandler<Void, String> {
+import static no.sikt.sws.constants.ApplicationConstants.BACKUP_BUCKET_NAME;
+
+public class SnapshotTakingLambda extends ApiGatewayHandler<Void, Void> {
+
     private static final Logger logger = LoggerFactory.getLogger(RegisterSnapshotRepoHandler.class);
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
-    public RegisterSnapshotRepoHandler() {
+    public SnapshotTakingLambda() {
         super(Void.class);
     }
 
     @Override
     protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
-        var settings = new SnapshotSettingsRequestDto(BACKUP_BUCKET_NAME, null, BACKUP_ROLE_ARN, "/snapshots");
-        var request = new SnapshotRequestDto("s3", settings);
+        var timestamp = new Timestamp(System.currentTimeMillis()).toString();
+        var checkStatusRequest = new String();
+        var snapshotRepoName = "initialsnapshot"; //TODO: hardcoded
+        var createSnapshotRequest = "/snap"+timestamp;
 
         try {
             logger.info(BACKUP_BUCKET_NAME);
-            var requestStr = JsonUtils.dtoObjectMapper.writeValueAsString(request);
-            var snapshotRepoName = "initialsnapshot";
             var response = openSearchClient.sendRequest(HttpMethodName.PUT,
-                    "_snapshot/" + snapshotRepoName,
-                    requestStr);
+                    "_snapshot/"+snapshotRepoName,
+                    createSnapshotRequest);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
             return response.getBody();
@@ -46,8 +48,8 @@ public class RegisterSnapshotRepoHandler extends ApiGatewayHandler<Void, String>
         }
     }
 
-    @Override
-    protected Integer getSuccessStatusCode(Void input, String output) {
-        return 200;
-    }
+
+
 }
+
+
