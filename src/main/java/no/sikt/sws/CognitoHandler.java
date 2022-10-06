@@ -20,8 +20,6 @@ import static software.amazon.awssdk.services.cognitoidentityprovider.model.Expl
 
 public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
-    private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
-
     public CognitoHandler() {
         super(Void.class);
     }
