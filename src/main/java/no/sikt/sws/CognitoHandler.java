@@ -29,8 +29,6 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
     @Override
     protected Void processInput(Void input, RequestInfo requestInfo, Context context) {
 
-        logger.info("Adding testworkspace");
-
         var cognitoClient = CognitoIdentityProviderClient.builder()
                 .region(Region.EU_WEST_1)
                 .httpClient(UrlConnectionHttpClient.builder().build())
@@ -38,6 +36,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
         var listResourceServersRequest = ListResourceServersRequest
                 .builder()
+                .userPoolId("eu-west-1_jcd2kPfRu")
                 .maxResults(10)
                 .build();
         var resources = cognitoClient.listResourceServers(listResourceServersRequest);
