@@ -106,7 +106,7 @@
   },
   {
     "name": "Search by post, body with real indexname",
-    "enabled": false,
+    "enabled": true,
     "requestGateway": {
       "method": "POST",
       "url": "evil/_search",

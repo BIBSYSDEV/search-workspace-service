@@ -7,6 +7,9 @@ import java.util.Arrays;
 public enum OpenSearchCommand {
     ALIAS("_alias"),
     BULK("_bulk"),
+    DOC(".*/_doc.*"),
+    MAPPING("_mapping"),
+    SEARCH("_search"),
     OTHER("other"),
     // the following are not executable
     NOT_IMPLEMENTED("_"),
@@ -34,7 +37,7 @@ public enum OpenSearchCommand {
         String finalResource = resource.isEmpty() ? resourceIdentifier : resource;
 
         var result = Arrays.stream(OpenSearchCommand.values())
-                .filter(p -> finalResource.equals(p.val) || resourceIdentifier.startsWith(p.val))
+                .filter(p -> finalResource.equals(p.val) || resourceIdentifier.matches(p.val))
                         .findFirst()
                         .orElse(OpenSearchCommand.OTHER);
 

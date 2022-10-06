@@ -102,7 +102,6 @@
   },
   {
     "name": "GET single index by name, complicated mapping and aliases",
-    "enabled": false,
     "requestGateway": {
       "method": "GET",
       "url": "evil",

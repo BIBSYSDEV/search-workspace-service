@@ -24,13 +24,14 @@ public class WorkspaceStripper {
     public static final String EMPTY_STRING = "";
 
     // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
-    public static String removePrefix(String workspacePrefix, String responseBody)  {
+    public static String removePrefix(OpenSearchCommand command, String workspacePrefix, String responseBody)  {
         if (responseBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
                     + ((responseBody == null) ? "[responseBody] " : EMPTY_STRING)
                     + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
         }
 
+        logger.info(command.name());
         //Regex that matches '{workspace}-' preceded by ' ', '/', '[' or '"'
         var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
 
@@ -52,12 +53,19 @@ public class WorkspaceStripper {
     public static String prefixBody(String workspacePrefix, String resourceIdentifier, String gatewayBody)
             throws BadRequestException {
         var getEnumt = OpenSearchCommand.fromString(resourceIdentifier);
-        logger.debug(getEnumt.name());
+        logger.info(getEnumt.name());
         switch (getEnumt) {
             case ALIAS:
                 return WorkspaceStripper.prefixAliasBody(workspacePrefix,gatewayBody);
             case BULK:
-                return WorkspaceStripper.prefixIndexesBulkBody(workspacePrefix,getBulkBody(gatewayBody));
+                return WorkspaceStripper.prefixBulkBody(workspacePrefix,getBulkBody(gatewayBody));
+            case SEARCH:
+                return WorkspaceStripper.prefixSearchBody(workspacePrefix,gatewayBody);
+            case MAPPING:
+                return WorkspaceStripper.prefixMappingkBody(workspacePrefix,gatewayBody);
+            case DOC:
+                logger.info("returning " + workspacePrefix + resourceIdentifier);
+                return gatewayBody;
             case OTHER:
                 return WorkspaceStripper.prefixIndexesBody(workspacePrefix,resourceIdentifier,gatewayBody);
             case NOT_IMPLEMENTED:
@@ -67,6 +75,17 @@ public class WorkspaceStripper {
             default:
                 throw new IllegalStateException("Unexpected value: " + resourceIdentifier);
         }
+    }
+
+
+    private static String prefixMappingkBody(String workspacePrefix, String gatewayBody) {
+        logger.debug(workspacePrefix);
+        return gatewayBody;
+    }
+
+    private static String prefixSearchBody(String workspacePrefix, String gatewayBody) {
+        logger.debug(workspacePrefix);
+        return gatewayBody;
     }
 
     // replace {index} with {workspace}-{index} from responseBody
@@ -89,7 +108,7 @@ public class WorkspaceStripper {
     }
 
 
-    protected static String prefixIndexesBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody) {
+    protected static String prefixBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody) {
         if (gatewayBulkBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
                     + ((gatewayBulkBody == null) ? "[gatewayBulkBody] " : EMPTY_STRING)

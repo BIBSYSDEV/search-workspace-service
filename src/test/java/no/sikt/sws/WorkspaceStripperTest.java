@@ -1,5 +1,6 @@
 package no.sikt.sws;
 
+import no.sikt.sws.models.OpenSearchCommand;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
 import org.joda.time.Instant;
@@ -21,7 +22,9 @@ public class WorkspaceStripperTest {
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceStripperTest.class);
     private static final String WORKSPACEPREFIX = "workspace-mockname";
 
-    // Merge all testcases into one stream.
+    /**
+    **  Merge all testcases into one stream.
+    **/
     static Stream<TestCaseSws> allRequestArguments() {
         final ReadableInstant before = new Instant();
         logger.info("Test cases loading");
@@ -117,7 +120,8 @@ public class WorkspaceStripperTest {
 
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
-        var resultResponse = WorkspaceStripper.removePrefix(WORKSPACEPREFIX,openSearchResponse);
+        OpenSearchCommand command = OpenSearchCommand.fromString(testCase.getRequestGateway().getUrl());
+        var resultResponse = WorkspaceStripper.removePrefix(command,WORKSPACEPREFIX,openSearchResponse);
 
         assertEquals(expectedResponse,resultResponse);
     }
@@ -138,15 +142,19 @@ public class WorkspaceStripperTest {
         logger.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
 
-        var indexName = testCase.getRequestGateway().getUrl();
+        var resourceIdentifier = testCase.getRequestGateway().getUrl();
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
         var gatewayBody = testCase.getRequestGateway().getBody();
-        var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX,indexName,gatewayBody));
+        var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX,resourceIdentifier,gatewayBody));
 
         assertEquals(expectedBody,resultBody.get());
     }
 
+
+    /**
+     * Testing body prefixing gateway request to opensearch requests.
+     */
     void assertRequestPrefix(TestCaseSws testCase) {
         logger.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
@@ -154,13 +162,14 @@ public class WorkspaceStripperTest {
         logger.info("--> " + testCase.getRequestOpensearch().getMethod()
             + " http://opensearch/" + testCase.getRequestOpensearch().getUrl());
 
-        var indexName = testCase.getRequestGateway().getUrl();
+        var resourceIdentifier = testCase.getRequestGateway().getUrl();
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
         var gatewayBody = testCase.getRequestGateway().getBody();
-        var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX, indexName, gatewayBody));
+        var resultBody = attempt(() ->
+                WorkspaceStripper.prefixBody(WORKSPACEPREFIX, resourceIdentifier, gatewayBody)).get();
 
-        assertEquals(expectedBody,resultBody.get());
+        assertEquals(expectedBody,resultBody);
     }
 
 }
