@@ -4,6 +4,9 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.github.jsonldjava.shaded.com.google.common.collect.Lists;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.CreateUserPoolClientRequest;
@@ -17,6 +20,8 @@ import static software.amazon.awssdk.services.cognitoidentityprovider.model.Expl
 
 public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
+    private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
+
     public CognitoHandler() {
         super(Void.class);
     }
@@ -24,10 +29,12 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
     @Override
     protected Void processInput(Void input, RequestInfo requestInfo, Context context) {
 
+        logger.info("Adding testworkspace");
+
         var cognitoClient = CognitoIdentityProviderClient.builder()
                 .region(Region.EU_WEST_1)
+                .httpClient(UrlConnectionHttpClient.builder().build())
                 .build();
-
 
         var listResourceServersRequest = ListResourceServersRequest
                 .builder()
