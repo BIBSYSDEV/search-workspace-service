@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static nva.commons.core.attempt.Try.attempt;
-
 @JacocoGenerated
 public class WorkspaceStripper {
 
@@ -33,14 +31,14 @@ public class WorkspaceStripper {
                     + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
         }
 
-        //Regex that matches '{workspace}-' preceded by ' ', '/' or '"'
+        //Regex that matches '{workspace}-' preceded by ' ', '/', '[' or '"'
         var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
 
         return responseBody.replaceAll(regex, EMPTY_STRING);
     }
 
     public static String prefixUrl(String workspacePrefix, String resourceIdentifier) {
-        logger.info("prefixing " + workspacePrefix);
+        logger.debug("prefixing " + workspacePrefix + resourceIdentifier);
         if (resourceIdentifier == null) {
             return workspacePrefix + "-*";
 
@@ -54,7 +52,7 @@ public class WorkspaceStripper {
     public static String prefixBody(String workspacePrefix, String resourceIdentifier, String gatewayBody)
             throws BadRequestException {
         var getEnumt = OpenSearchCommand.fromString(resourceIdentifier);
-        logger.info(getEnumt.name());
+        logger.debug(getEnumt.name());
         switch (getEnumt) {
             case ALIAS:
                 return WorkspaceStripper.prefixAliasBody(workspacePrefix,gatewayBody);
@@ -81,10 +79,13 @@ public class WorkspaceStripper {
                     + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
         }
 
-        return attempt(() -> {
-            var strippedIndex = Arrays.stream(resourceIdentifier.split("/")).findFirst().orElseThrow();
-            return gatewayBody.replaceAll(resourceIdentifier, workspacePrefix + "-" + strippedIndex);
-        }).orElseThrow();
+        return gatewayBody
+            //.replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
+            .replaceAll("(\"aliases\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
+        //return attempt(() -> {
+        //    var strippedIndex = Arrays.stream(resourceIdentifier.split("/")).findFirst().orElseThrow();
+        //    return gatewayBody.replaceAll(resourceIdentifier, workspacePrefix + "-" + strippedIndex);
+        //}).orElseThrow();
     }
 
 
@@ -127,13 +128,15 @@ public class WorkspaceStripper {
 
     private static List<JsonNode> getBulkBody(String bulkbody) {
         return Arrays.stream(bulkbody.split("\n"))
-                .map(s -> {
-                    try {
-                        return JsonUtils.dtoObjectMapper.readValue(s, JsonNode.class);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).collect(Collectors.toList());
+                .map(WorkspaceStripper::string2JsonNode).collect(Collectors.toList());
+    }
+
+    private static JsonNode string2JsonNode(String s) {
+        try {
+            return JsonUtils.dtoObjectMapper.readValue(s, JsonNode.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -46,30 +46,30 @@ public class WorkspaceStripperTest {
 
     @TestFactory
     @DisplayName("Opensearch response-body stripping")
-    Stream<DynamicTest> testStripperFactory() {
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString;  // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
+    Stream<DynamicTest> testResponseStrippingFactory() {
         var testCases = allRequestArguments().filter(TestCaseSws::isResponseTest);
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName;  // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
 
         return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
 
     @TestFactory
     @DisplayName("Opensearch url prefixing")
-    Stream<DynamicTest> testPrefixUrlAddingFactory() {
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefixing;      // -> test function
+    Stream<DynamicTest> testUrlPrefixFactory() {
         var testCases = allRequestArguments().filter(TestCaseSws::isRequestTest);
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName; // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefix;      // -> test function
 
         return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
 
     @TestFactory
     @DisplayName("Opensearch request-body prefixing")
-    Stream<DynamicTest> testPrefixBodyFactory() {
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::toString; // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertBodyPrefixing;     // -> test function
+    Stream<DynamicTest> testRequestPrefixFactory() {
         var testCases = allRequestArguments().filter(TestCaseSws::isRequestBodyTest);
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName; // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertRequestPrefix;     // -> test function
 
         return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
@@ -85,11 +85,11 @@ public class WorkspaceStripperTest {
         var testName = "PUT index by name, with template";
 
         var testCase = new TestCaseLoader(filename)
-                .getTestCase(testName);
+            .getTestCase(testName);
 
         if (testCase.isRequestBodyTest()) {
-            assertBodyPrefixing(testCase);
-            assertUrlPrefixing(testCase);
+            assertRequestPrefix(testCase);
+            assertUrlPrefix(testCase);
         }
 
         if (testCase.isResponseTest()) {
@@ -99,58 +99,60 @@ public class WorkspaceStripperTest {
     }
 
     @Test
-    void assertAliasPrefixing() {
+    @DisplayName("Opensearch request-body-alias prefixing")
+    void assertRequestPrefixAlias() {
         var filename = "requests-alias.json";
-
         new TestCaseLoader(filename)
-            .getTestCases().forEach(this::assertBodyPrefixAlias);
+            .getTestCases()
+            .forEach(this::assertAliasPrefix);
     }
 
 
-
     void assertResponseStripping(TestCaseSws testCase) {
-        logger.info(testCase.getName());
+        logger.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
+
+        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
+            + " http://opensearch/" +  testCase.getRequestOpensearch().getUrl());
 
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
         var resultResponse = WorkspaceStripper.removePrefix(WORKSPACEPREFIX,openSearchResponse);
 
         assertEquals(expectedResponse,resultResponse);
-
-        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
-        logger.info(resultResponse);
     }
 
-    void assertUrlPrefixing(TestCaseSws testCase) {
-        logger.info(testCase.getName());
+    void assertUrlPrefix(TestCaseSws testCase) {
+        logger.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
 
         var gatewayUrl = testCase.getRequestGateway().getUrl();
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
         var resultUrl = WorkspaceStripper.prefixUrl(WORKSPACEPREFIX,gatewayUrl);
 
-        logger.info(gatewayUrl + "->" + expectedUrl);
-
         assertEquals(expectedUrl,resultUrl);
+
     }
 
-    void assertBodyPrefixAlias(TestCaseSws testCase) {
-        logger.info(testCase.getName());
+    void assertAliasPrefix(TestCaseSws testCase) {
+        logger.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
 
-        var expectedBody = testCase.getRequestOpensearch().getBody();
-        var gatewayBody = testCase.getRequestGateway().getBody();
         var indexName = testCase.getRequestGateway().getUrl();
+        var expectedBody = testCase.getRequestOpensearch().getBody();
+
+        var gatewayBody = testCase.getRequestGateway().getBody();
         var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX,indexName,gatewayBody));
 
         assertEquals(expectedBody,resultBody.get());
-        logger.info(resultBody.get());
     }
 
-    void assertBodyPrefixing(TestCaseSws testCase) {
-        logger.info(testCase.getName());
+    void assertRequestPrefix(TestCaseSws testCase) {
+        logger.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
+
+        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
+            + " http://opensearch/" + testCase.getRequestOpensearch().getUrl());
 
         var indexName = testCase.getRequestGateway().getUrl();
         var expectedBody = testCase.getRequestOpensearch().getBody();
@@ -159,9 +161,6 @@ public class WorkspaceStripperTest {
         var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX, indexName, gatewayBody));
 
         assertEquals(expectedBody,resultBody.get());
-
-        logger.info(testCase.getRequestOpensearch().getMethod() + "->" + testCase.getRequestOpensearch().getUrl());
-
     }
 
 }
