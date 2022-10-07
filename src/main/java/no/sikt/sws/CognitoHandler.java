@@ -81,7 +81,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
         var listResourceServersRequest = ListResourceServersRequest
                 .builder()
                 .userPoolId(userPoolId)
-                .maxResults(100)
+                .maxResults(50)
                 .build();
         var resources = cognitoClient.listResourceServers(listResourceServersRequest);
 
