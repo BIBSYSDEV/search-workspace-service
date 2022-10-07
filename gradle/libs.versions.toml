@@ -27,6 +27,8 @@ aws-sdk2-eventbridge            = { group = 'software.amazon.awssdk',   name = '
 aws-sdk2-regions                = { group = 'software.amazon.awssdk',   name = 'regions',                   version.ref = 'awsSdk2' }
 aws-sdk2-s3                     = { group = 'software.amazon.awssdk',   name = 's3',                        version.ref = 'awsSdk2' }
 aws-sdk2-urlconnectionclient    = { group = 'software.amazon.awssdk',   name = 'url-connection-client',     version.ref = 'awsSdk2' }
+aws-sdk2-cognitoidentityprovider= { group = 'software.amazon.awssdk',   name = 'cognitoidentityprovider',   version.ref = 'awsSdk2' }
+
 aws-lambda-events               = { group = 'com.amazonaws',            name = 'aws-lambda-java-events',    version.ref = 'awsLambdaEvents' }
 aws-lambda-java-core            = { group = 'com.amazonaws',            name = 'aws-lambda-java-core',      version.ref = 'awsLambdaCore' }
 aws-java-sdk-core               = { group = 'com.amazonaws',            name = 'aws-java-sdk-core',         version.ref = 'awsSdk' }
