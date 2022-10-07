@@ -368,7 +368,7 @@ Resources:
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
 
-  UserPool:
+  CognitoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       AdminCreateUserConfig:
@@ -386,7 +386,7 @@ Resources:
   UserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      UserPoolId: !Ref UserPool
+      UserPoolId: !Ref CognitoUserPool
       Domain: !Ref UserPoolDomainPrefix
 
   ResourceServerScopes:
@@ -405,13 +405,13 @@ Resources:
           ScopeName: workspace-stig
         - ScopeDescription: Scope for accessing marinas workspace
           ScopeName: workspace-marina
-      UserPoolId: !Ref UserPool
+      UserPoolId: !Ref CognitoUserPool
 
   BackendApplicationSondreClient:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref UserPool
+      UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
@@ -435,7 +435,7 @@ Resources:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref UserPool
+      UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
@@ -460,7 +460,7 @@ Resources:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref UserPool
+      UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
@@ -484,7 +484,7 @@ Resources:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref UserPool
+      UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
