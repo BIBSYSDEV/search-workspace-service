@@ -1,22 +1,17 @@
 package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.github.jsonldjava.shaded.com.google.common.collect.Lists;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListResourceServersRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUserPoolsRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ResourceServerType;
 
 import static no.sikt.sws.constants.ApplicationConstants.BACKEND_SCOPE_RESOURCE_SERVER_NAME;
 import static no.sikt.sws.constants.ApplicationConstants.USER_POOL_NAME;
-import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
 
 public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
@@ -25,7 +20,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
             .httpClient(UrlConnectionHttpClient.builder().build())
             .build();
 
-    private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
+    // private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
 
     public CognitoHandler() {
         super(Void.class);
@@ -34,18 +29,19 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
     @Override
     protected Void processInput(Void input, RequestInfo requestInfo, Context context) {
 
-        var newScopeName = "TestScope";
-        var newAppClientName = "NewAppClientAttempt";
+        //  var newScopeName = "TestScope";
+        // var newAppClientName = "NewAppClientAttempt";
 
         String userPoolId = getUserPoolId();
-        var serverIdentifier = getResourceServer(userPoolId);
+        //var serverIdentifier =
+        getResourceServer(userPoolId);
 
-        createScope(userPoolId, serverIdentifier, newScopeName);
+        //createScope(userPoolId, serverIdentifier, newScopeName);
 
-        createAppClient(userPoolId, newScopeName, newAppClientName);
+        //createAppClient(userPoolId, newScopeName, newAppClientName);
         return null;
     }
-
+    /*
     private void createAppClient(String userPoolId, String scopeName, String appClientName) {
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
                 .userPoolId(userPoolId)
@@ -88,6 +84,8 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
         cognitoClient.updateResourceServer(updateRequest);
     }
+
+ */
 
     private ResourceServerType getResourceServer(String userPoolId) {
         var listResourceServersRequest = ListResourceServersRequest
