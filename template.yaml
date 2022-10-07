@@ -162,7 +162,7 @@ Resources:
                   - cognito-idp:CreateUserPool
                   - cognito-idp:ListUserPools
                   - cognito-idp:CreateUserPoolClient
-                Resource: !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool:*:*'
+                Resource: "*"
 
   SWSSnapshotRepoRole:
     Type: AWS::IAM::Role
