@@ -33,7 +33,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
         var newAppClientName = "NewAppClientAttempt";
 
         String userPoolId = getUserPoolId();
-        String serverIdentifier = getServerIdentifier(userPoolId);
+        var serverIdentifier = getResourceServer(userPoolId);
 
         createScope(userPoolId, serverIdentifier, newScopeName);
 
@@ -60,24 +60,29 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
         cognitoClient.createUserPoolClient(createUserPoolRequest);
     }
 
-    private void createScope(String userPoolId, String serverIdentifier, String scopeName) {
+    private void createScope(String userPoolId, ResourceServerType server, String scopeName) {
+
+        var scopes = server.scopes();
+
         var newScope = ResourceServerScopeType.builder()
                 .scopeName(scopeName)
                 .scopeDescription("Testing Scope that should be deleted") //TODO: delete or change this line or change
                 .build();
 
+        scopes.add(newScope);
+
         var updateRequest = UpdateResourceServerRequest
                 .builder()
                 .userPoolId(userPoolId)
-                .identifier(serverIdentifier)
+                .identifier(server.identifier())
                 .name(BACKEND_SCOPE_RESOURCE_SERVER_NAME)
-                .scopes(newScope)
+                .scopes(scopes)
                 .build();
 
         cognitoClient.updateResourceServer(updateRequest);
     }
 
-    private String getServerIdentifier(String userPoolId) {
+    private ResourceServerType getResourceServer(String userPoolId) {
         var listResourceServersRequest = ListResourceServersRequest
                 .builder()
                 .userPoolId(userPoolId)
@@ -92,7 +97,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
         if (server.isEmpty()) {
             throw new IllegalStateException("Should have a resource server.");
         }
-        return server.get().identifier();
+        return server.get();
     }
 
     private String getUserPoolId() {
