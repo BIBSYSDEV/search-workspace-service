@@ -160,6 +160,7 @@ Resources:
                   - cognito-idp:ListResourceServers
                   - cognito-idp:UpdateResourceServer
                   - cognito-idp:CreateUserPool
+                Resource: "*"
 
   SWSSnapshotRepoRole:
     Type: AWS::IAM::Role
