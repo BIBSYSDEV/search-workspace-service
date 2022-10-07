@@ -29,20 +29,23 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
     @Override
     protected Void processInput(Void input, RequestInfo requestInfo, Context context) {
 
+        var newScopeName = "TestScope";
+        var newAppClientName = "NewAppClientAttempt";
+
         String userPoolId = getUserPoolId();
         String serverIdentifier = getServerIdentifier(userPoolId);
 
-        createScope(userPoolId, serverIdentifier);
+        createScope(userPoolId, serverIdentifier, newScopeName);
 
-        createClient(userPoolId);
+        createAppClient(userPoolId, newScopeName, newAppClientName);
         return null;
     }
 
-    private void createClient(String userPoolId) {
+    private void createAppClient(String userPoolId, String scopeName, String appClientName) {
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
                 .userPoolId(userPoolId)
-                .clientName("NewClientAttempt")
-                .allowedOAuthScopes(Lists.newArrayList("workspace", "TestScope"))
+                .clientName(appClientName)
+                .allowedOAuthScopes(Lists.newArrayList("workspace", scopeName))
                 .explicitAuthFlows(
                         List.of(
                                 ALLOW_ADMIN_USER_PASSWORD_AUTH,
@@ -57,16 +60,17 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
         cognitoClient.createUserPoolClient(createUserPoolRequest);
     }
 
-    private void createScope(String userPoolId, String serverIdentifier) {
+    private void createScope(String userPoolId, String serverIdentifier, String scopeName) {
         var newScope = ResourceServerScopeType.builder()
-                .scopeName("TestScope")
-                .scopeDescription("Testing Scope that should be deleted")
+                .scopeName(scopeName)
+                .scopeDescription("Testing Scope that should be deleted") //TODO: delete or change this line or change
                 .build();
 
         var updateRequest = UpdateResourceServerRequest
                 .builder()
                 .userPoolId(userPoolId)
                 .identifier(serverIdentifier)
+                .name(BACKEND_SCOPE_RESOURCE_SERVER_NAME)
                 .scopes(newScope)
                 .build();
 
@@ -77,7 +81,6 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
         var listResourceServersRequest = ListResourceServersRequest
                 .builder()
                 .userPoolId(userPoolId)
-                .maxResults(10)
                 .build();
         var resources = cognitoClient.listResourceServers(listResourceServersRequest);
 
