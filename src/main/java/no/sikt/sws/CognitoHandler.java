@@ -11,10 +11,16 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
 import java.util.List;
 
+import static no.sikt.sws.constants.ApplicationConstants.BACKEND_SCOPE_RESOURCE_SERVER_NAME;
 import static no.sikt.sws.constants.ApplicationConstants.USER_POOL_NAME;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
 
 public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
+
+    CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
+            .region(Region.EU_WEST_1)
+            .httpClient(UrlConnectionHttpClient.builder().build())
+            .build();
 
     public CognitoHandler() {
         super(Void.class);
@@ -23,49 +29,16 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
     @Override
     protected Void processInput(Void input, RequestInfo requestInfo, Context context) {
 
-        var cognitoClient = CognitoIdentityProviderClient.builder()
-                .region(Region.EU_WEST_1)
-                .httpClient(UrlConnectionHttpClient.builder().build())
-                .build();
+        String userPoolId = getUserPoolId();
+        String serverIdentifier = getServerIdentifier(userPoolId);
 
-        var userPool = cognitoClient
-                .listUserPools(ListUserPoolsRequest.builder().build())
-                .userPools()
-                .stream().filter(up -> up.name().equals(USER_POOL_NAME))
-                .findFirst();
+        createScope(userPoolId, serverIdentifier);
 
-        if (userPool.isEmpty()) {
-            throw new IllegalStateException("No userpools were found.");
-        }
-        var userPoolId = userPool.get().id();
+        createClient(userPoolId);
+        return null;
+    }
 
-        var listResourceServersRequest = ListResourceServersRequest
-                .builder()
-                .userPoolId(userPoolId)
-                .maxResults(10)
-                .build();
-        var resources = cognitoClient.listResourceServers(listResourceServersRequest);
-
-        var servers = resources.resourceServers();
-        if (servers.isEmpty()) {
-            throw new IllegalStateException("Should have a resource server.");
-        }
-
-        var newScope = ResourceServerScopeType.builder()
-                .scopeName("TestScope")
-                .scopeDescription("Testing Scope that should be deleted")
-                .build();
-
-        var updateRequest = UpdateResourceServerRequest
-                .builder()
-                .userPoolId(userPoolId)
-                .identifier(servers.get(0).identifier())
-                .scopes(newScope)
-                .build();
-
-        cognitoClient.updateResourceServer(updateRequest);
-
-
+    private void createClient(String userPoolId) {
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
                 .userPoolId(userPoolId)
                 .clientName("NewClientAttempt")
@@ -82,7 +55,53 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
                 .idTokenValidity(15)
                 .build();
         cognitoClient.createUserPoolClient(createUserPoolRequest);
-        return null;
+    }
+
+    private void createScope(String userPoolId, String serverIdentifier) {
+        var newScope = ResourceServerScopeType.builder()
+                .scopeName("TestScope")
+                .scopeDescription("Testing Scope that should be deleted")
+                .build();
+
+        var updateRequest = UpdateResourceServerRequest
+                .builder()
+                .userPoolId(userPoolId)
+                .identifier(serverIdentifier)
+                .scopes(newScope)
+                .build();
+
+        cognitoClient.updateResourceServer(updateRequest);
+    }
+
+    private String getServerIdentifier(String userPoolId) {
+        var listResourceServersRequest = ListResourceServersRequest
+                .builder()
+                .userPoolId(userPoolId)
+                .maxResults(10)
+                .build();
+        var resources = cognitoClient.listResourceServers(listResourceServersRequest);
+
+        var server = resources
+                .resourceServers()
+                .stream().filter(s -> s.name().equals(BACKEND_SCOPE_RESOURCE_SERVER_NAME))
+                .findFirst();
+        if (server.isEmpty()) {
+            throw new IllegalStateException("Should have a resource server.");
+        }
+        return server.get().identifier();
+    }
+
+    private String getUserPoolId() {
+        var userPool = cognitoClient
+                .listUserPools(ListUserPoolsRequest.builder().build())
+                .userPools()
+                .stream().filter(up -> up.name().equals(USER_POOL_NAME))
+                .findFirst();
+
+        if (userPool.isEmpty()) {
+            throw new IllegalStateException("No userpools were found.");
+        }
+        return userPool.get().id();
     }
 
     @Override
