@@ -92,7 +92,7 @@ public class IndexHandlerTest extends TestCase {
     @Test
     void shouldThrowBadRequestWhenGivenIndexBeginningWithUnderscore() throws IOException {
 
-        var pathParams = buildPathParamsForIndex("_BULK");
+        var pathParams = buildPathParamsForIndex("_someindex");
         var request = buildRequest(HttpMethod.PUT, pathParams);
 
         handler.handleRequest(request, output, CONTEXT);
@@ -105,7 +105,7 @@ public class IndexHandlerTest extends TestCase {
     void shouldThrowBadRequestWhenUsingNonWhitelistedCharacters() throws IOException {
 
         var pathParams = buildPathParamsForIndex("some:index");
-        var request = buildRequest(HttpMethod.PUT, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);

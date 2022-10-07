@@ -42,6 +42,7 @@ public class WorkspaceResponse {
     public static WorkspaceResponse fromValues(String workspacePrefix, String openSearchIndexList)
             throws JsonProcessingException {
 
+
         String createIndexLink = API_GATEWAY_URL + "/index_name";
         Map<String, OpenSearchIndexDto> openSearchIndexListMap =
                 objectMapper.readValue(openSearchIndexList, new TypeReference<>() {});

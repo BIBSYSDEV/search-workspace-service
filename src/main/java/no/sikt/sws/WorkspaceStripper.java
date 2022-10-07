@@ -34,7 +34,7 @@ public class WorkspaceStripper {
         }
 
         //Regex that matches '{workspace}-' preceded by ' ', '/' or '"'
-        var regex = "(?<=[ /\"])" + workspacePrefix + "-";
+        var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
 
         return responseBody.replaceAll(regex, EMPTY_STRING);
     }
@@ -82,7 +82,7 @@ public class WorkspaceStripper {
         }
 
         return attempt(() -> {
-            var strippedIndex = Arrays.stream(resourceIdentifier.split("/")).findFirst();
+            var strippedIndex = Arrays.stream(resourceIdentifier.split("/")).findFirst().orElseThrow();
             return gatewayBody.replaceAll(resourceIdentifier, workspacePrefix + "-" + strippedIndex);
         }).orElseThrow();
     }

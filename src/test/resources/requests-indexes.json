@@ -1,7 +1,6 @@
 [
   {
-    "name": "GET index",
-    "indexName": "index1",
+    "name": "GET single index by name, simple data",
     "requestGateway": {
       "method": "GET",
       "url": "index1",
@@ -102,102 +101,66 @@
     }
   },
   {
-    "name": "GET index by name",
-    "indexName": "index1",
+    "name": "GET single index by name, complicated mapping and aliases",
+    "enabled": false,
     "requestGateway": {
       "method": "GET",
-      "url": "index1",
+      "url": "evil",
       "body": null
     },
     "requestOpensearch": {
       "method": "GET",
-      "url": "workspace-mockname-index1",
+      "url": "workspace-mockname-evil",
       "body": null
     },
     "response": {
-      "workspace-mockname-index1": {
+      "workspace-mockname-evil": {
         "aliases": {
-          "sample-alias1": {}
+          "workspace-mockname-workspace-mockname-evil-alias": {}
         },
         "mappings": {
           "properties": {
-            "age": {
+            "workspace-mockname-evil-mapping": {
               "type": "integer"
-            },
-            "navn": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
-            },
-            "test": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
             }
           }
         },
         "settings": {
           "index": {
-            "creation_date": "1662982493727",
+            "creation_date": "1664873559590",
             "number_of_shards": "2",
             "number_of_replicas": "1",
-            "uuid": "nXsprbMMTHuvByW3rG3u8Q",
+            "uuid": "TI-C5E9xRYmWEob3MD-bNA",
             "version": {
-              "created": "136217927"
+              "created": "135248027"
             },
-            "provided_name": "workspace-mockname-index1"
+            "provided_name": "workspace-mockname-evil"
           }
         }
       }
     },
     "responseStripped": {
-      "index1": {
+      "evil": {
         "aliases": {
-          "sample-alias1": {}
+          "workspace-mockname-evil-alias": {}
         },
         "mappings": {
           "properties": {
-            "age": {
+            "workspace-mockname-evil-mapping": {
               "type": "integer"
-            },
-            "navn": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
-            },
-            "test": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
             }
           }
         },
         "settings": {
           "index": {
-            "creation_date": "1662982493727",
+            "creation_date": "1664873559590",
             "number_of_shards": "2",
             "number_of_replicas": "1",
-            "uuid": "nXsprbMMTHuvByW3rG3u8Q",
+            "uuid": "TI-C5E9xRYmWEob3MD-bNA",
             "version": {
-              "created": "136217927"
+              "created": "135248027"
             },
-            "provided_name": "index1"
+            "provided_name": "evil"
           }
         }
       }
@@ -205,10 +168,9 @@
   },
   {
     "name": "GET (all) indexes (/ -> /*) ",
-    "indexName": null,
     "requestGateway": {
       "method": "GET",
-      "url": "",
+      "url": "*",
       "body": null
     },
     "requestOpensearch": {
@@ -583,7 +545,6 @@
   },
   {
     "name": "PUT index, without template",
-    "indexName": "index2",
     "requestGateway": {
       "method": "PUT",
       "url": "index2",
@@ -607,7 +568,6 @@
   },
   {
     "name": "PUT index, without template but with stupid name",
-    "indexName": "workspace-mockname-index2-index2",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname-index2-index2",
@@ -631,7 +591,6 @@
   },
   {
     "name": "PUT index, without template but with another stupid name",
-    "indexName": "workspace-mockname",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname",
@@ -655,7 +614,6 @@
   },
   {
     "name": "PUT index, without template but with stupid body",
-    "indexName": "workspace-mockname",
     "requestGateway": {
       "method": "PUT",
       "url": "index1",
@@ -681,7 +639,6 @@
   },
   {
     "name": "PUT index by name, without template",
-    "indexName": "index2",
     "requestGateway": {
       "method": "PUT",
       "url": "index2",
@@ -705,7 +662,6 @@
   },
   {
     "name": "PUT index, without template but with stupid name",
-    "indexName": "workspace-mockname-index2-index2",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname-index2-index2",
@@ -729,7 +685,6 @@
   },
   {
     "name": "PUT index by Name, without template but with another stupid name",
-    "indexName": "workspace-mockname",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname",
@@ -753,7 +708,6 @@
   },
   {
     "name": "POST index, failed",
-    "indexName": "index2",
     "requestGateway": {
       "method": "POST",
       "url": "index2",
@@ -775,7 +729,6 @@
   },
   {
     "name": "POST index by Name, failed",
-    "indexName": "index2",
     "requestGateway": {
       "method": "POST",
       "url": "index2",
@@ -793,6 +746,20 @@
     "responseStripped":{
       "error": "Incorrect HTTP method for uri [/index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
       "status": 405
+    }
+  },
+  {
+    "name": "PUT index by name, with template",
+    "enabled": false,
+    "requestGateway": {
+      "method": "PUT",
+      "url": "evil",
+      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-evil-alias\": {}\n  }\n}"
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-evil",
+      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-workspace-mockname-evil-alias\": {}\n  }\n}"
     }
   }
 ]

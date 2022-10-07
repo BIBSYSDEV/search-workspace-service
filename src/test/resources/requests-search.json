@@ -1,7 +1,6 @@
 [
   {
-    "name": "Search q=test",
-    "indexName": "index1",
+    "name": "Search by queryparameter",
     "requestGateway": {
       "method": "GET",
       "url": "index1/_search?q=test",
@@ -103,6 +102,129 @@
           }
         ]
       }
+    }
+  },
+  {
+    "name": "Search by post, body with real indexname",
+    "enabled": false,
+    "requestGateway": {
+      "method": "POST",
+      "url": "evil/_search",
+      "body": "{\n  \"query\": { \"match\": { \"workspace-mockname-evil\": \"workspace-mockname-evil\" } }\n}"
+    },
+    "requestOpensearch": {
+      "method": "POST",
+      "url": "workspace-mockname-evil/_search",
+      "body": "{\n  \"query\": { \"match\": { \"workspace-mockname-evil\": \"workspace-mockname-evil\" } }\n}"
+    },
+    "response": {
+      "took": 3,
+      "timed_out": false,
+      "_shards": {
+        "total": 2,
+        "successful": 2,
+        "skipped": 0,
+        "failed": 0
+      },
+      "hits": {
+        "total": {
+          "value": 3,
+          "relation": "eq"
+        },
+        "max_score": 0.2876821,
+        "hits": [
+          {
+            "_index": "workspace-mockname-evil",
+            "_id": "vg2YMYMB7qJ3vkuE-t7B",
+            "_score": 0.2876821,
+            "_source": {
+              "workspace-mockname-evil": "workspace-mockname-evil"
+            }
+          }
+        ]
+      }
+    },
+    "responseStripped": {
+      "took": 3,
+      "timed_out": false,
+      "_shards": {
+        "total": 2,
+        "successful": 2,
+        "skipped": 0,
+        "failed": 0
+      },
+      "hits": {
+        "total": {
+          "value": 3,
+          "relation": "eq"
+        },
+        "max_score": 0.2876821,
+        "hits": [
+          {
+            "_index": "evil",
+            "_id": "vg2YMYMB7qJ3vkuE-t7B",
+            "_score": 0.2876821,
+            "_source": {
+              "workspace-mockname-evil": "workspace-mockname-evil"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "Search no such indexname",
+    "requestGateway": {
+      "method": "GET",
+      "url": "nonexisting-index-name/_search",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-nonexisting-index-name/_search",
+      "body": null
+    },
+    "response":{
+      "error": {
+        "root_cause": [
+          {
+            "type": "index_not_found_exception",
+            "reason": "no such index [workspace-mockname-nonexisting-index-name]",
+            "index": "workspace-mockname-nonexisting-index-name",
+            "resource.id": "workspace-mockname-nonexisting-index-name",
+            "resource.type": "index_or_alias",
+            "index_uuid": "_na_"
+          }
+        ],
+        "type": "index_not_found_exception",
+        "reason": "no such index [workspace-mockname-nonexisting-index-name]",
+        "index": "workspace-mockname-nonexisting-index-name",
+        "resource.id": "workspace-mockname-nonexisting-index-name",
+        "resource.type": "index_or_alias",
+        "index_uuid": "_na_"
+      },
+      "status": 404
+    },
+    "responseStripped": {
+      "error": {
+        "root_cause": [
+          {
+            "type": "index_not_found_exception",
+            "reason": "no such index [nonexisting-index-name]",
+            "index": "nonexisting-index-name",
+            "resource.id": "nonexisting-index-name",
+            "resource.type": "index_or_alias",
+            "index_uuid": "_na_"
+          }
+        ],
+        "type": "index_not_found_exception",
+        "reason": "no such index [nonexisting-index-name]",
+        "index": "nonexisting-index-name",
+        "resource.id": "nonexisting-index-name",
+        "resource.type": "index_or_alias",
+        "index_uuid": "_na_"
+      },
+      "status": 404
     }
   }
 ]
