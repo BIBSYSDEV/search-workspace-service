@@ -161,7 +161,8 @@ Resources:
                   - cognito-idp:UpdateResourceServer
                   - cognito-idp:CreateUserPool
                   - cognito-idp:ListUserPools
-                Resource: "*"
+                  - cognito-idp:CreateUserPoolClient
+                Resource: !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool:*:*'
 
   SWSSnapshotRepoRole:
     Type: AWS::IAM::Role
