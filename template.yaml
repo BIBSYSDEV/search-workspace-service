@@ -39,7 +39,7 @@ Parameters:
     Description: Name of the S3 bucket for olensearch buckups
 
 Conditions:
-  LargeElasticSearch: !Equals [ !Ref ElasticSearchSize, 'large' ]
+  LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
 
 
 Resources:
@@ -281,11 +281,11 @@ Resources:
             Path: /{resource+}
             RestApiId: !Ref SWSApi
         HeadEvent:
-          Type: Api
-          Properties:
-            Method: head
-            Path: /{resource+}
-            RestApiId: !Ref SWSApi
+         Type: Api
+         Properties:
+           Method: head
+           Path: /{resource+}
+           RestApiId: !Ref SWSApi
         DeleteEvent:
           Type: Api
           Properties:
@@ -368,7 +368,7 @@ Resources:
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
 
-  CognitoUserPool:
+  UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       AdminCreateUserConfig:
@@ -386,7 +386,7 @@ Resources:
   UserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       Domain: !Ref UserPoolDomainPrefix
 
   ResourceServerScopes:
@@ -405,13 +405,13 @@ Resources:
           ScopeName: workspace-stig
         - ScopeDescription: Scope for accessing marinas workspace
           ScopeName: workspace-marina
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
 
   BackendApplicationSondreClient:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
@@ -435,14 +435,14 @@ Resources:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
         - https://api.sws.aws.sikt.no/scopes/workspace
         - https://api.sws.aws.sikt.no/scopes/workspace-fredrik
-      ClientName: BackendApplicationFredrikClient
+      ClientName:   BackendApplicationFredrikClient
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
@@ -460,7 +460,7 @@ Resources:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
@@ -484,7 +484,7 @@ Resources:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
