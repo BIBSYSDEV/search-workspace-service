@@ -151,6 +151,15 @@ Resources:
                 Action:
                   - lambda:InvokeFunction
                 Resource: "*"
+        - PolicyName: cognitoCreateScopeAndClient
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cognito-idp:ListResourceServers
+                  - cognito-idp:UpdateResourceServer
+                  - cognito-idp:CreateUserPool
 
   SWSSnapshotRepoRole:
     Type: AWS::IAM::Role
