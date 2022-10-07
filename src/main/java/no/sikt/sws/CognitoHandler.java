@@ -7,13 +7,11 @@ import nva.commons.apigateway.RequestInfo;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.CreateUserPoolClientRequest;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.ListResourceServersRequest;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.ResourceServerScopeType;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.UpdateResourceServerRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
 import java.util.List;
 
+import static no.sikt.sws.constants.ApplicationConstants.USER_POOL_NAME;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
 
 public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
@@ -30,9 +28,20 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
                 .httpClient(UrlConnectionHttpClient.builder().build())
                 .build();
 
+        var userPool = cognitoClient
+                .listUserPools(ListUserPoolsRequest.builder().build())
+                .userPools()
+                .stream().filter(up -> up.name().equals(USER_POOL_NAME))
+                .findFirst();
+
+        if (userPool.isEmpty()) {
+            throw new IllegalStateException("No userpools were found.");
+        }
+        var userPoolId = userPool.get().id();
+
         var listResourceServersRequest = ListResourceServersRequest
                 .builder()
-                .userPoolId("eu-west-1_jcd2kPfRu")
+                .userPoolId(userPoolId)
                 .maxResults(10)
                 .build();
         var resources = cognitoClient.listResourceServers(listResourceServersRequest);
@@ -49,6 +58,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
         var updateRequest = UpdateResourceServerRequest
                 .builder()
+                .userPoolId(userPoolId)
                 .identifier(servers.get(0).identifier())
                 .scopes(newScope)
                 .build();
@@ -57,7 +67,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
 
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
-                .userPoolId("eu-west-1_jcd2kPfRu")
+                .userPoolId(userPoolId)
                 .clientName("NewClientAttempt")
                 .allowedOAuthScopes(Lists.newArrayList("workspace", "TestScope"))
                 .explicitAuthFlows(
