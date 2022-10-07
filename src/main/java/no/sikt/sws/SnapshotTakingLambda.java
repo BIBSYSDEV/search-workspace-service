@@ -1,4 +1,4 @@
-package no.sikt.sws.models;
+package no.sikt.sws;
 
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.services.lambda.runtime.Context;
