@@ -9,6 +9,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static no.sikt.sws.constants.ApplicationConstants.BACKEND_SCOPE_RESOURCE_SERVER_NAME;
@@ -62,7 +63,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
     private void createScope(String userPoolId, ResourceServerType server, String scopeName) {
 
-        var scopes = server.scopes();
+        var scopes = new ArrayList<ResourceServerScopeType>(server.scopes());
 
         var newScope = ResourceServerScopeType.builder()
                 .scopeName(scopeName)
