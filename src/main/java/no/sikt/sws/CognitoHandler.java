@@ -4,6 +4,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.github.jsonldjava.shaded.com.google.common.collect.Lists;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
@@ -22,6 +24,8 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
             .region(Region.EU_WEST_1)
             .httpClient(UrlConnectionHttpClient.builder().build())
             .build();
+
+    private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
 
     public CognitoHandler() {
         super(Void.class);
@@ -67,10 +71,12 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
         var newScope = ResourceServerScopeType.builder()
                 .scopeName(scopeName)
-                .scopeDescription("Testing Scope that should be deleted") //TODO: delete or change this line or change
+                .scopeDescription("Testing Scope that should be deleted") //TODO: delete or change this line
                 .build();
 
         scopes.add(newScope);
+
+        logger.info("Scopes: " + scopes);
 
         var updateRequest = UpdateResourceServerRequest
                 .builder()
