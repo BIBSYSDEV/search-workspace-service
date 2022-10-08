@@ -367,8 +367,7 @@ Resources:
       Runtime: java11
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
-
-  CognitoUserPool:
+  UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       AdminCreateUserConfig:
@@ -381,12 +380,12 @@ Resources:
           Required: false
       UsernameConfiguration:
         CaseSensitive: true
-      UserPoolName: "SWSUserPool"
+      UserPoolName: "SWSUserPool1"
 
   UserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       Domain: !Ref UserPoolDomainPrefix
 
   ResourceServerScopes:
@@ -405,13 +404,13 @@ Resources:
           ScopeName: workspace-stig
         - ScopeDescription: Scope for accessing marinas workspace
           ScopeName: workspace-marina
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
 
   BackendApplicationSondreClient:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
@@ -435,7 +434,7 @@ Resources:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
@@ -460,7 +459,7 @@ Resources:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
@@ -484,7 +483,7 @@ Resources:
     DependsOn: ResourceServerScopes
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref UserPool
       AllowedOAuthFlows:
         - client_credentials
       AllowedOAuthFlowsUserPoolClient: true
