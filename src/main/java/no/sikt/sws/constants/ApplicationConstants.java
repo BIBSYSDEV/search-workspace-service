@@ -5,7 +5,7 @@ import nva.commons.core.Environment;
 public final class ApplicationConstants {
 
     public static final Environment ENVIRONMENT = new Environment();
-    public static final String USER_POOL_NAME = "SWSUserPool1";
+    public static final String USER_POOL_NAME = "SWSUserPool";
     public static final String BACKEND_SCOPE_RESOURCE_SERVER_NAME = "Scopes for backend";
     public static final String OPENSEARCH_ENDPOINT_PROTOCOL = readOpenSearchEndpointProtocol();
     public static final String OPENSEARCH_ENDPOINT_ADDRESS = readOpenSearchEndpointAddress();

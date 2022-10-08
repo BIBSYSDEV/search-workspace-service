@@ -380,7 +380,7 @@ Resources:
           Required: false
       UsernameConfiguration:
         CaseSensitive: true
-      UserPoolName: "SWSUserPool1"
+      UserPoolName: "SWSUserPool"
 
   UserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
@@ -398,8 +398,6 @@ Resources:
           ScopeName: workspace
         - ScopeDescription: Scope for accessing sondres workspace
           ScopeName: workspace-sondre
-        - ScopeDescription: Scope for accessing fredriks workspace
-          ScopeName: workspace-fredrik
         - ScopeDescription: Scope for accessing stigs workspace
           ScopeName: workspace-stig
         - ScopeDescription: Scope for accessing marinas workspace
@@ -418,30 +416,6 @@ Resources:
         - https://api.sws.aws.sikt.no/scopes/workspace
         - https://api.sws.aws.sikt.no/scopes/workspace-sondre
       ClientName: BackendApplicationSondreClient
-      ExplicitAuthFlows:
-        - ALLOW_CUSTOM_AUTH
-        - ALLOW_USER_SRP_AUTH
-        - ALLOW_ADMIN_USER_PASSWORD_AUTH
-        - ALLOW_REFRESH_TOKEN_AUTH
-      GenerateSecret: true
-      IdTokenValidity: 15
-      AccessTokenValidity: 15
-      TokenValidityUnits:
-        AccessToken: minutes
-        IdToken: minutes
-
-  BackendApplicationFredrikClient:
-    DependsOn: ResourceServerScopes
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      UserPoolId: !Ref UserPool
-      AllowedOAuthFlows:
-        - client_credentials
-      AllowedOAuthFlowsUserPoolClient: true
-      AllowedOAuthScopes:
-        - https://api.sws.aws.sikt.no/scopes/workspace
-        - https://api.sws.aws.sikt.no/scopes/workspace-fredrik
-      ClientName:   BackendApplicationFredrikClient
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
         - ALLOW_USER_SRP_AUTH
