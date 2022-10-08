@@ -50,7 +50,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
                 .userPoolId(userPoolId)
                 .clientName(appClientName)
-                .allowedOAuthScopes(Lists.newArrayList("workspace", scopeName))
+                .allowedOAuthScopes(Lists.newArrayList(scopeName))
                 .explicitAuthFlows(
                         List.of(
                                 ALLOW_ADMIN_USER_PASSWORD_AUTH,
@@ -67,7 +67,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
     private void createScope(String userPoolId, ResourceServerType server, String scopeName) {
 
-        var scopes = new ArrayList<ResourceServerScopeType>(server.scopes());
+        var scopes = new ArrayList<>(server.scopes());
 
         var newScope = ResourceServerScopeType.builder()
                 .scopeName(scopeName)
