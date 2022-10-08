@@ -399,8 +399,6 @@ Resources:
           ScopeName: workspace
         - ScopeDescription: Scope for accessing sondres workspace
           ScopeName: workspace-sondre
-        - ScopeDescription: Scope for accessing fredriks workspace
-          ScopeName: workspace-fredrik
         - ScopeDescription: Scope for accessing stigs workspace
           ScopeName: workspace-stig
         - ScopeDescription: Scope for accessing marinas workspace
@@ -441,7 +439,6 @@ Resources:
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
         - https://api.sws.aws.sikt.no/scopes/workspace
-        - https://api.sws.aws.sikt.no/scopes/workspace-fredrik
       ClientName:   BackendApplicationFredrikClient
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
