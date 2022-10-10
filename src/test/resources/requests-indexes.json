@@ -543,6 +543,390 @@
     }
   },
   {
+    "name": "GET (all) indexes (workspace / )",
+    "requestGateway": {
+      "method": "GET",
+      "url": "",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-*",
+      "body": null
+    },
+    "response": {
+      "workspace-mockname-index-3": {
+        "aliases": {},
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "long"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663056104636",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "6jNJSx6QR9Oj6QPrnIA2Bg",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-index-3"
+          }
+        }
+      },
+      "workspace-mockname-logs-2020-01-01": {
+        "aliases": {
+          "my_logs": {}
+        },
+        "mappings": {
+          "properties": {
+            "timestamp": {
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+            },
+            "value": {
+              "type": "double"
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663057237550",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "Ym1eaJ7YQJKLOiRc75bhEQ",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-logs-2020-01-01"
+          }
+        }
+      },
+      "workspace-mockname-test-index66": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663056916666",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "mYSFekVmS_ejFT7yoGnNmw",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-test-index66"
+          }
+        }
+      },
+      "workspace-mockname-test1-index-3": {
+        "aliases": {},
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "long"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663056266820",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "7JE2G_-_QWChqcdrPvnFLA",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-test1-index-3"
+          }
+        }
+      },
+      "workspace-mockname-test1-index1": {
+        "aliases": {
+          "sample-alias1": {}
+        },
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "integer"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "test": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1662982493727",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "nXsprbMMTHuvByW3rG3u8Q",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-test1-index1"
+          }
+        }
+      },
+      "workspace-mockname-test1-index13": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663156169174",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "ZsPuLpddTE-iomAd4z8Vaw",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-test1-index13"
+          }
+        }
+      },
+      "workspace-mockname-testindex": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663156033091",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "S4pzS-5VRXmEYy5mVnUrmQ",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "workspace-mockname-testindex"
+          }
+        }
+      }
+    },
+    "responseStripped": {
+      "logs-2020-01-01": {
+        "aliases": {
+          "my_logs": {}
+        },
+        "mappings": {
+          "properties": {
+            "timestamp": {
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+            },
+            "value": {
+              "type": "double"
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663057237550",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "Ym1eaJ7YQJKLOiRc75bhEQ",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "logs-2020-01-01"
+          }
+        },
+        "index_link": "localhost:8080/logs-2020-01-01"
+      },
+      "test1-index-3": {
+        "aliases": {},
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "long"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663056266820",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "7JE2G_-_QWChqcdrPvnFLA",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "test1-index-3"
+          }
+        },
+        "index_link": "localhost:8080/test1-index-3"
+      },
+      "testindex": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663156033091",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "S4pzS-5VRXmEYy5mVnUrmQ",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "testindex"
+          }
+        },
+        "index_link": "localhost:8080/testindex"
+      },
+      "test-index66": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663056916666",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "mYSFekVmS_ejFT7yoGnNmw",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "test-index66"
+          }
+        },
+        "index_link": "localhost:8080/test-index66"
+      },
+      "test1-index1": {
+        "aliases": {
+          "sample-alias1": {}
+        },
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "integer"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "test": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1662982493727",
+            "number_of_shards": "2",
+            "number_of_replicas": "1",
+            "uuid": "nXsprbMMTHuvByW3rG3u8Q",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "test1-index1"
+          }
+        },
+        "index_link": "localhost:8080/test1-index1"
+      },
+      "index-3": {
+        "aliases": {},
+        "mappings": {
+          "properties": {
+            "age": {
+              "type": "long"
+            },
+            "navn": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "creation_date": "1663056104636",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "6jNJSx6QR9Oj6QPrnIA2Bg",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "index-3"
+          }
+        },
+        "index_link": "localhost:8080/index-3"
+      },
+      "test1-index13": {
+        "aliases": {},
+        "mappings": {},
+        "settings": {
+          "index": {
+            "creation_date": "1663156169174",
+            "number_of_shards": "1",
+            "number_of_replicas": "1",
+            "uuid": "ZsPuLpddTE-iomAd4z8Vaw",
+            "version": {
+              "created": "136217927"
+            },
+            "provided_name": "test1-index13"
+          }
+        },
+        "index_link": "localhost:8080/test1-index13"
+      }
+    }
+  },
+  {
     "name": "PUT index, without template",
     "requestGateway": {
       "method": "PUT",
@@ -637,29 +1021,6 @@
     }
   },
   {
-    "name": "PUT index by name, without template",
-    "requestGateway": {
-      "method": "PUT",
-      "url": "index2",
-      "body": null
-    },
-    "requestOpensearch": {
-      "method": "PUT",
-      "url": "workspace-mockname-index2",
-      "body": null
-    },
-    "response":{
-      "acknowledged": true,
-      "shards_acknowledged": true,
-      "index": "workspace-mockname-index2"
-    },
-    "responseStripped":{
-      "acknowledged": true,
-      "shards_acknowledged": true,
-      "index": "index2"
-    }
-  },
-  {
     "name": "PUT index, without template but with stupid name",
     "requestGateway": {
       "method": "PUT",
@@ -680,6 +1041,43 @@
       "acknowledged": true,
       "shards_acknowledged": true,
       "index": "workspace-mockname-index2-index2"
+    }
+  },
+  {
+    "name": "PUT index by name, with template",
+    "enabled": true,
+    "requestGateway": {
+      "method": "PUT",
+      "url": "evil",
+      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-evil-alias\": {}\n  }\n}"
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-evil",
+      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-workspace-mockname-evil-alias\": {}\n  }\n}"
+    }
+  },
+  {
+    "name": "PUT index by name, without template",
+    "requestGateway": {
+      "method": "PUT",
+      "url": "index2",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-index2",
+      "body": null
+    },
+    "response":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "workspace-mockname-index2"
+    },
+    "responseStripped":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "index2"
     }
   },
   {
@@ -746,21 +1144,8 @@
       "error": "Incorrect HTTP method for uri [/index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
       "status": 405
     }
-  },
-  {
-    "name": "PUT index by name, with template",
-    "enabled": true,
-    "requestGateway": {
-      "method": "PUT",
-      "url": "evil",
-      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-evil-alias\": {}\n  }\n}"
-    },
-    "requestOpensearch": {
-      "method": "PUT",
-      "url": "workspace-mockname-evil",
-      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-workspace-mockname-evil-alias\": {}\n  }\n}"
-    }
   }
 ]
+
 
 

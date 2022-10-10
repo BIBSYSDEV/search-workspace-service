@@ -1,4 +1,4 @@
-package no.sikt.sws;
+package no.sikt.sws.models.opensearch;
 
 import com.amazonaws.http.HttpResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;

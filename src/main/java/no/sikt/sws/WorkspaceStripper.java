@@ -2,7 +2,7 @@ package no.sikt.sws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import no.sikt.sws.models.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommand;
 import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
 import nva.commons.core.JacocoGenerated;
@@ -10,8 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @JacocoGenerated
 public class WorkspaceStripper {
@@ -22,6 +25,23 @@ public class WorkspaceStripper {
     public static final String WORKSPACE_PREFIX = "[workspacePrefix]";
     public static final String RESOURCE_IDENTIFIER = "[resourceIdentifier] ";
     public static final String EMPTY_STRING = "";
+    public static final String STRIP_WORKSPACE_PATTERN = "-(.+)\"";
+
+
+
+    public static JsonNode removePrefix(JsonNode node, String workspacePrefix) {
+        if (workspacePrefix == null) {
+            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + WORKSPACE_PREFIX);
+        }
+        if (node == null) {
+            return null;
+        }
+        var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
+
+        return string2JsonNode(
+            node.toString()
+                .replaceAll(regex,""));
+    }
 
     // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
     public static String removePrefix(OpenSearchCommand command, String workspacePrefix, String responseBody)  {
@@ -98,6 +118,16 @@ public class WorkspaceStripper {
                     + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
         }
 
+        var node =  string2JsonNode(gatewayBody);
+
+        if (node.has("aliases")) {
+            var result = Stream.generate(() -> node.get("aliases").fields())
+                .takeWhile(Iterator::hasNext)
+                .map(Iterator::next)
+                .collect(Collectors.toMap(key -> prefixString(key.getKey(), workspacePrefix), Map.Entry::getValue));
+//            node  =
+        }
+
         return gatewayBody
             //.replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
             .replaceAll("(\"aliases\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
@@ -107,6 +137,9 @@ public class WorkspaceStripper {
         //}).orElseThrow();
     }
 
+    private static String prefixString(String input, String workspacePrefix) {
+        return workspacePrefix + "-" + input;
+    }
 
     protected static String prefixBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody) {
         if (gatewayBulkBody == null || workspacePrefix == null) {
@@ -144,6 +177,8 @@ public class WorkspaceStripper {
                 .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
                 .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
     }
+
+
 
     private static List<JsonNode> getBulkBody(String bulkbody) {
         return Arrays.stream(bulkbody.split("\n"))

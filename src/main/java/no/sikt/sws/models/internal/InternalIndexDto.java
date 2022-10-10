@@ -2,6 +2,7 @@ package no.sikt.sws.models.internal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import no.sikt.sws.WorkspaceStripper;
 import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
 
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import static no.sikt.sws.constants.ApplicationConstants.API_GATEWAY_URL;
 
 public class InternalIndexDto {
+
 
     @JsonProperty("aliases")
     public JsonNode aliases;
@@ -34,17 +36,17 @@ public class InternalIndexDto {
 
     }
 
-    public static InternalIndexDto fromOpenSearchIndex(Map.Entry<String, OpenSearchIndexDto> mapEntry) {
-        var name = mapEntry.getKey();
+    public static InternalIndexDto fromOpenSearchIndex(Map.Entry<String, OpenSearchIndexDto> mapEntry,
+                                                       String workspacePrefix) {
+        var name = mapEntry.getKey().replaceAll(workspacePrefix + "-", "");
         var openSearchIndex = mapEntry.getValue();
-
         var link = API_GATEWAY_URL + "/" + name;
 
         return new InternalIndexDto(
-                openSearchIndex.aliases,
-                openSearchIndex.mappings,
-                openSearchIndex.settings,
-                link
+            WorkspaceStripper.removePrefix(openSearchIndex.aliases, workspacePrefix),
+            openSearchIndex.mappings,
+            WorkspaceStripper.removePrefix(openSearchIndex.settings,workspacePrefix),
+            link
         );
     }
 

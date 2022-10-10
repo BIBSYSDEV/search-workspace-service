@@ -2,7 +2,9 @@ package no.sikt.sws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.sikt.sws.models.opensearch.WorkspaceResponse;
 import org.junit.jupiter.api.Test;
+
 import static no.sikt.sws.constants.ApplicationConstants.API_GATEWAY_URL;
 import static no.sikt.sws.testutils.TestConstants.OPEN_SEARCH_INDEX_LIST;
 import static org.junit.Assert.assertTrue;
@@ -12,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class WorkspaceResponseTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
-
     @Test
     void workspaceResponseMapsCorrectly() throws JsonProcessingException {
 
@@ -64,6 +65,5 @@ public class WorkspaceResponseTest {
         var workspaceResponse = WorkspaceResponse.fromValues("mockWorkSpace", "{ }");
         assertEquals(API_GATEWAY_URL + "/index_name", workspaceResponse.createIndexLink);
     }
-
 
 }

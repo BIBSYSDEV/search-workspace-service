@@ -1,7 +1,9 @@
 package no.sikt.sws.testutils;
 
+import com.amazonaws.http.HttpMethodName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import no.sikt.sws.models.opensearch.OpenSearchCommand;
 
 import java.io.Serializable;
 
@@ -57,6 +59,21 @@ public class TestCaseSws implements Serializable {
 
     public boolean isRequestTest() {
         return requestGateway != null && requestOpensearch != null;
+    }
+
+    public boolean isIndexResponse() {
+        var retValue = "".equals(requestGateway.getUrl())
+            && HttpMethodName.GET == requestGateway.getMethod()
+            && isResponseTest();
+        return retValue;
+    }
+
+    public boolean isIndexRequest() {
+        var cmdKind = OpenSearchCommand.fromString(requestGateway.getUrl());
+
+        return OpenSearchCommand.OTHER == cmdKind
+            && HttpMethodName.GET == requestGateway.getMethod()
+            && isRequestTest();
     }
 
     public boolean isRequestBodyTest() {

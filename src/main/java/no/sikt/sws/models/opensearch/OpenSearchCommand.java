@@ -1,4 +1,4 @@
-package no.sikt.sws.models;
+package no.sikt.sws.models.opensearch;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;

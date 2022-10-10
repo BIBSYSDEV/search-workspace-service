@@ -13,6 +13,7 @@ import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.http.HttpResponse;
 import com.amazonaws.http.HttpResponseHandler;
 import no.sikt.sws.exception.OpenSearchException;
+import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import nva.commons.core.JacocoGenerated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

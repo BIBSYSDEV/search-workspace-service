@@ -2,7 +2,7 @@ package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.exception.SearchException;
-import no.sikt.sws.models.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommand;
 import nva.commons.apigateway.ApiGatewayProxyHandler;
 import nva.commons.apigateway.ProxyResponse;
 import nva.commons.apigateway.RequestInfo;
@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
 import static no.sikt.sws.WorkspaceStripper.REQUIRED_PARAMETER_IS_NULL;
+import static no.sikt.sws.models.opensearch.OpenSearchCommand.INVALID;
+import static no.sikt.sws.models.opensearch.OpenSearchCommand.NOT_IMPLEMENTED;
 
 /**
  * Created for checking if external libraries have been imported properly.
@@ -47,9 +49,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
 
         try {
-            if (searchCommand.equals(OpenSearchCommand.NOT_IMPLEMENTED)
-                || searchCommand.equals(OpenSearchCommand.INVALID)) {
-
+            if (NOT_IMPLEMENTED == searchCommand || INVALID == searchCommand) {
                 validateResourceIdentifier(resourceIdentifier);
             }
 

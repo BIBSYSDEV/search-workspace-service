@@ -1,6 +1,7 @@
 package no.sikt.sws;
 
-import no.sikt.sws.models.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.WorkspaceResponse;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
 import org.joda.time.Instant;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
 import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -77,11 +79,55 @@ public class WorkspaceStripperTest {
         return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
 
+    @Test
+    @DisplayName("Gateway response workspace stripping")
+    void testResponseIndexStripping() {
+        var filename = "requests-indexes.json";
+        var testName = "GET (all) indexes (workspace / )";
+
+        var testCase = new TestCaseLoader(filename)
+            .getTestCase(testName);
+
+        if (testCase.isIndexResponse()) {
+            assertResponseIndexStripping(testCase);
+        }
+
+    }
+//    @TestFactory
+//    @DisplayName("Gateway response workspace stripping")
+//    Stream<DynamicTest> testResponseIndexStripping() {
+//        var testCases = allRequestArguments().filter(TestCaseSws::isIndexResponse);
+//        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName; // -> testcase name
+//        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseIndexStripping;     // -> test function
+//
+//        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+//    }
+
+    void assertResponseIndexStripping(TestCaseSws testCase) {
+        logger.info(testCase.toString());
+        Assumptions.assumeTrue(testCase.isEnabled());
+
+        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
+            + " http://apigateway/" + testCase.getRequestGateway().getUrl()
+            + " http://opensearch/" +  testCase.getRequestOpensearch().getUrl());
+
+        var expectedResponse = testCase.getResponseStripped();
+        var workspaceResponse = attempt(() ->
+            WorkspaceResponse.fromValues(WORKSPACEPREFIX,testCase.getResponse())).get();
+
+        var resultResponse = attempt(() -> objectMapper
+            .writerWithDefaultPrettyPrinter()
+            .writeValueAsString(workspaceResponse.indexList)).get();
+
+        assertEquals(expectedResponse,resultResponse);
+    }
+
+
     /**
      * Using for debuging a single test-case. Change the filename, testcase,
      * and assert-function on the last line as needed
      */
-    @Disabled
+
     @Test
     void runSingleTestcase() {
         var filename = "requests-indexes.json";
@@ -146,7 +192,8 @@ public class WorkspaceStripperTest {
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
         var gatewayBody = testCase.getRequestGateway().getBody();
-        var resultBody = attempt(() -> WorkspaceStripper.prefixBody(WORKSPACEPREFIX,resourceIdentifier,gatewayBody));
+        var resultBody = attempt(() ->
+            WorkspaceStripper.prefixBody(WORKSPACEPREFIX,resourceIdentifier,gatewayBody));
 
         assertEquals(expectedBody,resultBody.get());
     }
