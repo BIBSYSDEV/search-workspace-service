@@ -2,6 +2,7 @@ package no.sikt.sws;
 
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.services.lambda.runtime.Context;
+import java.util.Date;
 import no.sikt.sws.exception.SearchException;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
@@ -9,27 +10,23 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Timestamp;
 
-import static no.sikt.sws.constants.ApplicationConstants.BACKUP_BUCKET_NAME;
+public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
 
-public class SnapshotTakingLambda extends ApiGatewayHandler<Void, String> {
-
-    private static final Logger logger = LoggerFactory.getLogger(RegisterSnapshotRepoHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(SnapshotTakingHandler.class);
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
-    public SnapshotTakingLambda() {
+    public SnapshotTakingHandler() {
         super(Void.class);
     }
 
     @Override
     protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
-        var timestamp = new Timestamp(System.currentTimeMillis()).toString();
+        var timestamp = new Date();
         var snapshotRepoName = "initialsnapshot"; //TODO: hardcoded RegisterSnapshotHandler
-        var createSnapshotRequest = "/snap" + timestamp;
+        var createSnapshotRequest = "snap" + timestamp;
 
         try {
-            logger.info(BACKUP_BUCKET_NAME);
             var response = openSearchClient.sendRequest(HttpMethodName.PUT,
                     "_snapshot/" + snapshotRepoName,
                     createSnapshotRequest);
