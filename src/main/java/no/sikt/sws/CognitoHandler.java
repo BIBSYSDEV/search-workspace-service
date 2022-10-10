@@ -4,10 +4,13 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.github.jsonldjava.shaded.com.google.common.collect.Lists;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.CreateUserPoolClientRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUserPoolsRequest;
 
 import java.util.List;
 
@@ -16,6 +19,13 @@ import static software.amazon.awssdk.services.cognitoidentityprovider.model.Expl
 
 public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
 
+    CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
+            .region(Region.EU_WEST_1)
+            .httpClient(UrlConnectionHttpClient.builder().build())
+            .build();
+
+    private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
+
     public CognitoHandler() {
         super(Void.class);
     }
@@ -23,53 +33,23 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
     @Override
     protected Void processInput(Void input, RequestInfo requestInfo, Context context) {
 
-        var cognitoClient = CognitoIdentityProviderClient.builder()
-                .region(Region.EU_WEST_1)
-                .httpClient(UrlConnectionHttpClient.builder().build())
-                .build();
+        var newScopeName = "TestScope";
+        var newAppClientName = "NewAppClientAttempt";
 
-        var userPool = cognitoClient
-                .listUserPools(ListUserPoolsRequest.builder().build())
-                .userPools()
-                .stream().filter(up -> up.name().equals(USER_POOL_NAME))
-                .findFirst();
+        String userPoolId = getUserPoolId();
+        // var serverIdentifier = getResourceServer(userPoolId);
 
-        if (userPool.isEmpty()) {
-            throw new IllegalStateException("No userpools were found.");
-        }
-        var userPoolId = userPool.get().id();
+        createAppClient(userPoolId, newScopeName, newAppClientName);
+        return null;
+    }
 
-        var listResourceServersRequest = ListResourceServersRequest
-                .builder()
-                .userPoolId(userPoolId)
-                .maxResults(10)
-                .build();
-        var resources = cognitoClient.listResourceServers(listResourceServersRequest);
+    private void createAppClient(String userPoolId, String scopeName, String appClientName) {
 
-        var servers = resources.resourceServers();
-        if (servers.isEmpty()) {
-            throw new IllegalStateException("Should have a resource server.");
-        }
-
-        var newScope = ResourceServerScopeType.builder()
-                .scopeName("TestScope")
-                .scopeDescription("Testing Scope that should be deleted")
-                .build();
-
-        var updateRequest = UpdateResourceServerRequest
-                .builder()
-                .userPoolId(userPoolId)
-                .identifier(servers.get(0).identifier())
-                .scopes(newScope)
-                .build();
-
-        cognitoClient.updateResourceServer(updateRequest);
-
-
+        logger.info(scopeName);
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
                 .userPoolId(userPoolId)
-                .clientName("NewClientAttempt")
-                .allowedOAuthScopes(Lists.newArrayList("workspace", "TestScope"))
+                .clientName(appClientName)
+                .allowedOAuthScopes(Lists.newArrayList("workspace"))
                 .explicitAuthFlows(
                         List.of(
                                 ALLOW_ADMIN_USER_PASSWORD_AUTH,
@@ -82,7 +62,40 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
                 .idTokenValidity(15)
                 .build();
         cognitoClient.createUserPoolClient(createUserPoolRequest);
-        return null;
+    }
+
+    /*
+    private ResourceServerType getResourceServer(String userPoolId) {
+        var listResourceServersRequest = ListResourceServersRequest
+                .builder()
+                .userPoolId(userPoolId)
+                .maxResults(50)
+                .build();
+        var resources = cognitoClient.listResourceServers(listResourceServersRequest);
+
+        var server = resources
+                .resourceServers()
+                .stream().filter(s -> s.name().equals(BACKEND_SCOPE_RESOURCE_SERVER_NAME))
+                .findFirst();
+        if (server.isEmpty()) {
+            throw new IllegalStateException("Should have a resource server.");
+        }
+        return server.get();
+    }
+
+    */
+
+    private String getUserPoolId() {
+        var userPool = cognitoClient
+                .listUserPools(ListUserPoolsRequest.builder().build())
+                .userPools()
+                .stream().filter(up -> up.name().equals(USER_POOL_NAME))
+                .findFirst();
+
+        if (userPool.isEmpty()) {
+            throw new IllegalStateException("No userpools were found.");
+        }
+        return userPool.get().id();
     }
 
     @Override
