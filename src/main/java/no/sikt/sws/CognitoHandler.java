@@ -29,7 +29,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
 
     private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
 
-    private static final String allowedNameRegex = "^[a-zA-Z0-9]*$";
+    private static final String allowedNameRegex = "^[a-zæøåA-ZÆØÅ0-9]*$";
 
     public CognitoHandler() {
         super(CreateUserClientDto.class);
@@ -49,7 +49,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
         var serverIdentifier = getResourceServer(userPoolId);
 
 
-        var newScopeName = "workspace-" + input.name.toLowerCase(Locale.ENGLISH);
+        var newScopeName = "workspace-" + input.name.toLowerCase(Locale.getDefault());
         var appClientName = "BackendApplication" + StringUtils.capitalize(input.name) + "Client";
 
         createScope(userPoolId, serverIdentifier, newScopeName);
