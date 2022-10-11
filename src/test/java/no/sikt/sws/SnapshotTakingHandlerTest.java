@@ -35,7 +35,7 @@ class SnapshotTakingHandlerTest {
                 .build();
 
         var output = new ByteArrayOutputStream();
-        handler.handleRequest( request, output, CONTEXT);
+        handler.handleRequest(request, output, CONTEXT);
     }
 
 }
