@@ -96,7 +96,7 @@ public class IndexHandlerTest extends TestCase {
     void shouldThrowBadRequestWhenGivenIndexBeginningWithUnderscore() throws IOException {
 
         var pathParams = buildPathParamsForIndex("_someindex");
-        var request = buildRequest(HttpMethod.PUT, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);

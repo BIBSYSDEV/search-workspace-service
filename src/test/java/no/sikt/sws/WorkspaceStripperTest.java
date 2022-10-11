@@ -82,7 +82,7 @@ public class WorkspaceStripperTest {
     @Test
     @DisplayName("Gateway response workspace stripping")
     void testResponseIndexStripping() {
-        var filename = "requests-indexes.json";
+        var filename = "response-workspace.json";
         var testName = "GET (all) indexes (workspace / )";
 
         var testCase = new TestCaseLoader(filename)

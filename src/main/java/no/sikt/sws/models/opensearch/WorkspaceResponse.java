@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.sikt.sws.models.internal.InternalIndexDto;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class WorkspaceResponse {
     public String accountIdentifier;
 
     @JsonProperty("index_list")
-    public Map<String, InternalIndexDto> indexList;
+    public LinkedHashMap<String, InternalIndexDto> indexList;
 
     @JsonProperty("create_index_link")
     public String createIndexLink;
@@ -30,7 +31,7 @@ public class WorkspaceResponse {
 
     public WorkspaceResponse(
             String accountIdentifier,
-            Map<String, InternalIndexDto> indexList,
+            LinkedHashMap<String, InternalIndexDto> indexList,
             String createIndexLink
     ) {
         this.accountIdentifier = accountIdentifier;
@@ -45,12 +46,13 @@ public class WorkspaceResponse {
         Map<String, OpenSearchIndexDto> openSearchIndexListMap =
                 objectMapper.readValue(openSearchIndexList, new TypeReference<>() {});
 
-        Map<String, InternalIndexDto> internalIndexListMap = openSearchIndexListMap
+        var internalIndexListMap = openSearchIndexListMap
                 .entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(
                     mapEntry -> mapEntry.getKey().replaceAll(workspacePrefix + "-", ""),
-                    mapEntry -> InternalIndexDto.fromOpenSearchIndex(mapEntry, workspacePrefix)));
-
+                    mapEntry -> InternalIndexDto.fromOpenSearchIndex(mapEntry, workspacePrefix),
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
         return new WorkspaceResponse(workspacePrefix, internalIndexListMap, createIndexLink);
     }
