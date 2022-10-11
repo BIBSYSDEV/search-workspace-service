@@ -162,6 +162,8 @@ Resources:
                   - cognito-idp:CreateUserPool
                   - cognito-idp:ListUserPools
                   - cognito-idp:CreateUserPoolClient
+                  - cognito-idp:DescribeUserPoolClient
+                  - cognito-idp:ListUserPoolClients
                 Resource: "*"
 
   SWSSnapshotRepoRole:
