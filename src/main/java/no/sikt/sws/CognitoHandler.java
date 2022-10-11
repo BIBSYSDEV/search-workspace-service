@@ -17,7 +17,7 @@ import java.util.List;
 import static no.sikt.sws.constants.ApplicationConstants.USER_POOL_NAME;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
 
-public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
+public class CognitoHandler extends ApiGatewayHandler<String, Void> {
 
     CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
             .region(Region.EU_WEST_1)
@@ -27,11 +27,13 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
     private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
 
     public CognitoHandler() {
-        super(Void.class);
+        super(String.class);
     }
 
     @Override
-    protected Void processInput(Void input, RequestInfo requestInfo, Context context) {
+    protected Void processInput(String input, RequestInfo requestInfo, Context context) {
+
+        logger.info("Raw input: '" + input + "'");
 
         var newScopeName = "TestScope";
         var newAppClientName = "NewAppClientAttempt";
@@ -99,7 +101,7 @@ public class CognitoHandler extends ApiGatewayHandler<Void, Void> {
     }
 
     @Override
-    protected Integer getSuccessStatusCode(Void input, Void output) {
-        return null;
+    protected Integer getSuccessStatusCode(String input, Void output) {
+        return 200;
     }
 }
