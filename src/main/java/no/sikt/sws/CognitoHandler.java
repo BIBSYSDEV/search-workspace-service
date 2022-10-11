@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import static no.sikt.sws.constants.ApplicationConstants.*;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
+import static software.amazon.awssdk.services.cognitoidentityprovider.model.OAuthFlowType.CLIENT_CREDENTIALS;
 
 public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void> {
 
@@ -66,6 +67,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
                 .allowedOAuthScopes(Lists.newArrayList(
                         SCOPE_IDENTIFIER + "/workspace",
                         SCOPE_IDENTIFIER + "/" + name))
+                .allowedOAuthFlows(CLIENT_CREDENTIALS)
                 .explicitAuthFlows(
                         List.of(
                                 ALLOW_ADMIN_USER_PASSWORD_AUTH,
@@ -86,7 +88,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
 
         var newScope = ResourceServerScopeType.builder()
                 .scopeName(scopeName)
-                .scopeDescription("Testing Scope that should be deleted")
+                .scopeDescription("Scope for " + scopeName)
                 .build();
 
         scopes.add(newScope);
