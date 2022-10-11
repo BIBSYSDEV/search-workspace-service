@@ -5,6 +5,7 @@ import com.github.jsonldjava.shaded.com.google.common.collect.Lists;
 import no.sikt.sws.models.internal.CreateUserClientDto;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
@@ -44,53 +45,26 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
             throw new IllegalStateException("Name contains illegal chars. Should only be letters and numbers");
         }
 
-
-        String userPoolId = getUserPoolId();
-
-
-        var listUserPoolClientRequest = ListUserPoolClientsRequest.builder()
-                .userPoolId(userPoolId)
-                .maxResults(10)
-                .build();
-
-        var anyClientRequest = cognitoClient
-                .listUserPoolClients(listUserPoolClientRequest)
-                .userPoolClients().stream().findAny();
-
-        if (anyClientRequest.isEmpty()) {
-            throw new IllegalStateException("No UserPools exist!");
-        }
-
-        var describeClientRequest = DescribeUserPoolClientRequest.builder()
-                .userPoolId(userPoolId)
-                .clientId(anyClientRequest.get().clientId())
-                .build();
-
-        var describeClientResponse = cognitoClient
-                .describeUserPoolClient(describeClientRequest)
-                .userPoolClient();
-
-        logger.info("UserPoolClientScope: " + describeClientResponse.clientName()
-                + "\nWith Scopes: " + describeClientResponse.allowedOAuthScopes());
-
-
-        var newScopeName = input.name.toLowerCase(Locale.ENGLISH);
-        var newAppClientName = "NewAppClientAttempt";
-
+        var userPoolId = getUserPoolId();
         var serverIdentifier = getResourceServer(userPoolId);
 
+
+        var newScopeName = "workspace-" + input.name.toLowerCase(Locale.ENGLISH);
+        var appClientName = "BackendApplication" + StringUtils.capitalize(input.name) + "Client";
+
         createScope(userPoolId, serverIdentifier, newScopeName);
-        createAppClient(userPoolId, newScopeName, newAppClientName);
+        createAppClient(userPoolId, newScopeName, appClientName);
         return null;
     }
 
-    private void createAppClient(String userPoolId, String scopeName, String appClientName) {
+    private void createAppClient(String userPoolId, String name, String appClientName) {
+
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
                 .userPoolId(userPoolId)
                 .clientName(appClientName)
                 .allowedOAuthScopes(Lists.newArrayList(
                         SCOPE_IDENTIFIER + "/workspace",
-                        SCOPE_IDENTIFIER + "/" + scopeName))
+                        SCOPE_IDENTIFIER + "/" + name))
                 .explicitAuthFlows(
                         List.of(
                                 ALLOW_ADMIN_USER_PASSWORD_AUTH,
@@ -110,7 +84,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
         var scopes = new ArrayList<>(server.scopes());
 
         var newScope = ResourceServerScopeType.builder()
-                .scopeName(scopeName)
+                .scopeName("workspace-" + scopeName)
                 .scopeDescription("Testing Scope that should be deleted") //TODO: delete or change this line
                 .build();
 
