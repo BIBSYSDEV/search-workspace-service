@@ -84,8 +84,8 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
         var scopes = new ArrayList<>(server.scopes());
 
         var newScope = ResourceServerScopeType.builder()
-                .scopeName("workspace-" + scopeName)
-                .scopeDescription("Testing Scope that should be deleted") //TODO: delete or change this line
+                .scopeName(scopeName)
+                .scopeDescription("Testing Scope that should be deleted")
                 .build();
 
         scopes.add(newScope);
