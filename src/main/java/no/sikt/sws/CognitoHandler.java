@@ -19,7 +19,6 @@ import java.util.Locale;
 
 import static no.sikt.sws.constants.ApplicationConstants.*;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
-import static software.amazon.awssdk.services.cognitoidentityprovider.model.OAuthFlowType.CLIENT_CREDENTIALS;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.TimeUnitsType.DAYS;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.TimeUnitsType.MINUTES;
 
@@ -75,7 +74,8 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
                 .allowedOAuthScopes(Lists.newArrayList(
                         SCOPE_IDENTIFIER + "/workspace",
                         SCOPE_IDENTIFIER + "/" + name))
-                .allowedOAuthFlows(CLIENT_CREDENTIALS)
+                .allowedOAuthFlows(OAuthFlowType.CLIENT_CREDENTIALS)
+                .allowedOAuthFlowsUserPoolClient(true)
                 .explicitAuthFlows(
                         List.of(
                                 ALLOW_ADMIN_USER_PASSWORD_AUTH,
