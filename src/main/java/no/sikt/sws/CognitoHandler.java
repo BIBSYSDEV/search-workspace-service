@@ -48,6 +48,37 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
         }
 
         var userPoolId = getUserPoolId();
+
+
+        var listClientRequest = ListUserPoolClientsRequest.builder()
+                .maxResults(10)
+                .userPoolId(userPoolId)
+                .build();
+
+        var listClientResponse = cognitoClient.listUserPoolClients(listClientRequest);
+        var marinaClient = listClientResponse.userPoolClients().stream().filter(
+                client -> "BackendApplicationMarinaClient".equals(client.clientName())
+        ).findFirst();
+
+        if (marinaClient.isEmpty()) {
+            throw new IllegalStateException("Should have a MarinaClient");
+        }
+
+        var describeClientRequest = DescribeUserPoolClientRequest.builder()
+                .userPoolId(userPoolId)
+                .clientId(marinaClient.get().clientId())
+                .build();
+        var clientDescription = cognitoClient.describeUserPoolClient(describeClientRequest)
+                .userPoolClient();
+
+        logger.info("MarinaClient: " + clientDescription);
+        logger.info("MarinaClients attributes: " + clientDescription.writeAttributes());
+        logger.info("MarinaClients OAuthFlow: "
+                + "explicitAuthFlows: " + clientDescription.explicitAuthFlows()
+                + "allowedOAuthFlowsUserPoolClient: " + clientDescription.allowedOAuthFlowsUserPoolClient()
+                + "allowedOAuthFlows: " + clientDescription.allowedOAuthFlows());
+
+
         var serverIdentifier = getResourceServer(userPoolId);
 
 
@@ -74,7 +105,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
                 .allowedOAuthScopes(Lists.newArrayList(
                         SCOPE_IDENTIFIER + "/workspace",
                         SCOPE_IDENTIFIER + "/" + name))
-                .allowedOAuthFlows(OAuthFlowType.CLIENT_CREDENTIALS)
+                .allowedOAuthFlowsWithStrings("client_credentials")
                 .allowedOAuthFlowsUserPoolClient(true)
                 .explicitAuthFlows(
                         List.of(
