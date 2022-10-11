@@ -368,7 +368,7 @@ Resources:
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
 
-  SnapshotTakingHandler:
+  SnapshotTakingLambda:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
@@ -381,7 +381,7 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
-      Handler: no.sikt.sws.SnapshotTakingHandler::handleRequest
+      Handler: no.sikt.sws.SnapshotTakingLambda::handleRequest
       Runtime: java11
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
