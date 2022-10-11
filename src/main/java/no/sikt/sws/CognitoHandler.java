@@ -15,8 +15,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.sikt.sws.constants.ApplicationConstants.BACKEND_SCOPE_RESOURCE_SERVER_NAME;
-import static no.sikt.sws.constants.ApplicationConstants.USER_POOL_NAME;
+import static no.sikt.sws.constants.ApplicationConstants.*;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
 
 public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void> {
@@ -67,7 +66,6 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
                 + "\nWith Scopes: " + describeClientResponse.allowedOAuthScopes());
 
 
-
         var newScopeName = "TestScope";
         var newAppClientName = "NewAppClientAttempt";
 
@@ -82,7 +80,9 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
                 .userPoolId(userPoolId)
                 .clientName(appClientName)
-                .allowedOAuthScopes(Lists.newArrayList(scopeName, OAuthFlowType.CLIENT_CREDENTIALS.toString()))
+                .allowedOAuthScopes(Lists.newArrayList(
+                        SCOPE_IDENTIFIER + "/workspace",
+                        SCOPE_IDENTIFIER + "/" + scopeName))
                 .explicitAuthFlows(
                         List.of(
                                 ALLOW_ADMIN_USER_PASSWORD_AUTH,
