@@ -29,7 +29,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
 
     private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
 
-    private static final String allowedNameRegex = "^[a-zæøåA-ZÆØÅ0-9]*$";
+    private static final String allowedNameRegex = "^[a-zA-Z0-9]*$";
 
     public CognitoHandler() {
         super(CreateUserClientDto.class);
