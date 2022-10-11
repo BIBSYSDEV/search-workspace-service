@@ -38,24 +38,42 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
         logger.info("Raw input: '" + input + "'");
         logger.info("name: '" + input.name + "'");
 
+        String userPoolId = getUserPoolId();
+
+
+        var listUserPoolClientRequest = ListUserPoolClientsRequest.builder()
+                .userPoolId(userPoolId)
+                .maxResults(10)
+                .build();
+
+        var anyClientRequest = cognitoClient
+                .listUserPoolClients(listUserPoolClientRequest)
+                .userPoolClients().stream().findAny();
+
+        if (anyClientRequest.isEmpty()) {
+            throw new IllegalStateException("No UserPools exist!");
+        }
+
+        var describeClientRequest = DescribeUserPoolClientRequest.builder()
+                .userPoolId(userPoolId)
+                .clientId(anyClientRequest.get().clientId())
+                .build();
+
+        var describeClientResponse = cognitoClient
+                .describeUserPoolClient(describeClientRequest)
+                .userPoolClient();
+
+        logger.info("UserPoolClientScope: " + describeClientResponse.clientName()
+                + "\nWith Scopes: " + describeClientResponse.allowedOAuthScopes());
+
+
+
         var newScopeName = "TestScope";
         var newAppClientName = "NewAppClientAttempt";
 
-        String userPoolId = getUserPoolId();
         var serverIdentifier = getResourceServer(userPoolId);
 
-        var userPoolClient = DescribeUserPoolClientRequest.builder()
-                .userPoolId(userPoolId)
-                .clientId("16iepe5biajju9he5rqqjcffmk")
-                .build();
-
         createScope(userPoolId, serverIdentifier, newScopeName);
-
-        var userPoolClientResponse = cognitoClient.describeUserPoolClient(userPoolClient);
-
-        logger.info("UserPoolClientScopes: " + userPoolClientResponse.userPoolClient().allowedOAuthScopes());
-
-
         createAppClient(userPoolId, newScopeName, newAppClientName);
         return null;
     }
