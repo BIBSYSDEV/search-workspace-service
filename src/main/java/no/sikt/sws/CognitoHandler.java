@@ -14,6 +14,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static no.sikt.sws.constants.ApplicationConstants.*;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
@@ -27,6 +28,8 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
 
     private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
 
+    private static final String allowedNameRegex = "^[a-zA-Z0-9]*$";
+
     public CognitoHandler() {
         super(CreateUserClientDto.class);
     }
@@ -34,8 +37,13 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
     @Override
     protected Void processInput(CreateUserClientDto input, RequestInfo requestInfo, Context context) {
 
-        logger.info("Raw input: '" + input + "'");
-        logger.info("name: '" + input.name + "'");
+        if (input == null || input.name == null) {
+            throw new IllegalStateException("Request does nt include name");
+        }
+        if (!input.name.matches(allowedNameRegex)) {
+            throw new IllegalStateException("Name contains illegal chars. Should only be letters and numbers");
+        }
+
 
         String userPoolId = getUserPoolId();
 
