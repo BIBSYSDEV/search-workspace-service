@@ -3,6 +3,7 @@ package no.sikt.sws;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import no.sikt.sws.models.gateway.Builder;
 import no.sikt.sws.models.opensearch.OpenSearchCommand;
 import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
@@ -27,7 +28,6 @@ public class WorkspaceStripper {
     public static final String STRIP_WORKSPACE_PATTERN = "-(.+)\"";
 
 
-
     public static JsonNode removePrefix(JsonNode node, String workspacePrefix) {
         if (workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + WORKSPACE_PREFIX);
@@ -35,27 +35,52 @@ public class WorkspaceStripper {
         if (node == null) {
             return null;
         }
+
         var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
 
         return string2JsonNode(
             node.toString()
-                .replaceAll(regex,""));
+                .replaceAll(regex,EMPTY_STRING));
     }
 
     // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
-    public static String removePrefix(OpenSearchCommand command, String workspacePrefix, String responseBody)  {
+    public static String removePrefix(OpenSearchCommand command, String workspacePrefix, String responseBody)
+            throws BadRequestException {
         if (responseBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
                     + ((responseBody == null) ? "[responseBody] " : EMPTY_STRING)
                     + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
         }
 
-        logger.info(command.name());
         //Regex that matches '{workspace}-' preceded by ' ', '/', '[' or '"'
         var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
 
-        return responseBody.replaceAll(regex, EMPTY_STRING);
+        switch (command) {
+            case ALIAS:
+            case BULK:
+            case MAPPING:
+            case OTHER:
+            case ERROR:
+                return responseBody.replaceAll(regex, EMPTY_STRING);
+            case SEARCH:
+                return Builder.toJson(Builder.searchFromValues(workspacePrefix,responseBody));
+            case DOC:
+                return Builder.toJson(Builder.docFromValues(workspacePrefix,responseBody));
+            case NOT_IMPLEMENTED:
+                throw new BadRequestException("Not implemented");
+            case INVALID:
+                throw new BadRequestException("resourceIdentifier is invalid");
+            default:
+                throw new IllegalStateException("Unexpected value: " + command);
+        }
+
+
     }
+
+    private static String removePrefixOther(String workspacePrefix, String responseBody) {
+        return responseBody;
+    }
+
 
     public static String prefixUrl(String workspacePrefix, String resourceIdentifier) {
         logger.debug("prefixing " + workspacePrefix + resourceIdentifier);
@@ -72,13 +97,16 @@ public class WorkspaceStripper {
     public static String prefixBody(String workspacePrefix, String resourceIdentifier, String gatewayBody)
             throws BadRequestException {
 
-        if (gatewayBody == null || workspacePrefix == null) {
-            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
-                    + ((gatewayBody == null) ? "[gatewayBody] " : EMPTY_STRING)
-                    + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
+        if (gatewayBody == null) {
+            return null;
         }
+
+        if (workspacePrefix == null) {
+            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "workspacePrefix");
+        }
+
         var getEnumt = OpenSearchCommand.fromString(resourceIdentifier);
-        logger.info(getEnumt.name());
+        logger.debug(getEnumt.name());
         switch (getEnumt) {
             case ALIAS:
                 return WorkspaceStripper.prefixAliasBody(workspacePrefix,gatewayBody);

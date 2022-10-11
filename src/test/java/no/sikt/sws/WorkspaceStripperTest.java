@@ -4,6 +4,7 @@ import no.sikt.sws.models.opensearch.OpenSearchCommand;
 import no.sikt.sws.models.opensearch.WorkspaceResponse;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
+import nva.commons.apigateway.exceptions.BadRequestException;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.ReadableInstant;
@@ -122,7 +123,7 @@ public class WorkspaceStripperTest {
 
     @Test
     @Disabled
-    void runSingleTestcase() {
+    void runSingleTestcase() throws BadRequestException {
         var filename = "requests-indexes.json";
         var testName = "PUT index by name, with template";
 
@@ -150,7 +151,7 @@ public class WorkspaceStripperTest {
     }
 
 
-    void assertResponseStripping(TestCaseSws testCase) {
+    void assertResponseStripping(TestCaseSws testCase) throws BadRequestException {
         logger.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
 
@@ -160,9 +161,10 @@ public class WorkspaceStripperTest {
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
         OpenSearchCommand command = OpenSearchCommand.fromString(testCase.getRequestGateway().getUrl());
+
         var resultResponse = WorkspaceStripper.removePrefix(command,WORKSPACEPREFIX,openSearchResponse);
 
-        assertEquals(expectedResponse,resultResponse);
+         assertEquals(expectedResponse,resultResponse);
     }
 
     void assertUrlPrefix(TestCaseSws testCase) {

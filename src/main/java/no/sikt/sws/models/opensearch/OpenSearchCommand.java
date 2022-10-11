@@ -13,7 +13,8 @@ public enum OpenSearchCommand {
     OTHER("other"),
     // the following are not executable
     NOT_IMPLEMENTED("_"),
-    INVALID("invalid");
+    INVALID("invalid"),
+    ERROR("error");
 
     private static final String ALLOWED_INPUT = "[A-ZÆØÅa-zæøå\\d/_-]*";
 

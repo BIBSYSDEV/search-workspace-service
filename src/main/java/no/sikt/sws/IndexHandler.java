@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
 import static no.sikt.sws.WorkspaceStripper.REQUIRED_PARAMETER_IS_NULL;
+import static no.sikt.sws.models.opensearch.OpenSearchCommand.ERROR;
 
 /**
  * Created for checking if external libraries have been imported properly.
@@ -55,15 +56,17 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
                 throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "[requestBody]");
             }
-            var requestBody =
-                    (body != null) ? WorkspaceStripper.prefixBody(workspace, resourceIdentifier, body) : null;
+            var requestBody = WorkspaceStripper.prefixBody(workspace, resourceIdentifier, body);
 
             var response = openSearchClient.sendRequest(httpMethod, url, requestBody);
 
             logger.info("response-code:" + response.getStatus());
             logger.info("raw response-body:" + response.getBody());
 
-            var responseBody = WorkspaceStripper.removePrefix(searchCommand,workspace, response.getBody());
+            var responseBody = (response.getStatus() < 300)
+                    ? WorkspaceStripper.removePrefix(searchCommand,workspace, response.getBody())
+                    : WorkspaceStripper.removePrefix(ERROR,workspace, response.getBody());
+
             logger.info("stripped response-body:" + responseBody);
 
             return new ProxyResponse<>(response.getStatus(), responseBody);

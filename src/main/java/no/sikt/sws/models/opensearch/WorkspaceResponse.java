@@ -39,7 +39,7 @@ public class WorkspaceResponse {
         this.createIndexLink = createIndexLink;
     }
 
-    public static WorkspaceResponse  fromValues(String workspacePrefix, String openSearchIndexList)
+    public static WorkspaceResponse fromValues(String workspacePrefix, String openSearchIndexList)
             throws JsonProcessingException {
 
         String createIndexLink = API_GATEWAY_URL + "/index_name";
