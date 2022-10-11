@@ -2,6 +2,7 @@ package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.github.jsonldjava.shaded.com.google.common.collect.Lists;
+import no.sikt.sws.models.internal.CreateUserClientDto;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import static no.sikt.sws.constants.ApplicationConstants.BACKEND_SCOPE_RESOURCE_
 import static no.sikt.sws.constants.ApplicationConstants.USER_POOL_NAME;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
 
-public class CognitoHandler extends ApiGatewayHandler<String, Void> {
+public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void> {
 
     CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
             .region(Region.EU_WEST_1)
@@ -28,13 +29,14 @@ public class CognitoHandler extends ApiGatewayHandler<String, Void> {
     private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
 
     public CognitoHandler() {
-        super(String.class);
+        super(CreateUserClientDto.class);
     }
 
     @Override
-    protected Void processInput(String input, RequestInfo requestInfo, Context context) {
+    protected Void processInput(CreateUserClientDto input, RequestInfo requestInfo, Context context) {
 
         logger.info("Raw input: '" + input + "'");
+        logger.info("name: '" + input.name + "'");
 
         var newScopeName = "TestScope";
         var newAppClientName = "NewAppClientAttempt";
@@ -133,7 +135,7 @@ public class CognitoHandler extends ApiGatewayHandler<String, Void> {
     }
 
     @Override
-    protected Integer getSuccessStatusCode(String input, Void output) {
+    protected Integer getSuccessStatusCode(CreateUserClientDto input, Void output) {
         return 200;
     }
 }
