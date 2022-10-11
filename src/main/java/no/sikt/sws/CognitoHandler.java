@@ -74,7 +74,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
                 + "\nWith Scopes: " + describeClientResponse.allowedOAuthScopes());
 
 
-        var newScopeName = "TestScope";
+        var newScopeName = input.name.toLowerCase(Locale.ENGLISH);
         var newAppClientName = "NewAppClientAttempt";
 
         var serverIdentifier = getResourceServer(userPoolId);
