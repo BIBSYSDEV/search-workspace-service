@@ -20,6 +20,8 @@ import java.util.Locale;
 import static no.sikt.sws.constants.ApplicationConstants.*;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.OAuthFlowType.CLIENT_CREDENTIALS;
+import static software.amazon.awssdk.services.cognitoidentityprovider.model.TimeUnitsType.DAYS;
+import static software.amazon.awssdk.services.cognitoidentityprovider.model.TimeUnitsType.MINUTES;
 
 public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void> {
 
@@ -60,6 +62,12 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
 
     private void createAppClient(String userPoolId, String name, String appClientName) {
 
+        var tokenValidityUnitTypes = TokenValidityUnitsType.builder()
+                .refreshToken(DAYS)
+                .accessToken(MINUTES)
+                .idToken(MINUTES)
+                .build();
+
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
                 .userPoolId(userPoolId)
                 .clientName(appClientName)
@@ -75,6 +83,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
                                 ALLOW_REFRESH_TOKEN_AUTH,
                                 ALLOW_USER_SRP_AUTH)
                 )
+                .tokenValidityUnits(tokenValidityUnitTypes)
                 .refreshTokenValidity(30)
                 .accessTokenValidity(15)
                 .idTokenValidity(15)
