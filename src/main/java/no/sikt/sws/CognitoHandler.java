@@ -2,6 +2,7 @@ package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.github.jsonldjava.shaded.com.google.common.collect.Lists;
+import no.sikt.sws.models.internal.CognitoCredentialsDto;
 import no.sikt.sws.models.internal.CreateUserClientDto;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
@@ -22,7 +23,7 @@ import static software.amazon.awssdk.services.cognitoidentityprovider.model.Expl
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.TimeUnitsType.DAYS;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.TimeUnitsType.MINUTES;
 
-public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void> {
+public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, CognitoCredentialsDto> {
 
     CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
             .region(Region.EU_WEST_1)
@@ -38,7 +39,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
     }
 
     @Override
-    protected Void processInput(CreateUserClientDto input, RequestInfo requestInfo, Context context) {
+    protected CognitoCredentialsDto processInput(CreateUserClientDto input, RequestInfo requestInfo, Context context) {
 
         if (input == null || input.name == null) {
             throw new IllegalStateException("Request does nt include name");
@@ -49,36 +50,6 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
 
         var userPoolId = getUserPoolId();
 
-
-        var listClientRequest = ListUserPoolClientsRequest.builder()
-                .maxResults(10)
-                .userPoolId(userPoolId)
-                .build();
-
-        var listClientResponse = cognitoClient.listUserPoolClients(listClientRequest);
-        var marinaClient = listClientResponse.userPoolClients().stream().filter(
-                client -> "BackendApplicationMarinaClient".equals(client.clientName())
-        ).findFirst();
-
-        if (marinaClient.isEmpty()) {
-            throw new IllegalStateException("Should have a MarinaClient");
-        }
-
-        var describeClientRequest = DescribeUserPoolClientRequest.builder()
-                .userPoolId(userPoolId)
-                .clientId(marinaClient.get().clientId())
-                .build();
-        var clientDescription = cognitoClient.describeUserPoolClient(describeClientRequest)
-                .userPoolClient();
-
-        logger.info("MarinaClient: " + clientDescription);
-        logger.info("MarinaClients attributes: " + clientDescription.writeAttributes());
-        logger.info("MarinaClients OAuthFlow: "
-                + "explicitAuthFlows: " + clientDescription.explicitAuthFlows()
-                + "allowedOAuthFlowsUserPoolClient: " + clientDescription.allowedOAuthFlowsUserPoolClient()
-                + "allowedOAuthFlows: " + clientDescription.allowedOAuthFlows());
-
-
         var serverIdentifier = getResourceServer(userPoolId);
 
 
@@ -87,7 +58,33 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
 
         createScope(userPoolId, serverIdentifier, newScopeName);
         createAppClient(userPoolId, newScopeName, appClientName);
-        return null;
+
+        return getClientCredentials(userPoolId, appClientName);
+    }
+
+    private CognitoCredentialsDto getClientCredentials(String userPoolId, String clientName) {
+        var listClientRequest = ListUserPoolClientsRequest.builder()
+                .maxResults(50)
+                .userPoolId(userPoolId)
+                .build();
+
+        var listClientResponse = cognitoClient.listUserPoolClients(listClientRequest);
+        var client = listClientResponse.userPoolClients().stream().filter(
+                c -> clientName.equals(c.clientName())
+        ).findFirst();
+
+        if (client.isEmpty()) {
+            throw new IllegalStateException("Should have a " + clientName);
+        }
+
+        var describeClientRequest = DescribeUserPoolClientRequest.builder()
+                .userPoolId(userPoolId)
+                .clientId(client.get().clientId())
+                .build();
+        var clientDescription = cognitoClient.describeUserPoolClient(describeClientRequest)
+                .userPoolClient();
+
+        return new CognitoCredentialsDto(clientDescription.clientId(), clientDescription.clientName());
     }
 
     private void createAppClient(String userPoolId, String name, String appClientName) {
@@ -178,7 +175,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
     }
 
     @Override
-    protected Integer getSuccessStatusCode(CreateUserClientDto input, Void output) {
+    protected Integer getSuccessStatusCode(CreateUserClientDto input, CognitoCredentialsDto output) {
         return 200;
     }
 }
