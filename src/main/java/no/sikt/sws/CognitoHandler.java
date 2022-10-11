@@ -62,6 +62,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Void>
         var createUserPoolRequest = CreateUserPoolClientRequest.builder()
                 .userPoolId(userPoolId)
                 .clientName(appClientName)
+                .generateSecret(true)
                 .allowedOAuthScopes(Lists.newArrayList(
                         SCOPE_IDENTIFIER + "/workspace",
                         SCOPE_IDENTIFIER + "/" + name))
