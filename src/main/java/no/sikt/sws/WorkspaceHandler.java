@@ -50,8 +50,6 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
 
-//            var responseBody = WorkspaceStripper.removePrefix(OpenSearchCommand.OTHER, workspace,response.getBody());
-//            logger.info("body-stripped:" + responseBody);
             return response.getBody();
         } catch (Exception e) {
             logger.error("Error when communicating with opensearch:" + e.getMessage(), e);

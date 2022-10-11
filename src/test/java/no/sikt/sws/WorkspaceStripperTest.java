@@ -93,15 +93,7 @@ public class WorkspaceStripperTest {
         }
 
     }
-//    @TestFactory
-//    @DisplayName("Gateway response workspace stripping")
-//    Stream<DynamicTest> testResponseIndexStripping() {
-//        var testCases = allRequestArguments().filter(TestCaseSws::isIndexResponse);
-//        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName; // -> testcase name
-//        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseIndexStripping;     // -> test function
-//
-//        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
-//    }
+
 
     void assertResponseIndexStripping(TestCaseSws testCase) {
         logger.info(testCase.toString());
@@ -129,6 +121,7 @@ public class WorkspaceStripperTest {
      */
 
     @Test
+    @Disabled
     void runSingleTestcase() {
         var filename = "requests-indexes.json";
         var testName = "PUT index by name, with template";
@@ -214,9 +207,10 @@ public class WorkspaceStripperTest {
 
         var gatewayBody = testCase.getRequestGateway().getBody();
         var resultBody = attempt(() ->
-                WorkspaceStripper.prefixBody(WORKSPACEPREFIX, resourceIdentifier, gatewayBody)).get();
+                WorkspaceStripper.prefixBody(WORKSPACEPREFIX, resourceIdentifier, gatewayBody)
+        );
 
-        assertEquals(expectedBody,resultBody);
+        assertEquals(expectedBody,resultBody.get());
     }
 
 }

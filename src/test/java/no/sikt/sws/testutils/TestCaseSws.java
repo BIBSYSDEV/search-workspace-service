@@ -62,10 +62,9 @@ public class TestCaseSws implements Serializable {
     }
 
     public boolean isIndexResponse() {
-        var retValue = "".equals(requestGateway.getUrl())
+        return "".equals(requestGateway.getUrl())
             && HttpMethodName.GET == requestGateway.getMethod()
             && isResponseTest();
-        return retValue;
     }
 
     public boolean isIndexRequest() {
@@ -77,8 +76,10 @@ public class TestCaseSws implements Serializable {
     }
 
     public boolean isRequestBodyTest() {
-        return requestGateway != null && requestGateway.getBody() != null
-                && requestOpensearch != null && requestOpensearch.getBody() != null;
+        return requestGateway != null
+            && requestOpensearch != null
+            && requestGateway.getBody() != null
+            && requestOpensearch.getBody() != null;
     }
 
     @Override

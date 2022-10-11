@@ -2,6 +2,7 @@ package no.sikt.sws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.sikt.sws.models.opensearch.OpenSearchCommand;
 import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
@@ -9,12 +10,10 @@ import nva.commons.core.JacocoGenerated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @JacocoGenerated
 public class WorkspaceStripper {
@@ -60,7 +59,7 @@ public class WorkspaceStripper {
 
     public static String prefixUrl(String workspacePrefix, String resourceIdentifier) {
         logger.debug("prefixing " + workspacePrefix + resourceIdentifier);
-        if (resourceIdentifier == null) {
+        if (resourceIdentifier == null || resourceIdentifier.isEmpty()) {
             return workspacePrefix + "-*";
 
         } else if (resourceIdentifier.startsWith("_")) {
@@ -72,6 +71,12 @@ public class WorkspaceStripper {
 
     public static String prefixBody(String workspacePrefix, String resourceIdentifier, String gatewayBody)
             throws BadRequestException {
+
+        if (gatewayBody == null || workspacePrefix == null) {
+            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
+                    + ((gatewayBody == null) ? "[gatewayBody] " : EMPTY_STRING)
+                    + ((workspacePrefix == null) ? WORKSPACE_PREFIX : EMPTY_STRING));
+        }
         var getEnumt = OpenSearchCommand.fromString(resourceIdentifier);
         logger.info(getEnumt.name());
         switch (getEnumt) {
@@ -121,20 +126,19 @@ public class WorkspaceStripper {
         var node =  string2JsonNode(gatewayBody);
 
         if (node.has("aliases")) {
-            var result = Stream.generate(() -> node.get("aliases").fields())
-                .takeWhile(Iterator::hasNext)
-                .map(Iterator::next)
-                .collect(Collectors.toMap(key -> prefixString(key.getKey(), workspacePrefix), Map.Entry::getValue));
-//            node  =
+            var aliasesONode = (ObjectNode)node.get("aliases");
+            var names = new ArrayList<String>();
+            aliasesONode.fieldNames().forEachRemaining(names::add);
+            names.forEach(name -> {
+                aliasesONode.set(workspacePrefix + "-" + name,aliasesONode.get(name));
+                aliasesONode.remove(name);
+            });
+            ((ObjectNode)node).set("aliases",aliasesONode);
+            return node.toPrettyString();
         }
-
-        return gatewayBody
+        return gatewayBody;
             //.replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
-            .replaceAll("(\"aliases\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
-        //return attempt(() -> {
-        //    var strippedIndex = Arrays.stream(resourceIdentifier.split("/")).findFirst().orElseThrow();
-        //    return gatewayBody.replaceAll(resourceIdentifier, workspacePrefix + "-" + strippedIndex);
-        //}).orElseThrow();
+            //.replaceAll("(\"aliases\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
     }
 
     private static String prefixString(String input, String workspacePrefix) {

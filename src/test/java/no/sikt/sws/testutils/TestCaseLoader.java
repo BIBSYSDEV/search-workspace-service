@@ -29,14 +29,14 @@ public class TestCaseLoader {
     public List<TestCaseSws> getTestCases() {
         return getElements()
                 .stream()
-                .map(json -> TestCaseSws.fromJson(json))
+                .map(TestCaseSws::fromJson)
                 .collect(Collectors.toList());
     }
 
     public TestCaseSws getTestCase(String name) {
         return getElements()
                 .stream()
-                .map(json -> TestCaseSws.fromJson(json))
+                .map(TestCaseSws::fromJson)
                 .filter(e -> e.getName().equals(name))
                 .findFirst()
                 .orElseThrow();
