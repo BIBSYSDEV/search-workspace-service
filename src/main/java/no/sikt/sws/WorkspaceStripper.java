@@ -59,7 +59,12 @@ public class WorkspaceStripper {
             case ALIAS:
                 return WorkspaceStripper.prefixAliasBody(workspacePrefix,gatewayBody);
             case BULK:
-                return WorkspaceStripper.prefixIndexesBulkBody(workspacePrefix,getBulkBody(gatewayBody));
+                var trailingNewline = gatewayBody.endsWith("\n");
+                return WorkspaceStripper.prefixIndexesBulkBody(
+                        workspacePrefix,
+                        getBulkBody(gatewayBody),
+                        trailingNewline
+                );
             case OTHER:
                 return WorkspaceStripper.prefixIndexesBody(workspacePrefix,resourceIdentifier,gatewayBody);
             case NOT_IMPLEMENTED:
@@ -88,7 +93,9 @@ public class WorkspaceStripper {
     }
 
 
-    protected static String prefixIndexesBulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody) {
+    protected static String prefixIndexesBulkBody(String workspacePrefix,
+                                                  List<JsonNode> gatewayBulkBody,
+                                                  Boolean trailingNewline) {
         if (gatewayBulkBody == null || workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
                     + ((gatewayBulkBody == null) ? "[gatewayBulkBody] " : EMPTY_STRING)
@@ -111,7 +118,8 @@ public class WorkspaceStripper {
             indexName = String.format("\"%s\"",  indexName);
 
             return item.toString().replaceAll(indexName,workspaceIndexName);
-        }).collect(Collectors.joining("\n"));
+        }).collect(Collectors.joining("\n"))
+                + (trailingNewline ? "\n" : "");
     }
 
     protected static String prefixAliasBody(String workspacePrefix,String gatewayAliasBody) {
