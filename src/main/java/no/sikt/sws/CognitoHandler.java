@@ -84,7 +84,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Cogni
         var clientDescription = cognitoClient.describeUserPoolClient(describeClientRequest)
                 .userPoolClient();
 
-        return new CognitoCredentialsDto(clientDescription.clientId(), clientDescription.clientName());
+        return new CognitoCredentialsDto(clientDescription.clientId(), clientDescription.clientSecret());
     }
 
     private void createAppClient(String userPoolId, String name, String appClientName) {
