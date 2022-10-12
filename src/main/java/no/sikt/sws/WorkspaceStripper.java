@@ -196,7 +196,8 @@ public class WorkspaceStripper {
             indexName = String.format("\"%s\"",  indexName);
 
             return item.toString().replaceAll(indexName,workspaceIndexName);
-        }).collect(Collectors.joining("\n"));
+        }).collect(Collectors.joining("\n"))
+                + "\n";
     }
 
     protected static String prefixAliasBody(String workspacePrefix,String gatewayAliasBody) {
