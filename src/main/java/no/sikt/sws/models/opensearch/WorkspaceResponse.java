@@ -20,7 +20,7 @@ public class WorkspaceResponse {
     public String accountIdentifier;
 
     @JsonProperty("index_list")
-    public LinkedHashMap<String, InternalIndexDto> indexList;
+    public Map<String, InternalIndexDto> indexList;
 
     @JsonProperty("create_index_link")
     public String createIndexLink;
@@ -31,7 +31,7 @@ public class WorkspaceResponse {
 
     public WorkspaceResponse(
             String accountIdentifier,
-            LinkedHashMap<String, InternalIndexDto> indexList,
+            Map<String, InternalIndexDto> indexList,
             String createIndexLink
     ) {
         this.accountIdentifier = accountIdentifier;

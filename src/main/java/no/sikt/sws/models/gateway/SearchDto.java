@@ -29,15 +29,6 @@ public class SearchDto implements Dto {
     public SearchDto() {
     }
 
-
-
-    public SearchDto(Number took, Boolean timedOut, JsonNode shards, HitsDto hits) {
-        this.took = took;
-        this.timedOut = timedOut;
-        this.shards = shards;
-        this.hits = hits;
-    }
-
     @Override
     public String toString() {
         return new StringJoiner(", ", SearchDto.class.getSimpleName() + "[", "]")

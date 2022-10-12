@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
-import static no.sikt.sws.WorkspaceStripper.REQUIRED_PARAMETER_IS_NULL;
+import static no.sikt.sws.ResponseStripper.REQUIRED_PARAMETER_IS_NULL;
 import static no.sikt.sws.models.opensearch.OpenSearchCommand.ERROR;
 
 /**
@@ -50,22 +50,22 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         try {
             validateResourceIdentifier(resourceIdentifier);
 
-            var url = WorkspaceStripper.prefixUrl(workspace, resourceIdentifier);
+            var url = Prefixer.url(workspace, resourceIdentifier);
             logger.info("URL: " + url);
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
                 throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "[requestBody]");
             }
-            var requestBody = WorkspaceStripper.prefixBody(workspace, resourceIdentifier, body);
+            var requestBody = Prefixer.body(workspace, resourceIdentifier, body);
 
             var response = openSearchClient.sendRequest(httpMethod, url, requestBody);
 
             logger.info("response-code:" + response.getStatus());
             logger.info("raw response-body:" + response.getBody());
 
-            var responseBody = (response.getStatus() < 300)
-                    ? WorkspaceStripper.removePrefix(searchCommand,workspace, response.getBody())
-                    : WorkspaceStripper.removePrefix(ERROR,workspace, response.getBody());
+            var responseBody = response.getStatus() < 300
+                    ? ResponseStripper.removePrefix(searchCommand,workspace, response.getBody())
+                    : ResponseStripper.removePrefix(ERROR,workspace, response.getBody());
 
             logger.info("stripped response-body:" + responseBody);
 

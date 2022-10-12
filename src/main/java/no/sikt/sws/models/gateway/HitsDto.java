@@ -21,11 +21,6 @@ public class HitsDto implements Dto {
     public HitsDto() {
     }
 
-    public HitsDto(JsonNode shards, Number maxScore, List<DocDto> hits) {
-        this.shards = shards;
-        this.maxScore = maxScore;
-        this.hits = hits;
-    }
 
     @Override
     public String toString() {

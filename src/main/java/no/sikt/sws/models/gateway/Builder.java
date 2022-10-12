@@ -1,9 +1,16 @@
 package no.sikt.sws.models.gateway;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.sikt.sws.ResponseStripper;
+import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
 
-import static no.sikt.sws.WorkspaceStripper.EMPTY_STRING;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static no.sikt.sws.ResponseStripper.EMPTY_STRING;
 import static nva.commons.core.attempt.Try.attempt;
 
 public class Builder {
@@ -31,6 +38,42 @@ public class Builder {
         }
     }
 
+    public static String indexFromValues(String workspacePrefix, String responseBody) {
+        var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
+        try {
+            Map<String, OpenSearchIndexDto> sourceMap = objectMapper.readValue(responseBody, new TypeReference<>() {});
+
+            var retMap = sourceMap
+                .entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                    mapEntry -> mapEntry.getKey().replaceAll(workspacePrefix + "-", ""),
+                    mapEntry -> fromOpenSearchIndex(mapEntry, workspacePrefix),
+                    (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+            return attempt(() -> objectMapper
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(retMap)).orElseThrow();
+
+        } catch (JsonProcessingException e) {
+            return attempt(() -> objectMapper
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(errorFromValues(workspacePrefix, responseBody)))
+                .or(() -> responseBody.replaceAll(regex, EMPTY_STRING)).get();
+        }
+    }
+
+    private static Dto fromOpenSearchIndex(Map.Entry<String, OpenSearchIndexDto> mapEntry, String workspacePrefix) {
+        //var name = mapEntry.getKey().replaceAll(workspacePrefix + "-", "");
+        var openSearchIndex = mapEntry.getValue();
+
+        return new IndexDto(
+            ResponseStripper.removePrefix(openSearchIndex.aliases, workspacePrefix),
+            openSearchIndex.mappings,
+            ResponseStripper.removePrefix(openSearchIndex.settings, workspacePrefix)
+        );
+    }
+
     public static Dto errorFromValues(String workspacePrefix, String opensearchResponse) {
         try {
             var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
@@ -44,7 +87,7 @@ public class Builder {
     }
 
 
-    public static String toJson(Object dto)  {
+    public static String toJson(Dto dto)  {
         return attempt(() -> objectMapper
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(dto)).orElseThrow();

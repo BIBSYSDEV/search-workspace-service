@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class WorkspaceResponseTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
     void workspaceResponseMapsCorrectly() throws JsonProcessingException {
 

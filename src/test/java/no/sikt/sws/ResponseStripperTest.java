@@ -20,9 +20,9 @@ import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
 import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WorkspaceStripperTest {
+public class ResponseStripperTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(WorkspaceStripperTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResponseStripperTest.class);
     private static final String WORKSPACEPREFIX = "workspace-mockname";
 
     /**
@@ -160,11 +160,12 @@ public class WorkspaceStripperTest {
 
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
-        OpenSearchCommand command = OpenSearchCommand.fromString(testCase.getRequestGateway().getUrl());
+        var command = OpenSearchCommand.fromString(testCase.getRequestGateway().getUrl());
 
-        var resultResponse = WorkspaceStripper.removePrefix(command,WORKSPACEPREFIX,openSearchResponse);
+        logger.info("--> " + command.name());
+        var resultResponse = ResponseStripper.removePrefix(command,WORKSPACEPREFIX,openSearchResponse);
 
-         assertEquals(expectedResponse,resultResponse);
+        assertEquals(expectedResponse,resultResponse);
     }
 
     void assertUrlPrefix(TestCaseSws testCase) {
@@ -173,7 +174,7 @@ public class WorkspaceStripperTest {
 
         var gatewayUrl = testCase.getRequestGateway().getUrl();
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
-        var resultUrl = WorkspaceStripper.prefixUrl(WORKSPACEPREFIX,gatewayUrl);
+        var resultUrl = Prefixer.url(WORKSPACEPREFIX,gatewayUrl);
 
         assertEquals(expectedUrl,resultUrl);
 
@@ -188,7 +189,7 @@ public class WorkspaceStripperTest {
 
         var gatewayBody = testCase.getRequestGateway().getBody();
         var resultBody = attempt(() ->
-            WorkspaceStripper.prefixBody(WORKSPACEPREFIX,resourceIdentifier,gatewayBody));
+            Prefixer.body(WORKSPACEPREFIX,resourceIdentifier,gatewayBody));
 
         assertEquals(expectedBody,resultBody.get());
     }
@@ -209,7 +210,7 @@ public class WorkspaceStripperTest {
 
         var gatewayBody = testCase.getRequestGateway().getBody();
         var resultBody = attempt(() ->
-                WorkspaceStripper.prefixBody(WORKSPACEPREFIX, resourceIdentifier, gatewayBody)
+            Prefixer.body(WORKSPACEPREFIX, resourceIdentifier, gatewayBody)
         );
 
         assertEquals(expectedBody,resultBody.get());
