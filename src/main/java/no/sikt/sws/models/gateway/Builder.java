@@ -5,9 +5,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.sikt.sws.PrefixStripper;
 import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
@@ -15,31 +18,37 @@ import static nva.commons.core.attempt.Try.attempt;
 
 public class Builder {
 
+    private static final Logger logger = LoggerFactory.getLogger(Builder.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Function<String, String> toRegEx = prefix -> "(?<=[ /\"\\[])" + prefix + "-";
 
     public static String docFromValues(String workspacePrefix, String opensearchResponse) {
+        var regex = toRegEx.apply(workspacePrefix);
         try {
             var instance = objectMapper.readValue(opensearchResponse, DocDto.class);
             instance.indexName = instance.indexName.replaceFirst(workspacePrefix + "-", "");
             return toJson(instance);
         } catch (JsonProcessingException ex) {
-            return errorFromValues(workspacePrefix,opensearchResponse);
+            logger.warn(ex.getMessage());
+            return opensearchResponse.replaceAll(regex, EMPTY_STRING);
         }
     }
 
     public static String searchFromValues(String workspacePrefix, String opensearchResponse) {
+        var regex = toRegEx.apply(workspacePrefix);
         try {
             var instance = objectMapper.readValue(opensearchResponse, SearchDto.class);
             instance.hits.hits.forEach(docDto ->
                     docDto.indexName = docDto.indexName.replaceFirst(workspacePrefix + "-", ""));
             return toJson(instance);
         } catch (JsonProcessingException ex) {
-            return errorFromValues(workspacePrefix,opensearchResponse);
+            logger.warn(ex.getMessage());
+            return opensearchResponse.replaceAll(regex, EMPTY_STRING);
         }
     }
 
     public static String indexFromValues(String workspacePrefix, String responseBody) {
-        var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
+        var regex = toRegEx.apply(workspacePrefix);
         try {
             Map<String, OpenSearchIndexDto> sourceMap = objectMapper.readValue(responseBody, new TypeReference<>() {});
 
@@ -55,9 +64,11 @@ public class Builder {
                 .writerWithDefaultPrettyPrinter()
                 .writeValueAsString(retMap)).orElseThrow();
 
-        } catch (JsonProcessingException e) {
-            return attempt(() -> errorFromValues(workspacePrefix, responseBody))
-                .or(() -> responseBody.replaceAll(regex, EMPTY_STRING)).get();
+        } catch (JsonProcessingException ex) {
+            logger.warn(ex.getMessage());
+            return responseBody.replaceAll(regex, EMPTY_STRING);
+            //return attempt(() -> errorFromValues(workspacePrefix, responseBody))
+            //    .or(() -> responseBody.replaceAll(regex, EMPTY_STRING)).get();
         }
     }
 
@@ -74,7 +85,7 @@ public class Builder {
 
     public static String errorFromValues(String workspacePrefix, String opensearchResponse) {
         try {
-            var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
+            var regex = toRegEx.apply(workspacePrefix);
             var dto = objectMapper.readValue(
                     opensearchResponse.replaceAll(regex,EMPTY_STRING), ErrorDto.class);
 
