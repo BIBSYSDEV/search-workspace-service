@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
@@ -19,9 +20,10 @@ public class Builder {
 
     private static final Logger logger = LoggerFactory.getLogger(Builder.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Function<String, String> toRegEx = prefix -> "(?<=[ /\"\\[])" + prefix + "-";
 
     public static String docFromValues(String workspacePrefix, String opensearchResponse) {
-        var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
+        var regex = toRegEx.apply(workspacePrefix);
         try {
             var instance = objectMapper.readValue(opensearchResponse, DocDto.class);
             instance.indexName = instance.indexName.replaceFirst(workspacePrefix + "-", "");
@@ -33,8 +35,7 @@ public class Builder {
     }
 
     public static String searchFromValues(String workspacePrefix, String opensearchResponse) {
-        var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
-
+        var regex = toRegEx.apply(workspacePrefix);
         try {
             var instance = objectMapper.readValue(opensearchResponse, SearchDto.class);
             instance.hits.hits.forEach(docDto ->
@@ -47,7 +48,7 @@ public class Builder {
     }
 
     public static String indexFromValues(String workspacePrefix, String responseBody) {
-        var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
+        var regex = toRegEx.apply(workspacePrefix);
         try {
             Map<String, OpenSearchIndexDto> sourceMap = objectMapper.readValue(responseBody, new TypeReference<>() {});
 
@@ -84,7 +85,7 @@ public class Builder {
 
     public static String errorFromValues(String workspacePrefix, String opensearchResponse) {
         try {
-            var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
+            var regex = toRegEx.apply(workspacePrefix);
             var dto = objectMapper.readValue(
                     opensearchResponse.replaceAll(regex,EMPTY_STRING), ErrorDto.class);
 
