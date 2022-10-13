@@ -59,7 +59,7 @@ public class WorkspaceStripper {
             case ALIAS:
                 return WorkspaceStripper.prefixAliasBody(workspacePrefix,gatewayBody);
             case BULK:
-                return WorkspaceStripper.prefixIndexesBulkBody(workspacePrefix,getBulkBody(gatewayBody));
+                return WorkspaceStripper.prefixIndexesBulkBody(workspacePrefix, getBulkBody(gatewayBody));
             case OTHER:
                 return WorkspaceStripper.prefixIndexesBody(workspacePrefix,resourceIdentifier,gatewayBody);
             case NOT_IMPLEMENTED:
@@ -111,7 +111,8 @@ public class WorkspaceStripper {
             indexName = String.format("\"%s\"",  indexName);
 
             return item.toString().replaceAll(indexName,workspaceIndexName);
-        }).collect(Collectors.joining("\n"));
+        }).collect(Collectors.joining("\n"))
+                + "\n";
     }
 
     protected static String prefixAliasBody(String workspacePrefix,String gatewayAliasBody) {

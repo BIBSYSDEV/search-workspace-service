@@ -162,6 +162,8 @@ Resources:
                   - cognito-idp:CreateUserPool
                   - cognito-idp:ListUserPools
                   - cognito-idp:CreateUserPoolClient
+                  - cognito-idp:DescribeUserPoolClient
+                  - cognito-idp:ListUserPoolClients
                 Resource: "*"
 
   SWSSnapshotRepoRole:
@@ -439,6 +441,8 @@ Resources:
           ScopeName: workspace-stig
         - ScopeDescription: Scope for accessing marinas workspace
           ScopeName: workspace-marina
+        - ScopeDescription: Scope for accessing fredriks workspace
+          ScopeName: workspace-fredrik
       UserPoolId: !Ref UserPool
 
   BackendApplicationSondreClient:
@@ -475,6 +479,7 @@ Resources:
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthScopes:
         - https://api.sws.aws.sikt.no/scopes/workspace
+        - https://api.sws.aws.sikt.no/scopes/workspace-fredrik
       ClientName:   BackendApplicationFredrikClient
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH

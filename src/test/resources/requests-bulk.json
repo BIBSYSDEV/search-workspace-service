@@ -4,12 +4,12 @@
     "requestGateway": {
       "method": "POST",
       "url": "_bulk",
-      "body":"{\"index\":{\"_index\":\"index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}"
+      "body":"{\"index\":{\"_index\":\"index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
     },
     "requestOpensearch": {
       "method": "POST",
       "url": "_bulk",
-      "body": "{\"index\":{\"_index\":\"workspace-mockname-index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}"
+      "body": "{\"index\":{\"_index\":\"workspace-mockname-index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
     },
     "response": {
       "took": 470,
@@ -121,16 +121,29 @@
     }
   },
   {
+    "name": "Bulk POST insert docs without path, test that trailing \n is persisted",
+    "requestGateway": {
+      "method": "POST",
+      "url": "_bulk",
+      "body":"{\"index\":{\"_index\":\"index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
+    },
+    "requestOpensearch": {
+      "method": "POST",
+      "url": "_bulk",
+      "body": "{\"index\":{\"_index\":\"workspace-mockname-index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
+    }
+  },
+  {
     "name": "Bulk POST insert docs with path",
     "requestGateway": {
       "method": "POST",
       "url": "index-name/_bulk",
-      "body":"{\"index\":{\"_index\":\"index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}"
+      "body":"{\"index\":{\"_index\":\"index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
     },
     "requestOpensearch": {
       "method": "POST",
       "url": "workspace-mockname-index-name/_bulk",
-      "body": "{\"index\":{\"_index\":\"workspace-mockname-index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}"
+      "body": "{\"index\":{\"_index\":\"workspace-mockname-index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
     },
     "response": {
       "took": 470,
@@ -246,12 +259,12 @@
     "requestGateway": {
       "method": "POST",
       "url": "sondres_index_for_bulk/_bulk",
-      "body":"{\"index\":{\"_index\":\"index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}"
+      "body":"{\"index\":{\"_index\":\"index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
     },
     "requestOpensearch": {
       "method": "POST",
       "url": "workspace-mockname-sondres_index_for_bulk/_bulk",
-      "body": "{\"index\":{\"_index\":\"workspace-mockname-index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}"
+      "body": "{\"index\":{\"_index\":\"workspace-mockname-index-2\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"workspace-mockname-index-3\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
     },
     "response": {
       "took": 470,
@@ -367,12 +380,12 @@
     "requestGateway": {
       "method": "POST",
       "url": "_bulk",
-      "body": "{\"index\":{\"_index\":\"i\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"ii\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"j\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}"
+      "body": "{\"index\":{\"_index\":\"i\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"ii\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"j\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
     },
     "requestOpensearch": {
       "method": "POST",
       "url": "_bulk",
-      "body": "{\"index\":{\"_index\":\"workspace-mockname-i\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"workspace-mockname-ii\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"workspace-mockname-j\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}"
+      "body": "{\"index\":{\"_index\":\"workspace-mockname-i\",\"_id\":\"1\"}}\n{\"navn\":\"Test-1\",\"age\":13}\n{\"index\":{\"_index\":\"workspace-mockname-ii\",\"_id\":\"2\"}}\n{\"navn\":\"Test-2\",\"age\":23}\n{\"index\":{\"_index\":\"workspace-mockname-j\",\"_id\":\"3\"}}\n{\"navn\":\"Test-3\",\"age\":33}\n"
     },
     "response": {
       "took": 470,
