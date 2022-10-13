@@ -10,6 +10,9 @@ public class DocDto implements Dto {
     @JsonProperty("_index")
     public String indexName;
 
+    @JsonProperty("_type")
+    public String type;
+
     @JsonProperty("_id")
     public String id;
 
