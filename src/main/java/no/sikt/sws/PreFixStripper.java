@@ -16,6 +16,12 @@ import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_N
 public class PreFixStripper {
 
 
+    /**
+     * Strips prefix from body.
+     * @param node JsonNode to strip
+     * @param workspacePrefix prefix to strip
+     * @return stripped JsonNode
+     */
     public static JsonNode node(JsonNode node, String workspacePrefix) {
         if (workspacePrefix == null) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + ApplicationConstants.WORKSPACE_PREFIX);
@@ -31,7 +37,13 @@ public class PreFixStripper {
                 .replaceAll(regex, EMPTY_STRING));
     }
 
-    // Remove {workspace}- from responseBody but only if beginning of field, word og preceded by '/'
+    /**
+     * Strips prefix from body.
+     * @param command OpenSearchCommand
+     * @param workspacePrefix prefix to remove
+     * @param responseBody body to prefix
+     * @return stripped body
+     */
     public static String body(OpenSearchCommand command, String workspacePrefix, String responseBody)
             throws BadRequestException {
         if (responseBody == null || workspacePrefix == null) {

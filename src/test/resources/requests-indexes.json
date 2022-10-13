@@ -642,12 +642,12 @@
     "requestGateway": {
       "method": "PUT",
       "url": "evil",
-      "body": "{\r\n   \"mappings\": {\r\n    \"properties\": {\r\n      \"workspace-mockname-evil-mapping\": {\r\n        \"type\": \"integer\"\r\n      }\r\n    }\r\n  },\r\n  \"aliases\": {\r\n    \"workspace-mockname-evil-alias\": {}\r\n  }\r\n}"
+      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-evil-alias\": {}\n  }\n}"
     },
     "requestOpensearch": {
       "method": "PUT",
       "url": "workspace-mockname-evil",
-      "body": "{\r\n  \"mappings\" : {\r\n    \"properties\" : {\r\n      \"workspace-mockname-evil-mapping\" : {\r\n        \"type\" : \"integer\"\r\n      }\r\n    }\r\n  },\r\n  \"aliases\" : {\r\n    \"workspace-mockname-workspace-mockname-evil-alias\" : { }\r\n  }\r\n}"
+      "body": "{\n  \"mappings\" : {\n    \"properties\" : {\n      \"workspace-mockname-evil-mapping\" : {\n        \"type\" : \"integer\"\n      }\n    }\n  },\n  \"aliases\" : {\n    \"workspace-mockname-workspace-mockname-evil-alias\" : { }\n  }\n}"
     }
   },
   {
