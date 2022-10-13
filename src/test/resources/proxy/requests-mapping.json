@@ -1,15 +1,15 @@
 [
   {
-    "name": "Create mapping",
+    "name": "PUT mapping with tricky property name",
     "requestGateway": {
       "method": "PUT",
       "url": "index1/_mapping",
-      "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
+      "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"workspace-mockname-age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
     },
     "requestOpensearch": {
       "method": "GET",
       "url": "workspace-mockname-index1/_mapping",
-      "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
+      "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"workspace-mockname-age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
     },
     "response": {
       "acknowledged": true,
@@ -23,7 +23,7 @@
     }
   },
   {
-    "name": "Create mapping in silly_index_name",
+    "name": "PUT mapping with silly_index_name",
     "requestGateway": {
       "method": "PUT",
       "url": "index1_sondres_index_for_mapping/_mapping",

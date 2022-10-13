@@ -29,7 +29,7 @@ public class TestRequestSws implements Serializable {
     }
 
     public String getUrl() {
-        return url;
+        return  (url == null) ? "" : url;
     }
 
     public String getBody() {

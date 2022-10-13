@@ -102,7 +102,6 @@
   },
   {
     "name": "GET single index by name, complicated mapping and aliases",
-    "enabled": false,
     "requestGateway": {
       "method": "GET",
       "url": "evil",
@@ -567,7 +566,7 @@
     }
   },
   {
-    "name": "PUT index, without template but with stupid name",
+    "name": "PUT index, without template but with a stupid name",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname-index2-index2",
@@ -613,7 +612,7 @@
     }
   },
   {
-    "name": "PUT index, without template but with stupid body",
+    "name": "PUT index, without template but with a stupid body",
     "requestGateway": {
       "method": "PUT",
       "url": "index1",
@@ -638,6 +637,20 @@
     }
   },
   {
+    "name": "PUT index by name, with template",
+    "enabled": true,
+    "requestGateway": {
+      "method": "PUT",
+      "url": "evil",
+      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-evil-alias\": {}\n  }\n}"
+    },
+    "requestOpensearch": {
+      "method": "PUT",
+      "url": "workspace-mockname-evil",
+      "body": "{\n  \"mappings\" : {\n    \"properties\" : {\n      \"workspace-mockname-evil-mapping\" : {\n        \"type\" : \"integer\"\n      }\n    }\n  },\n  \"aliases\" : {\n    \"workspace-mockname-workspace-mockname-evil-alias\" : { }\n  }\n}"
+    }
+  },
+  {
     "name": "PUT index by name, without template",
     "requestGateway": {
       "method": "PUT",
@@ -658,29 +671,6 @@
       "acknowledged": true,
       "shards_acknowledged": true,
       "index": "index2"
-    }
-  },
-  {
-    "name": "PUT index, without template but with stupid name",
-    "requestGateway": {
-      "method": "PUT",
-      "url": "workspace-mockname-index2-index2",
-      "body": null
-    },
-    "requestOpensearch": {
-      "method": "PUT",
-      "url": "workspace-mockname-workspace-mockname-index2-index2",
-      "body": null
-    },
-    "response":{
-      "acknowledged": true,
-      "shards_acknowledged": true,
-      "index": "workspace-mockname-workspace-mockname-index2-index2"
-    },
-    "responseStripped":{
-      "acknowledged": true,
-      "shards_acknowledged": true,
-      "index": "workspace-mockname-index2-index2"
     }
   },
   {
@@ -747,21 +737,8 @@
       "error": "Incorrect HTTP method for uri [/index2] and method [POST], allowed: [GET, PUT, HEAD, DELETE]",
       "status": 405
     }
-  },
-  {
-    "name": "PUT index by name, with template",
-    "enabled": false,
-    "requestGateway": {
-      "method": "PUT",
-      "url": "evil",
-      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-evil-alias\": {}\n  }\n}"
-    },
-    "requestOpensearch": {
-      "method": "PUT",
-      "url": "workspace-mockname-evil",
-      "body": "{\n   \"mappings\": {\n    \"properties\": {\n      \"workspace-mockname-evil-mapping\": {\n        \"type\": \"integer\"\n      }\n    }\n  },\n  \"aliases\": {\n    \"workspace-mockname-workspace-mockname-evil-alias\": {}\n  }\n}"
-    }
   }
 ]
+
 
 

@@ -1,4 +1,4 @@
-package no.sikt.sws.models;
+package no.sikt.sws.models.opensearch;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -7,12 +7,16 @@ import java.util.Arrays;
 public enum OpenSearchCommand {
     ALIAS("_alias"),
     BULK("_bulk"),
+    DOC(".*/_doc.*"),
+    MAPPING("_mapping"),
+    SEARCH(".*_search.*"),
     OTHER("other"),
     // the following are not executable
     NOT_IMPLEMENTED("_"),
-    INVALID("invalid");
+    INVALID("invalid"),
+    ERROR("error");
 
-    private static final String ALLOWED_INPUT = "[A-ZÆØÅa-zæøå\\d/_-]*";
+    private static final String ALLOWED_INPUT = "[A-ZÆØÅa-zæøå*\\d/_-]*";
 
     private final String val;
 
@@ -31,10 +35,10 @@ public enum OpenSearchCommand {
         }
         //find last item in resourceIdentifier, if only one item (none), use resourceIdentifier
         var resource = new ArrayDeque<>(Arrays.asList(resourceIdentifier.split("/"))).getLast();
-        String finalResource = resource.isEmpty() ? resourceIdentifier : resource;
+        String finalResource = (resource.isEmpty() ? resourceIdentifier : resource).split("[?]")[0];
 
         var result = Arrays.stream(OpenSearchCommand.values())
-                .filter(p -> finalResource.equals(p.val) || resourceIdentifier.startsWith(p.val))
+                .filter(p -> finalResource.equals(p.val) || resourceIdentifier.matches(p.val))
                         .findFirst()
                         .orElse(OpenSearchCommand.OTHER);
 
