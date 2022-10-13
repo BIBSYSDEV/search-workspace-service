@@ -3,7 +3,7 @@ package no.sikt.sws.models.gateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.sikt.sws.PreFixStripper;
+import no.sikt.sws.PrefixStripper;
 import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
 
 import java.util.LinkedHashMap;
@@ -68,9 +68,9 @@ public class Builder {
         var openSearchIndex = mapEntry.getValue();
 
         return new IndexDto(
-            PreFixStripper.node(openSearchIndex.aliases, workspacePrefix),
+            PrefixStripper.node(openSearchIndex.aliases, workspacePrefix),
             openSearchIndex.mappings,
-            PreFixStripper.node(openSearchIndex.settings, workspacePrefix)
+            PrefixStripper.node(openSearchIndex.settings, workspacePrefix)
         );
     }
 

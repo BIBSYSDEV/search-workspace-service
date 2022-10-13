@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
+import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
 
 // WorkspaceIndexHandlerTestCase
@@ -63,7 +64,7 @@ public class TestCaseSws implements Serializable, Comparable<TestCaseSws> {
     }
 
     public boolean isIndexResponse() {
-        return "".equals(requestGateway.getUrl())
+        return EMPTY_STRING.equals(requestGateway.getUrl())
             && HttpMethodName.GET == requestGateway.getMethod()
             && isResponseTest();
     }

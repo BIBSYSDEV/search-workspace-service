@@ -62,8 +62,8 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             logger.info("raw response-body:" + response.getBody());
 
             var responseBody = response.getStatus() < 300
-                    ? PreFixStripper.body(searchCommand,workspace, response.getBody())
-                    : PreFixStripper.body(ERROR,workspace, response.getBody());
+                    ? PrefixStripper.body(searchCommand,workspace, response.getBody())
+                    : PrefixStripper.body(ERROR,workspace, response.getBody());
 
             logger.info("stripped response-body:" + responseBody);
 

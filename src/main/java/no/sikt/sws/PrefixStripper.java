@@ -13,7 +13,7 @@ import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
 
 @JacocoGenerated
-public class PreFixStripper {
+public class PrefixStripper {
 
 
     /**
@@ -40,8 +40,8 @@ public class PreFixStripper {
     /**
      * Strips prefix from body.
      * @param command OpenSearchCommand
-     * @param workspacePrefix prefix to remove
-     * @param responseBody body to prefix
+     * @param workspacePrefix prefix to strip
+     * @param responseBody body to strip
      * @return stripped body
      */
     public static String body(OpenSearchCommand command, String workspacePrefix, String responseBody)
