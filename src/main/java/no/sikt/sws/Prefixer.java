@@ -15,14 +15,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
+
 @JacocoGenerated
 public class Prefixer {
 
     private static final Logger logger = LoggerFactory.getLogger(Prefixer.class);
     public static final String INDEX = "_index";
-    public static final String REQUIRED_PARAMETER_IS_NULL = "required parameter is null -> ";
 
-
+    /**
+     * Prefixing of URL.
+     * @param workspacePrefix prefix to apply
+     * @param resourceIdentifier url to prefix
+     * @return prefixed url
+     */
     public static String url(String workspacePrefix, String resourceIdentifier) {
         logger.debug("prefixing " + workspacePrefix + resourceIdentifier);
         if (resourceIdentifier == null || resourceIdentifier.isEmpty()) {
@@ -35,6 +41,13 @@ public class Prefixer {
         return workspacePrefix + "-" + resourceIdentifier;
     }
 
+    /**
+     * Prefixing of body.
+     * @param workspacePrefix prefix to apply
+     * @param resourceIdentifier url with index name
+     * @param gatewayBody body to prefix
+     * @return prefixed body
+     */
     public static String body(String workspacePrefix, String resourceIdentifier, String gatewayBody)
             throws BadRequestException {
 
@@ -58,7 +71,7 @@ public class Prefixer {
             case MAPPING:
                 return Prefixer.mappingkBody(workspacePrefix,gatewayBody);
             case DOC:
-                logger.info("returning " + workspacePrefix + resourceIdentifier);
+                logger.debug("returning " + workspacePrefix + resourceIdentifier);
                 return gatewayBody;
             case OTHER:
                 return Prefixer.indexesBody(workspacePrefix,gatewayBody);

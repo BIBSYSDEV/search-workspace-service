@@ -20,9 +20,9 @@ import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
 import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ResponseStripperTest {
+public class PreFixStripperTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResponseStripperTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PreFixStripperTest.class);
     private static final String WORKSPACEPREFIX = "workspace-mockname";
 
     /**
@@ -39,6 +39,8 @@ public class ResponseStripperTest {
         loadTestCases(streamBuilder, "requests-doc.json");
         loadTestCases(streamBuilder, "requests-indexes.json");
         loadTestCases(streamBuilder, "requests-cat.json");
+        loadTestCases(streamBuilder, "requests-alias.json");
+
 
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
         return streamBuilder.build();
@@ -101,10 +103,11 @@ public class ResponseStripperTest {
         Assumptions.assumeTrue(testCase.isEnabled());
 
         logger.info("--> " + testCase.getRequestOpensearch().getMethod()
-            + " http://apigateway/" + testCase.getRequestGateway().getUrl()
+            + " http://apigateway/ -> " + testCase.getRequestGateway().getUrl()
             + " http://opensearch/" +  testCase.getRequestOpensearch().getUrl());
 
         var expectedResponse = testCase.getResponseStripped();
+
         var workspaceResponse = attempt(() ->
             WorkspaceResponse.fromValues(WORKSPACEPREFIX,testCase.getResponse())).get();
 
@@ -163,7 +166,7 @@ public class ResponseStripperTest {
         var command = OpenSearchCommand.fromString(testCase.getRequestGateway().getUrl());
 
         logger.info("--> " + command.name());
-        var resultResponse = ResponseStripper.removePrefix(command,WORKSPACEPREFIX,openSearchResponse);
+        var resultResponse = PreFixStripper.body(command,WORKSPACEPREFIX,openSearchResponse);
 
         assertEquals(expectedResponse,resultResponse);
     }
@@ -175,6 +178,9 @@ public class ResponseStripperTest {
         var gatewayUrl = testCase.getRequestGateway().getUrl();
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
         var resultUrl = Prefixer.url(WORKSPACEPREFIX,gatewayUrl);
+
+        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
+                + " http://opensearch/" + resultUrl);
 
         assertEquals(expectedUrl,resultUrl);
 

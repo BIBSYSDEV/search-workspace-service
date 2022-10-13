@@ -3,14 +3,14 @@ package no.sikt.sws.models.gateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.sikt.sws.ResponseStripper;
+import no.sikt.sws.PreFixStripper;
 import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static no.sikt.sws.ResponseStripper.EMPTY_STRING;
+import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static nva.commons.core.attempt.Try.attempt;
 
 public class Builder {
@@ -68,9 +68,9 @@ public class Builder {
         var openSearchIndex = mapEntry.getValue();
 
         return new IndexDto(
-            ResponseStripper.removePrefix(openSearchIndex.aliases, workspacePrefix),
+            PreFixStripper.node(openSearchIndex.aliases, workspacePrefix),
             openSearchIndex.mappings,
-            ResponseStripper.removePrefix(openSearchIndex.settings, workspacePrefix)
+            PreFixStripper.node(openSearchIndex.settings, workspacePrefix)
         );
     }
 

@@ -1,6 +1,6 @@
 [
   {
-    "name": "Bulk POST insert docs without path",
+    "name": "POST bulk insert docs without path",
     "requestGateway": {
       "method": "POST",
       "url": "_bulk",
@@ -121,7 +121,7 @@
     }
   },
   {
-    "name": "Bulk POST insert docs without path, test that trailing \n is persisted",
+    "name": "POST bulk insert docs without path, test that trailing \n is persisted",
     "requestGateway": {
       "method": "POST",
       "url": "_bulk",
@@ -134,7 +134,7 @@
     }
   },
   {
-    "name": "Bulk POST insert docs with path",
+    "name": "POST bulk insert docs with path",
     "requestGateway": {
       "method": "POST",
       "url": "index-name/_bulk",
@@ -255,7 +255,7 @@
     }
   },
   {
-    "name": "Bulk POST insert docs with tricky-path",
+    "name": "POST bulk insert docs with tricky-path",
     "requestGateway": {
       "method": "POST",
       "url": "sondres_index_for_bulk/_bulk",
@@ -376,7 +376,7 @@
     }
   },
   {
-    "name": "Bulk POST create index with evil stupid names",
+    "name": "POST bulk create index with evil stupid names",
     "requestGateway": {
       "method": "POST",
       "url": "_bulk",

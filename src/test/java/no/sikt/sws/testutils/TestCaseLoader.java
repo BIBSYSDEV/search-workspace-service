@@ -30,6 +30,7 @@ public class TestCaseLoader {
         return getElements()
                 .stream()
                 .map(TestCaseSws::fromJson)
+                .sorted()
                 .collect(Collectors.toList());
     }
 

@@ -4,13 +4,14 @@ import com.amazonaws.http.HttpMethodName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.models.opensearch.OpenSearchCommand;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
 import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
 
 // WorkspaceIndexHandlerTestCase
-public class TestCaseSws implements Serializable {
+public class TestCaseSws implements Serializable, Comparable<TestCaseSws> {
     @JsonProperty("name")
     private String name;
 
@@ -88,6 +89,7 @@ public class TestCaseSws implements Serializable {
     }
 
 
+
     public static TestCaseSws fromJson(JsonNode jsonNode) {
         try {
             return dtoObjectMapper.treeToValue(jsonNode, TestCaseSws.class);
@@ -96,4 +98,10 @@ public class TestCaseSws implements Serializable {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public int compareTo(@NotNull TestCaseSws o) {
+        return this.name.compareTo(o.name);
+    }
+
 }

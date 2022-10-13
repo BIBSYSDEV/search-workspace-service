@@ -2,7 +2,7 @@ package no.sikt.sws.models.internal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import no.sikt.sws.ResponseStripper;
+import no.sikt.sws.PreFixStripper;
 import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
 
 import java.util.Map;
@@ -43,9 +43,9 @@ public class InternalIndexDto {
         var link = API_GATEWAY_URL + "/" + name;
 
         return new InternalIndexDto(
-            ResponseStripper.removePrefix(openSearchIndex.aliases, workspacePrefix),
+            PreFixStripper.node(openSearchIndex.aliases, workspacePrefix),
             openSearchIndex.mappings,
-            ResponseStripper.removePrefix(openSearchIndex.settings,workspacePrefix),
+            PreFixStripper.node(openSearchIndex.settings,workspacePrefix),
             link
         );
     }

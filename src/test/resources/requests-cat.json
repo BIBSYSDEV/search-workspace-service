@@ -1,6 +1,6 @@
 [
     {
-      "name": "Cat GET indices",
+      "name": "GET cat indices",
       "requestGateway": {
         "method": "GET",
         "url": "_cat",

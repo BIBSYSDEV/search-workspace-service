@@ -566,7 +566,7 @@
     }
   },
   {
-    "name": "PUT index, without template but with stupid name",
+    "name": "PUT index, without template but with a stupid name",
     "requestGateway": {
       "method": "PUT",
       "url": "workspace-mockname-index2-index2",
@@ -612,7 +612,7 @@
     }
   },
   {
-    "name": "PUT index, without template but with stupid body",
+    "name": "PUT index, without template but with a stupid body",
     "requestGateway": {
       "method": "PUT",
       "url": "index1",
@@ -634,29 +634,6 @@
       "shards_acknowledged": true,
       "index": "workspace-mockname",
       "stupidField": "someword index1"
-    }
-  },
-  {
-    "name": "PUT index, without template but with stupid name",
-    "requestGateway": {
-      "method": "PUT",
-      "url": "workspace-mockname-index2-index2",
-      "body": null
-    },
-    "requestOpensearch": {
-      "method": "PUT",
-      "url": "workspace-mockname-workspace-mockname-index2-index2",
-      "body": null
-    },
-    "response":{
-      "acknowledged": true,
-      "shards_acknowledged": true,
-      "index": "workspace-mockname-workspace-mockname-index2-index2"
-    },
-    "responseStripped":{
-      "acknowledged": true,
-      "shards_acknowledged": true,
-      "index": "workspace-mockname-index2-index2"
     }
   },
   {
