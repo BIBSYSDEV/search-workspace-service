@@ -65,13 +65,11 @@ public class Prefixer {
             case ALIAS:
                 return Prefixer.aliasBody(workspacePrefix,gatewayBody);
             case BULK:
-                return Prefixer.bulkBody(workspacePrefix,getBulkBody(gatewayBody));
+                return Prefixer.bulkBody(workspacePrefix, gatewayBody);
             case SEARCH:
-                return Prefixer.searchBody(workspacePrefix,gatewayBody);
             case MAPPING:
-                return Prefixer.mappingkBody(workspacePrefix,gatewayBody);
             case DOC:
-                logger.debug("returning " + workspacePrefix + resourceIdentifier);
+                logger.debug("Return to sender (untouched) " + workspacePrefix + resourceIdentifier);
                 return gatewayBody;
             case OTHER:
                 return Prefixer.indexesBody(workspacePrefix,gatewayBody);
@@ -82,17 +80,6 @@ public class Prefixer {
             default:
                 throw new IllegalStateException("Unexpected value: " + resourceIdentifier);
         }
-    }
-
-
-    private static String mappingkBody(String workspacePrefix, String gatewayBody) {
-        logger.debug(workspacePrefix);
-        return gatewayBody;
-    }
-
-    private static String searchBody(String workspacePrefix, String gatewayBody) {
-        logger.debug(workspacePrefix);
-        return gatewayBody;
     }
 
     // replace {index} with {workspace}-{index} from responseBody
@@ -119,9 +106,9 @@ public class Prefixer {
         }
     }
 
-    protected static String bulkBody(String workspacePrefix, List<JsonNode> gatewayBulkBody) {
+    protected static String bulkBody(String workspacePrefix, String gatewayBulkBody) {
 
-        return gatewayBulkBody.stream().map(item -> {
+        return convertBulkBodyToJsonList(gatewayBulkBody).stream().map(item -> {
             String indexName;
             if (item.has("index")) {
                 indexName = item.get("index").get(INDEX).textValue();
@@ -148,7 +135,7 @@ public class Prefixer {
                 .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
     }
 
-    private static List<JsonNode> getBulkBody(String bulkBody) {
+    private static List<JsonNode> convertBulkBodyToJsonList(String bulkBody) {
         return Arrays.stream(bulkBody.split("\n"))
                 .map(Prefixer::string2JsonNode).collect(Collectors.toList());
     }

@@ -13,7 +13,7 @@ import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
 
 @JacocoGenerated
-public class PreFixStripper {
+public class PrefixStripper {
 
 
     /**
@@ -40,8 +40,8 @@ public class PreFixStripper {
     /**
      * Strips prefix from body.
      * @param command OpenSearchCommand
-     * @param workspacePrefix prefix to remove
-     * @param responseBody body to prefix
+     * @param workspacePrefix prefix to strip
+     * @param responseBody body to strip
      * @return stripped body
      */
     public static String body(OpenSearchCommand command, String workspacePrefix, String responseBody)
@@ -63,11 +63,11 @@ public class PreFixStripper {
             case OTHER:
                 return Builder.indexFromValues(workspacePrefix,responseBody);
             case ERROR:
-                return Builder.toJson(Builder.errorFromValues(workspacePrefix,responseBody));
+                return Builder.errorFromValues(workspacePrefix,responseBody);
             case SEARCH:
-                return Builder.toJson(Builder.searchFromValues(workspacePrefix,responseBody));
+                return Builder.searchFromValues(workspacePrefix,responseBody);
             case DOC:
-                return Builder.toJson(Builder.docFromValues(workspacePrefix,responseBody));
+                return Builder.docFromValues(workspacePrefix,responseBody);
             case NOT_IMPLEMENTED:
                 throw new BadRequestException("Not implemented");
             case INVALID:

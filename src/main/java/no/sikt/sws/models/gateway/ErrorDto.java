@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.StringJoiner;
 
 public class ErrorDto implements Dto {
+
     @JsonProperty("error")
     public JsonNode error;
 
@@ -13,11 +14,6 @@ public class ErrorDto implements Dto {
     public Number status;
 
     public ErrorDto() {
-    }
-
-    public ErrorDto(JsonNode error, Number status) {
-        this.error = error;
-        this.status = status;
     }
 
     @Override

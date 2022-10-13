@@ -20,9 +20,9 @@ import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
 import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PreFixStripperTest {
+public class PrefixStripperTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(PreFixStripperTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PrefixStripperTest.class);
     private static final String WORKSPACEPREFIX = "workspace-mockname";
 
     /**
@@ -33,13 +33,13 @@ public class PreFixStripperTest {
         logger.info("Test cases loading");
         var streamBuilder = Stream.<TestCaseSws>builder();
 
-        loadTestCases(streamBuilder, "requests-mapping.json");
-        loadTestCases(streamBuilder, "requests-search.json");
-        loadTestCases(streamBuilder, "requests-bulk.json");
-        loadTestCases(streamBuilder, "requests-doc.json");
-        loadTestCases(streamBuilder, "requests-indexes.json");
-        loadTestCases(streamBuilder, "requests-cat.json");
-        loadTestCases(streamBuilder, "requests-alias.json");
+        loadTestCases(streamBuilder, "proxy/requests-mapping.json");
+        loadTestCases(streamBuilder, "proxy/requests-search.json");
+        loadTestCases(streamBuilder, "proxy/requests-bulk.json");
+        loadTestCases(streamBuilder, "proxy/requests-doc.json");
+        loadTestCases(streamBuilder, "proxy/requests-indexes.json");
+        loadTestCases(streamBuilder, "proxy/requests-cat.json");
+        loadTestCases(streamBuilder, "proxy/requests-alias.json");
 
 
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
@@ -85,7 +85,7 @@ public class PreFixStripperTest {
     @Test
     @DisplayName("Gateway response workspace stripping")
     void testResponseIndexStripping() {
-        var filename = "response-workspace.json";
+        var filename = "workspace/response-workspace.json";
         var testName = "GET (all) indexes (workspace / )";
 
         var testCase = new TestCaseLoader(filename)
@@ -127,7 +127,7 @@ public class PreFixStripperTest {
     @Test
     @Disabled
     void runSingleTestcase() throws BadRequestException {
-        var filename = "requests-indexes.json";
+        var filename = "proxy/requests-indexes.json";
         var testName = "PUT index by name, with template";
 
         var testCase = new TestCaseLoader(filename)
@@ -147,7 +147,7 @@ public class PreFixStripperTest {
     @Test
     @DisplayName("Opensearch request-body-alias prefixing")
     void assertRequestPrefixAlias() {
-        var filename = "requests-alias.json";
+        var filename = "proxy/requests-alias.json";
         new TestCaseLoader(filename)
             .getTestCases()
             .forEach(this::assertAliasPrefix);
@@ -166,7 +166,7 @@ public class PreFixStripperTest {
         var command = OpenSearchCommand.fromString(testCase.getRequestGateway().getUrl());
 
         logger.info("--> " + command.name());
-        var resultResponse = PreFixStripper.body(command,WORKSPACEPREFIX,openSearchResponse);
+        var resultResponse = PrefixStripper.body(command,WORKSPACEPREFIX,openSearchResponse);
 
         assertEquals(expectedResponse,resultResponse);
     }

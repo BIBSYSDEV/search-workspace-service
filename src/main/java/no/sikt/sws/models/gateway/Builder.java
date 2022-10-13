@@ -3,7 +3,7 @@ package no.sikt.sws.models.gateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.sikt.sws.PreFixStripper;
+import no.sikt.sws.PrefixStripper;
 import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
 
 import java.util.LinkedHashMap;
@@ -17,22 +17,22 @@ public class Builder {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static Dto docFromValues(String workspacePrefix, String opensearchResponse) {
+    public static String docFromValues(String workspacePrefix, String opensearchResponse) {
         try {
             var instance = objectMapper.readValue(opensearchResponse, DocDto.class);
             instance.indexName = instance.indexName.replaceFirst(workspacePrefix + "-", "");
-            return instance;
+            return toJson(instance);
         } catch (JsonProcessingException ex) {
             return errorFromValues(workspacePrefix,opensearchResponse);
         }
     }
 
-    public static Dto searchFromValues(String workspacePrefix, String opensearchResponse) {
+    public static String searchFromValues(String workspacePrefix, String opensearchResponse) {
         try {
             var instance = objectMapper.readValue(opensearchResponse, SearchDto.class);
             instance.hits.hits.forEach(docDto ->
                     docDto.indexName = docDto.indexName.replaceFirst(workspacePrefix + "-", ""));
-            return instance;
+            return toJson(instance);
         } catch (JsonProcessingException ex) {
             return errorFromValues(workspacePrefix,opensearchResponse);
         }
@@ -56,9 +56,7 @@ public class Builder {
                 .writeValueAsString(retMap)).orElseThrow();
 
         } catch (JsonProcessingException e) {
-            return attempt(() -> objectMapper
-                .writerWithDefaultPrettyPrinter()
-                .writeValueAsString(errorFromValues(workspacePrefix, responseBody)))
+            return attempt(() -> errorFromValues(workspacePrefix, responseBody))
                 .or(() -> responseBody.replaceAll(regex, EMPTY_STRING)).get();
         }
     }
@@ -68,19 +66,19 @@ public class Builder {
         var openSearchIndex = mapEntry.getValue();
 
         return new IndexDto(
-            PreFixStripper.node(openSearchIndex.aliases, workspacePrefix),
+            PrefixStripper.node(openSearchIndex.aliases, workspacePrefix),
             openSearchIndex.mappings,
-            PreFixStripper.node(openSearchIndex.settings, workspacePrefix)
+            PrefixStripper.node(openSearchIndex.settings, workspacePrefix)
         );
     }
 
-    public static Dto errorFromValues(String workspacePrefix, String opensearchResponse) {
+    public static String errorFromValues(String workspacePrefix, String opensearchResponse) {
         try {
             var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
+            var dto = objectMapper.readValue(
+                    opensearchResponse.replaceAll(regex,EMPTY_STRING), ErrorDto.class);
 
-            return objectMapper.readValue(
-                    opensearchResponse.replaceAll(regex,EMPTY_STRING), ErrorDto.class
-            );
+            return toJson(dto);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

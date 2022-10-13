@@ -10,7 +10,6 @@ hamcrestJackson = { strictly = '1.2.0' }
 jackson         = { strictly = '2.13.0' }
 jacksonFormat   = { strictly = '1.0.9'}
 jacoco          = { strictly = '0.8.7' }
-jakarta         = { strictly = '3.1.0' }
 json            = { strictly = '20220320'}
 jsonld          = { strictly = '0.13.3' }
 junit           = { strictly = '5.8.2' }
@@ -48,7 +47,6 @@ jackson-datatype-jsr310         = { group = 'com.fasterxml.jackson.datatype', na
 jackson-dataformat              = { group = 'io.openapitools.jackson.dataformat', name = 'jackson-dataformat-hal', version.ref = 'jacksonFormat' }
 jackson-datatype-problem        = { group = 'org.zalando',              name = 'jackson-datatype-problem',  version.ref = 'zalandoProblem' }
 jackson-module-parameter-names  = { group = 'com.fasterxml.jackson.module', name = 'jackson-module-parameter-names', version.ref = 'jackson' }
-jakarta                         = { group = 'jakarta.ws.rs',            name = 'jakarta.ws.rs-api',         version.ref = 'jakarta'}
 json                            = { group = 'org.json',                 name = 'json',                      version.ref = 'json'}
 jacoco-core                     = { group = 'org.jacoco',               name = 'org.jacoco.core',            version.ref = 'jacoco'}
 jacoco-report                   = { group = 'org.jacoco',               name = 'org.jacoco.report',          version.ref = 'jacoco'}
@@ -73,7 +71,6 @@ nva-json                        = { group = 'com.github.bibsysdev',     name = '
 nva-logutils                    = { group = 'com.github.bibsysdev',     name = 'logutils',                  version.ref = 'nvaCommons' }
 nva-s3                          = { group = 'com.github.bibsysdev',     name = 's3',                        version.ref = 'nvaCommons' }
 nva-testutils                   = { group = 'com.github.bibsysdev',     name = 'nvatestutils',              version.ref = 'nvaCommons' }
-
 
 
 slf4j-api                       = { group = 'org.slf4j',                name = 'slf4j-api',                 version.ref = 'slf4j' }
