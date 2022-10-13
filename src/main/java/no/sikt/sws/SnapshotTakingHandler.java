@@ -22,14 +22,14 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
 
     @Override
     protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
-        var timestamp = new Date().toString();
-        var snapshotRepoName = "initialsnapshot"; //TODO: hardcoded RegisterSnapshotHandler
-        var createSnapshotRequest = "snap" + timestamp;
+        var timestamp = String.valueOf(new Date().getTime());
+        var snapshotRepoPathRequest = "_snapshot/initialsnapshot"; //TODO: hardcoded RegisterSnapshotHandler
+        var createSnapshotName = "snap" + timestamp;
 
         try {
             var response = openSearchClient.sendRequest(HttpMethodName.PUT,
-                    "_snapshot/" + snapshotRepoName,
-                    createSnapshotRequest);
+                    snapshotRepoPathRequest + "/" + createSnapshotName,
+                    null);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());
             return response.getBody();
