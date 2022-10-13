@@ -1,6 +1,7 @@
 package no.sikt.sws;
 
 import com.amazonaws.http.HttpResponse;
+import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

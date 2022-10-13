@@ -1,14 +1,18 @@
 package no.sikt.sws.testutils;
 
+import com.amazonaws.http.HttpMethodName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import no.sikt.sws.models.opensearch.OpenSearchCommand;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
+import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
 
 // WorkspaceIndexHandlerTestCase
-public class TestCaseSws implements Serializable {
+public class TestCaseSws implements Serializable, Comparable<TestCaseSws> {
     @JsonProperty("name")
     private String name;
 
@@ -59,15 +63,32 @@ public class TestCaseSws implements Serializable {
         return requestGateway != null && requestOpensearch != null;
     }
 
+    public boolean isIndexResponse() {
+        return EMPTY_STRING.equals(requestGateway.getUrl())
+            && HttpMethodName.GET == requestGateway.getMethod()
+            && isResponseTest();
+    }
+
+    public boolean isIndexRequest() {
+        var cmdKind = OpenSearchCommand.fromString(requestGateway.getUrl());
+
+        return OpenSearchCommand.OTHER == cmdKind
+            && HttpMethodName.GET == requestGateway.getMethod()
+            && isRequestTest();
+    }
+
     public boolean isRequestBodyTest() {
-        return requestGateway != null && requestGateway.getBody() != null
-                && requestOpensearch != null && requestOpensearch.getBody() != null;
+        return requestGateway != null
+            && requestOpensearch != null
+            && requestGateway.getBody() != null
+            && requestOpensearch.getBody() != null;
     }
 
     @Override
     public String toString() {
-        return this.name;
+        return  "[" + this.name + "]";
     }
+
 
 
     public static TestCaseSws fromJson(JsonNode jsonNode) {
@@ -78,4 +99,10 @@ public class TestCaseSws implements Serializable {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public int compareTo(@NotNull TestCaseSws o) {
+        return this.name.compareTo(o.name);
+    }
+
 }

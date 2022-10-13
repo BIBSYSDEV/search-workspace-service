@@ -2,7 +2,7 @@ package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.exception.SearchException;
-import no.sikt.sws.models.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommand;
 import nva.commons.apigateway.ApiGatewayProxyHandler;
 import nva.commons.apigateway.ProxyResponse;
 import nva.commons.apigateway.RequestInfo;
@@ -13,7 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
-import static no.sikt.sws.WorkspaceStripper.REQUIRED_PARAMETER_IS_NULL;
+import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
+import static no.sikt.sws.models.opensearch.OpenSearchCommand.ERROR;
 
 /**
  * Created for checking if external libraries have been imported properly.
@@ -42,32 +43,28 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
-
         var searchCommand = OpenSearchCommand.fromString(resourceIdentifier);
 
-
         try {
-            if (searchCommand.equals(OpenSearchCommand.NOT_IMPLEMENTED)
-                || searchCommand.equals(OpenSearchCommand.INVALID)) {
+            validateResourceIdentifier(resourceIdentifier);
 
-                validateResourceIdentifier(resourceIdentifier);
-            }
-
-            var url = WorkspaceStripper.prefixUrl(workspace, resourceIdentifier);
+            var url = Prefixer.url(workspace, resourceIdentifier);
             logger.info("URL: " + url);
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
                 throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "[requestBody]");
             }
-            var requestBody =
-                    (body != null) ? WorkspaceStripper.prefixBody(workspace, resourceIdentifier, body) : null;
 
+            var requestBody = Prefixer.body(workspace, resourceIdentifier, body);
             var response = openSearchClient.sendRequest(httpMethod, url, requestBody);
 
             logger.info("response-code:" + response.getStatus());
             logger.info("raw response-body:" + response.getBody());
 
-            var responseBody = WorkspaceStripper.removePrefix(workspace, response.getBody());
+            var responseBody = response.getStatus() < 300
+                    ? PrefixStripper.body(searchCommand,workspace, response.getBody())
+                    : PrefixStripper.body(ERROR,workspace, response.getBody());
+
             logger.info("stripped response-body:" + responseBody);
 
             return new ProxyResponse<>(response.getStatus(), responseBody);
