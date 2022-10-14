@@ -23,7 +23,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
     public static final String RESOURCE_IDENTIFIER = "resource";
     // Regex: may only contain big and small latin letters, norwegian letters, digits, '/', '-' and '_'
-    private static final String ALLOWED_INPUT = "[A-Za-zÆØÅæøå\\d/_-]*";
+    private static final String ALLOWED_INPUT = "[A-Za-zÆØÅæøå\\d/&?=_-]*";
     public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
 
 
