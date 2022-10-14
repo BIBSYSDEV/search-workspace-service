@@ -116,5 +116,29 @@ public class IndexHandlerTest extends TestCase {
         assertThat(response.getStatusCode(), is(equalTo(HTTP_BAD_REQUEST)));
     }
 
+    @Test
+    void shuldPassQueryParams() throws IOException {
+
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{\"hits\":0}");
+        var expectedPath = "workspace-sondre-some-index-1/_search?param1=1&param2=2";
+        System.out.println(expectedPath);
+
+
+        when(openSearchClient.sendRequest(
+                GET,
+                expectedPath,
+                null)
+        ).thenReturn(mockResponse);
+
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_search?param1=1&param2=2");
+
+        var request = buildRequest(HttpMethod.GET, pathParams);
+
+        handler.handleRequest(request, output, CONTEXT);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
+
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
+    }
+
 
 }
