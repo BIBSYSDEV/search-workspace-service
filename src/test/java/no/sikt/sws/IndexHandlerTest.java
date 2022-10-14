@@ -119,18 +119,16 @@ public class IndexHandlerTest extends TestCase {
     @Test
     void shuldPassQueryParams() throws IOException {
 
+        var searchCommand = "_search?param1=1&param2=2";
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{\"hits\":0}");
-        var expectedPath = "workspace-sondre-some-index-1/_search?param1=1&param2=2";
-        System.out.println(expectedPath);
-
 
         when(openSearchClient.sendRequest(
                 GET,
-                expectedPath,
+                "workspace-sondre-some-index-1/" + searchCommand,
                 null)
         ).thenReturn(mockResponse);
 
-        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_search?param1=1&param2=2");
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/" + searchCommand);
 
         var request = buildRequest(HttpMethod.GET, pathParams);
 
