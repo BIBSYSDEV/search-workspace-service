@@ -40,15 +40,24 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             Context context
     ) throws ApiGatewayException {
 
-        var resourceIdentifier = request.getPathParameter(RESOURCE_IDENTIFIER);
+        var query = EMPTY_STRING;
+        try {
+            var uri = request.getRequestUri();
+            if (!uri.getQuery().isBlank()) {
+                query = "?" + uri.getQuery();
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getMessage());
+        }
+        var resourceIdentifier =  request.getPathParameter(RESOURCE_IDENTIFIER);
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
-        var searchCommand = OpenSearchCommand.fromString(resourceIdentifier);
+        var openSearchCommand = OpenSearchCommand.fromString(resourceIdentifier);
 
         try {
             validateResourceIdentifier(resourceIdentifier);
 
-            var url = Prefixer.url(workspace, resourceIdentifier);
+            var url = Prefixer.url(workspace, resourceIdentifier) + query;
             logger.info("URL: " + url);
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
@@ -62,7 +71,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             logger.info("raw response-body:" + response.getBody());
 
             var responseBody = response.getStatus() < 300
-                    ? PrefixStripper.body(searchCommand,workspace, response.getBody())
+                    ? PrefixStripper.body(openSearchCommand,workspace, response.getBody())
                     : PrefixStripper.body(ERROR,workspace, response.getBody());
 
             logger.info("stripped response-body:" + responseBody);
