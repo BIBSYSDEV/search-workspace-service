@@ -60,7 +60,7 @@ public class Prefixer {
         }
 
         var searchCommand = OpenSearchCommand.fromString(resourceIdentifier);
-        logger.debug(searchCommand.name());
+        logger.info(searchCommand.name());
         switch (searchCommand) {
             case ALIAS:
                 return Prefixer.aliasBody(workspacePrefix,gatewayBody);
@@ -130,6 +130,7 @@ public class Prefixer {
     }
 
     protected static String aliasBody(String workspacePrefix, String gatewayAliasBody) {
+        logger.info("aliasbody");
         return gatewayAliasBody
                 .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
                 .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");

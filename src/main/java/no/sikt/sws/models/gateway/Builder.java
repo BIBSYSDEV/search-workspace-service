@@ -2,6 +2,8 @@ package no.sikt.sws.models.gateway;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.sikt.sws.PrefixStripper;
 import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
@@ -20,6 +22,13 @@ public class Builder {
 
     private static final Logger logger = LoggerFactory.getLogger(Builder.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    public static DefaultPrettyPrinter getPrettyPrinter() {
+        DefaultPrettyPrinter p = new DefaultPrettyPrinter();
+        DefaultPrettyPrinter.Indenter i = new DefaultIndenter("  ", "\n");
+        p.indentObjectsWith(i);
+        return p;
+    }
     private static final Function<String, String> toRegEx = prefix -> "(?<=[ /\"\\[])" + prefix + "-";
 
     public static String docFromValues(String workspacePrefix, String opensearchResponse) {
@@ -62,6 +71,7 @@ public class Builder {
 
             return attempt(() -> objectMapper
                 .writerWithDefaultPrettyPrinter()
+//                .writer(getPrettyPrinter())
                 .writeValueAsString(retMap)).orElseThrow();
 
         } catch (JsonProcessingException ex) {
@@ -99,6 +109,7 @@ public class Builder {
     public static String toJson(Dto dto)  {
         return attempt(() -> objectMapper
             .writerWithDefaultPrettyPrinter()
+//            .writer(getPrettyPrinter())
             .writeValueAsString(dto)).orElseThrow();
     }
 

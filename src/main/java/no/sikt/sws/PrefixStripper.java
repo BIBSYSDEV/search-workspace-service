@@ -1,6 +1,8 @@
 package no.sikt.sws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.constants.ApplicationConstants;
 import no.sikt.sws.models.gateway.Builder;
@@ -84,5 +86,7 @@ public class PrefixStripper {
             throw new RuntimeException(e);
         }
     }
+
+
 
 }

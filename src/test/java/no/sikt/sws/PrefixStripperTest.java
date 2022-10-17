@@ -41,25 +41,8 @@ public class PrefixStripperTest {
         loadTestCases(streamBuilder, "proxy/requests-cat.json");
         loadTestCases(streamBuilder, "proxy/requests-alias.json");
 
-
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
         return streamBuilder.build();
-    }
-
-    private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {
-        new TestCaseLoader(filename)
-                .getTestCases()
-                .forEach(streamBuilder::add);
-    }
-
-    @TestFactory
-    @DisplayName("Opensearch response-body stripping")
-    Stream<DynamicTest> testResponseStrippingFactory() {
-        var testCases = allRequestArguments().filter(TestCaseSws::isResponseTest);
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName;  // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
-
-        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
 
     @TestFactory
@@ -82,6 +65,16 @@ public class PrefixStripperTest {
         return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
 
+    @TestFactory
+    @DisplayName("Opensearch response-body stripping")
+    Stream<DynamicTest> testResponseStrippingFactory() {
+        var testCases = allRequestArguments().filter(TestCaseSws::isResponseTest);
+        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName;  // -> testcase name
+        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
+
+        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+    }
+
     @Test
     @DisplayName("Gateway response workspace stripping")
     void testResponseIndexStripping() {
@@ -97,33 +90,10 @@ public class PrefixStripperTest {
 
     }
 
-
-    void assertResponseIndexStripping(TestCaseSws testCase) {
-        logger.info(testCase.toString());
-        Assumptions.assumeTrue(testCase.isEnabled());
-
-        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
-            + " http://apigateway/ -> " + testCase.getRequestGateway().getUrl()
-            + " http://opensearch/" +  testCase.getRequestOpensearch().getUrl());
-
-        var expectedResponse = testCase.getResponseStripped();
-
-        var workspaceResponse = attempt(() ->
-            WorkspaceResponse.fromValues(WORKSPACEPREFIX,testCase.getResponse())).get();
-
-        var resultResponse = attempt(() -> objectMapper
-            .writerWithDefaultPrettyPrinter()
-            .writeValueAsString(workspaceResponse.indexList)).get();
-
-        assertEquals(expectedResponse,resultResponse);
-    }
-
-
     /**
      * Using for debuging a single test-case. Change the filename, testcase,
      * and assert-function on the last line as needed
      */
-
     @Test
     @Disabled
     void runSingleTestcase() throws BadRequestException {
@@ -153,6 +123,25 @@ public class PrefixStripperTest {
             .forEach(this::assertAliasPrefix);
     }
 
+    void assertResponseIndexStripping(TestCaseSws testCase) {
+        logger.info(testCase.toString());
+        Assumptions.assumeTrue(testCase.isEnabled());
+
+        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
+            + " http://apigateway/ -> " + testCase.getRequestGateway().getUrl()
+            + " http://opensearch/" +  testCase.getRequestOpensearch().getUrl());
+
+        var expectedResponse = testCase.getResponseStripped();
+
+        var workspaceResponse = attempt(() ->
+            WorkspaceResponse.fromValues(WORKSPACEPREFIX,testCase.getResponse())).get();
+
+        var resultResponse = attempt(() -> objectMapper
+            .writerWithDefaultPrettyPrinter()
+            .writeValueAsString(workspaceResponse.indexList)).get();
+
+        assertEquals(expectedResponse,resultResponse);
+    }
 
     void assertResponseStripping(TestCaseSws testCase) throws BadRequestException {
         logger.info(testCase.toString());
@@ -200,7 +189,6 @@ public class PrefixStripperTest {
         assertEquals(expectedBody,resultBody.get());
     }
 
-
     /**
      * Testing body prefixing gateway request to opensearch requests.
      */
@@ -220,6 +208,12 @@ public class PrefixStripperTest {
         );
 
         assertEquals(expectedBody,resultBody.get());
+    }
+
+    private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {
+        new TestCaseLoader(filename)
+            .getTestCases()
+            .forEach(streamBuilder::add);
     }
 
 }
