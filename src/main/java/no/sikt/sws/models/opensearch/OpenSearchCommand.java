@@ -10,9 +10,11 @@ public enum OpenSearchCommand {
     DOC(".*/_doc.*"),
     MAPPING("_mapping"),
     SEARCH(".*_search.*"),
+    COUNT(".*_count.*"),
+    ACK("acknowledged"),
     OTHER("other"),
     // the following are not executable
-    NOT_IMPLEMENTED("_"),
+    NOT_IMPLEMENTED("_.*"),
     INVALID("invalid"),
     ERROR("error");
 

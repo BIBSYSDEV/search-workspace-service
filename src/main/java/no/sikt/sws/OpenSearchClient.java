@@ -1,34 +1,26 @@
 package no.sikt.sws;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.DefaultRequest;
-import com.amazonaws.Request;
-import com.amazonaws.SdkBaseException;
+import com.amazonaws.*;
 import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.http.AmazonHttpClient;
-import com.amazonaws.http.ExecutionContext;
-import com.amazonaws.http.HttpMethodName;
-import com.amazonaws.http.HttpResponse;
-import com.amazonaws.http.HttpResponseHandler;
+import com.amazonaws.http.*;
 import no.sikt.sws.exception.OpenSearchException;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import nva.commons.core.JacocoGenerated;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static no.sikt.sws.constants.ApplicationConstants.ELASTICSEARCH_REGION;
-import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
-import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_PROTOCOL;
+import static no.sikt.sws.constants.ApplicationConstants.*;
 import static software.amazon.awssdk.http.HttpStatusCode.*;
 
 public class OpenSearchClient {
@@ -43,7 +35,7 @@ public class OpenSearchClient {
 
     private boolean passError;
 
-    HttpResponseHandler<String> httpResponseHandler = new HttpResponseHandler() {
+    HttpResponseHandler<String> httpResponseHandler = new HttpResponseHandler<>() {
         @Override
         public String handle(HttpResponse response) throws Exception {
             var bytes = response.getContent().readAllBytes();
@@ -59,7 +51,7 @@ public class OpenSearchClient {
         }
     };
 
-    HttpResponseHandler<SdkBaseException> errorResponseHandler = new HttpResponseHandler() {
+    HttpResponseHandler<SdkBaseException> errorResponseHandler = new HttpResponseHandler<>() {
 
         @Override
         public AmazonClientException handle(HttpResponse response) throws Exception {
@@ -84,11 +76,19 @@ public class OpenSearchClient {
         }
     };
 
-    public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path, String data) throws IOException {
+    public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path, String data) {
 
         Request<Void> request = new DefaultRequest<>("es");
         request.setHttpMethod(httpMethod);
-        request.setEndpoint(buildUri(path));
+
+        logger.info(path);
+        var uri = buildUri(path);
+
+        request.setEndpoint(uri);
+
+        if (uri.getQuery() != null) {
+            request.setParameters(getStringListMap(uri));
+        }
 
         if (data != null && !NULL_STRING.equals(data)) {
             InputStream inputStream = new ByteArrayInputStream(data.getBytes());
@@ -117,6 +117,13 @@ public class OpenSearchClient {
         }
 
 
+    }
+
+    @NotNull
+    private Map<String, List<String>> getStringListMap(URI uri) {
+        return Arrays.stream(uri.getQuery().split("&"))
+                .map(param -> Map.entry(param.split("=")[0], param.split("=")[1]))
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())));
     }
 
     private void signAwsRequest(Request<Void> request) {

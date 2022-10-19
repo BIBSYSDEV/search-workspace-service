@@ -11,6 +11,8 @@ import nva.commons.apigateway.exceptions.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.stream.Collectors;
+
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
 import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
@@ -40,24 +42,20 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             Context context
     ) throws ApiGatewayException {
 
-        var query = EMPTY_STRING;
-        try {
-            var uri = request.getRequestUri();
-            if (!uri.getQuery().isBlank()) {
-                query = "?" + uri.getQuery();
-            }
-        } catch (Exception ex) {
-            logger.info(ex.getMessage());
-        }
         var resourceIdentifier =  request.getPathParameter(RESOURCE_IDENTIFIER);
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
         var openSearchCommand = OpenSearchCommand.fromString(resourceIdentifier);
+        var query = request.getQueryParameters().entrySet().stream()
+            .map(entry ->
+                entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
 
         try {
             validateResourceIdentifier(resourceIdentifier);
 
-            var url = Prefixer.url(workspace, resourceIdentifier) + query;
+            var url = Prefixer.url(
+                workspace,
+                resourceIdentifier + (query.isEmpty() ? EMPTY_STRING : "?" + query));
             logger.info("URL: " + url);
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
