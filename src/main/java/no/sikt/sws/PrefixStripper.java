@@ -1,9 +1,13 @@
 package no.sikt.sws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.sikt.sws.constants.ApplicationConstants;
 import no.sikt.sws.models.gateway.Builder;
+import no.sikt.sws.models.gateway.SearchDto;
 import no.sikt.sws.models.opensearch.OpenSearchCommand;
 import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
@@ -15,6 +19,9 @@ import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_N
 @JacocoGenerated
 public class PrefixStripper {
 
+
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     /**
      * Strips prefix from body.
@@ -52,6 +59,17 @@ public class PrefixStripper {
                     + ((workspacePrefix == null) ? ApplicationConstants.WORKSPACE_PREFIX : EMPTY_STRING));
         }
 
+        JsonNode jsonResponse = null;
+        try {
+            jsonResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (jsonResponse.has("status") && jsonResponse.get("status").asInt() > 299) {
+            command = OpenSearchCommand.ERROR;
+        }
+
         //Regex that matches '{workspace}-' preceded by ' ', '/', '[' or '"'
         var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
 
@@ -65,7 +83,7 @@ public class PrefixStripper {
             case ERROR:
                 return Builder.errorFromValues(workspacePrefix,responseBody);
             case SEARCH:
-                return Builder.searchFromValues(workspacePrefix,responseBody);
+                return SearchDto.fromResponse(responseBody).strippedResponse(workspacePrefix);
             case DOC:
                 return Builder.docFromValues(workspacePrefix,responseBody);
             case NOT_IMPLEMENTED:

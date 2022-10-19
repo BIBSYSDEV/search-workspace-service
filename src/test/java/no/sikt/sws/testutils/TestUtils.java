@@ -20,22 +20,33 @@ public final class TestUtils {
         );
     }
 
-    public static InputStream buildRequest(HttpMethod httpMethod, Map<String,String> pathParams)
+//    public static Map<String, String> buildQueryParamsFromString(String queryParams) {
+//        return Map.of(queryParams.split("&="));
+//    }
+
+    public static InputStream buildRequest(HttpMethod httpMethod,
+                                           Map<String, String> pathParams,
+                                           Map<String, String> queryParameters)
             throws JsonProcessingException {
 
         return new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
                 .withHttpMethod(httpMethod.toString())
                 .withPathParameters(pathParams)
+                .withQueryParameters(queryParameters)
                 .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE)
                 .build();
     }
 
-    public static  <T> InputStream buildRequestWithBody(HttpMethod httpMethod, Map<String,String> pathParams, T body)
+    public static  <T> InputStream buildRequestWithBody(HttpMethod httpMethod,
+                                                        Map<String,String> pathParams,
+                                                        Map<String, String> queryParameters,
+                                                        T body)
             throws JsonProcessingException {
 
         return new HandlerRequestBuilder<T>(JsonUtils.dtoObjectMapper)
                 .withHttpMethod(httpMethod.toString())
                 .withPathParameters(pathParams)
+                .withQueryParameters(queryParameters)
                 .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE)
                 .withBody(body)
                 .build();

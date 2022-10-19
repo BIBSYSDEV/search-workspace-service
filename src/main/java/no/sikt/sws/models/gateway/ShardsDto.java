@@ -3,34 +3,35 @@ package no.sikt.sws.models.gateway;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import java.util.StringJoiner;
+import java.util.Collection;
 
-public class SearchDto implements Dto {
+public class ShardsDto implements Dto {
 
-    @JsonProperty("took")
-    public Number took;
+    @JsonProperty("total")
+    public Number total;
 
-    @JsonProperty("timed_out")
-    public Boolean timedOut;
+    @JsonProperty("successful")
+    public Number successful;
 
-    @JsonProperty("_shards")
-    public ShardsDto shards;
+    @JsonProperty("skipped")
+    public Number skipped;
 
-    @JsonProperty("hits")
-    public HitsDto hits;
+    @JsonProperty("failed")
+    public Number failed;
 
-    public SearchDto() {
+    @JsonProperty("failures")
+    public Collection<String> failures;
+
+    public ShardsDto() {
     }
 
-    public static SearchDto fromResponse(String opensearchResponse) {
+    public static ShardsDto fromResponse(String opensearchResponse) {
         try {
-            return objectMapper.readValue(opensearchResponse, SearchDto.class);
+            return objectMapper.readValue(opensearchResponse, ShardsDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
-
-
     public String strippedResponse(String workspacePrefix) {
         var regex = toRegEx.apply(workspacePrefix);
         if (hits != null) {
@@ -46,13 +47,4 @@ public class SearchDto implements Dto {
         return toJson.apply(this);
     }
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", SearchDto.class.getSimpleName() + "[", "]")
-                .add("took=" + took)
-                .add("timedOut=" + timedOut)
-                .add("shards=" + shards)
-                .add("hits=" + hits)
-                .toString();
-    }
 }

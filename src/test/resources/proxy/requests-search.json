@@ -3,12 +3,12 @@
     "name": "GET search by queryparameter",
     "requestGateway": {
       "method": "GET",
-      "url": "index1/_search?q=test",
+      "url": "index1/_search?q=age:100&sort=_score:desc,age:asc",
       "body": null
     },
     "requestOpensearch": {
       "method": "GET",
-      "url": "workspace-mockname-index1/_search?q=test",
+      "url": "workspace-mockname-index1/_search?q=age:100&sort=_score:desc,age:asc",
       "body": null
     },
     "response": {
@@ -222,6 +222,109 @@
             "_source": {
               "workspace-mockname-evil": "workspace-mockname-evil"
             }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "GET Search with failures",
+    "requestGateway": {
+      "method": "GET",
+      "url": "failing/_search?q=age:<100&sort=_score:desc,age:asc",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-failing/_search?q=age:<100&sort=_score:desc,age:asc",
+      "body": null
+    },
+    "response": {
+      "took": 8,
+      "timed_out": false,
+      "_shards": {
+        "total": 6,
+        "successful": 3,
+        "skipped": 0,
+        "failed": 1,
+        "failures": [
+          {
+            "shard": 0,
+            "index": "workspace-mockname-test-index66",
+            "node": "bHVLvqUBSvKBwRokJbv69g",
+            "reason": {
+              "type": "query_shard_exception",
+              "reason": "No mapping found for [age] in order to sort on",
+              "index": "workspace-mockname-test-index66",
+              "index_uuid": "mYSFekVmS_ejFT7yoGnNmw"
+            }
+          }
+        ]
+      },
+      "hits": {
+        "total": {
+          "value": 1,
+          "relation": "eq"
+        },
+        "max_score": null,
+        "hits": [
+          {
+            "_index": "workspace-mockname-test1-index-3",
+            "_id": "1",
+            "_score": 1,
+            "_source": {
+              "navn": "Test-1",
+              "age": 13
+            },
+            "sort": [
+              1,
+              13
+            ]
+          }
+        ]
+      }
+    },
+    "responseStripped": {
+      "took": 8,
+      "timed_out": false,
+      "_shards": {
+        "total": 6,
+        "successful": 3,
+        "skipped": 0,
+        "failed": 1,
+        "failures": [
+          {
+            "shard": 0,
+            "index": "test-index66",
+            "node": "bHVLvqUBSvKBwRokJbv69g",
+            "reason": {
+              "type": "query_shard_exception",
+              "reason": "No mapping found for [age] in order to sort on",
+              "index": "test-index66",
+              "index_uuid": "mYSFekVmS_ejFT7yoGnNmw"
+            }
+          }
+        ]
+      },
+      "hits": {
+        "total": {
+          "value": 1,
+          "relation": "eq"
+        },
+        "max_score": null,
+        "hits": [
+          {
+            "_index": "test1-index-3",
+            "_id": "1",
+            "_score": 1,
+            "_source": {
+              "navn": "Test-1",
+              "age": 13
+            },
+            "sort": [
+              1,
+              13
+            ]
           }
         ]
       }

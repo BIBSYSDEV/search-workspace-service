@@ -17,9 +17,9 @@ public class OpenSearchIndexDto {
     @Override
     public String toString() {
         return "OpenSearchIndexDto{"
-               + "aliases=" + aliases.toString()
-               + ", mappings=" + mappings.toString()
-               + ", settings=" + settings.toString()
+               + "aliases=" +  ((aliases != null) ? aliases : null)
+               + ", mappings=" +  ((mappings != null) ? mappings : null)
+               + ", settings=" + ((aliases != null) ? aliases : null)
                + '}';
     }
 }

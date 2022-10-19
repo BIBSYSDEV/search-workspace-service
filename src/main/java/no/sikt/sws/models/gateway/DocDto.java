@@ -1,9 +1,11 @@
 package no.sikt.sws.models.gateway;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.StringJoiner;
 
 public class DocDto implements Dto {
@@ -43,9 +45,26 @@ public class DocDto implements Dto {
     @JsonProperty("_source")
     public JsonNode source;
 
+    @JsonProperty("sort")
+    public List<Integer> sort;
+
+
     public DocDto() {
     }
 
+    public static DocDto fromResponse(String opensearchResponse) {
+        try {
+            return objectMapper.readValue(opensearchResponse, DocDto.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String strippedResponse(String workspacePrefix) {
+        var regex = toRegEx.apply(workspacePrefix);
+        indexName = indexName.replaceFirst(workspacePrefix + "-", "");
+        return toJson.apply(this);
+    }
 
     @Override
     public String toString() {

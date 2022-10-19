@@ -53,7 +53,7 @@ public class WorkspaceHandlerTest extends TestCase {
         when(openSearchClient.sendRequest(GET, TEST_WORKSPACE_PREFIX + "*", null))
                 .thenReturn(mockResponse);
 
-        var request = TestUtils.buildRequest(HttpMethod.GET, null);
+        var request = TestUtils.buildRequest(HttpMethod.GET, null,null);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, WorkspaceResponse.class);
