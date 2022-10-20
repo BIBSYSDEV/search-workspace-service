@@ -2,6 +2,7 @@ package no.sikt.sws.models.gateway;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.sikt.sws.PrefixStripper;
 import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
@@ -19,7 +20,8 @@ import static nva.commons.core.attempt.Try.attempt;
 public class Builder {
 
     private static final Logger logger = LoggerFactory.getLogger(Builder.class);
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private static final Function<String, String> toRegEx = prefix -> "(?<=[ /\"\\[])" + prefix + "-";
 
     public static String docFromValues(String workspacePrefix, String opensearchResponse) {
