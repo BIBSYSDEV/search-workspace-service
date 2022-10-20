@@ -78,16 +78,18 @@ public class OpenSearchClient {
 
     public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path, String data) {
 
+        var pathWithoutParams = stripParametersFromPath(path).toString();
+        var endpoint = buildUri(pathWithoutParams);
+        var query = buildUri(path).getQuery();
+
+        logger.info(endpoint + " - " + query);
+
         Request<Void> request = new DefaultRequest<>("es");
         request.setHttpMethod(httpMethod);
+        request.setEndpoint(endpoint);
 
-        var uri = buildUri(path);
-        logger.info(uri.getPath() + " - " + uri.getQuery());
-
-        request.setEndpoint(uri);
-
-        if (uri.getQuery() != null) {
-            request.setParameters(getStringListMap(uri));
+        if (query != null) {
+            request.setParameters(getStringListMap(query));
         }
 
         if (data != null && !NULL_STRING.equals(data)) {
@@ -120,8 +122,8 @@ public class OpenSearchClient {
     }
 
     @NotNull
-    private Map<String, List<String>> getStringListMap(URI uri) {
-        return Arrays.stream(uri.getQuery().split("&"))
+    private Map<String, List<String>> getStringListMap(String query) {
+        return Arrays.stream(query.split("&"))
                 .map(param -> Map.entry(param.split("=")[0], param.split("=")[1]))
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())));
     }
@@ -154,5 +156,19 @@ public class OpenSearchClient {
         var client = new OpenSearchClient();
         client.setPassError(true);
         return client;
+    }
+
+    private URI stripParametersFromPath(String path) {
+        try {
+            URI uri = new URI(path);
+            return new URI(uri.getScheme(),
+                    uri.getAuthority(),
+                    uri.getPath(),
+                    null, // Ignore the query part of the input url
+                    uri.getFragment());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
