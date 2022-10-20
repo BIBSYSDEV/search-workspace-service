@@ -81,8 +81,8 @@ public class OpenSearchClient {
         Request<Void> request = new DefaultRequest<>("es");
         request.setHttpMethod(httpMethod);
 
-        logger.info(path);
         var uri = buildUri(path);
+        logger.info(uri.getPath() + " - " + uri.getQuery());
 
         request.setEndpoint(uri);
 

@@ -8,6 +8,7 @@ import nva.commons.apigateway.ProxyResponse;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
 import nva.commons.apigateway.exceptions.BadRequestException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,16 +47,13 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
         var openSearchCommand = OpenSearchCommand.fromString(resourceIdentifier);
-        var query = request.getQueryParameters().entrySet().stream()
-            .map(entry ->
-                entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
+        var query = getQueryString(request);
+        query = query.isEmpty() ? EMPTY_STRING : "?" + query;
 
         try {
             validateResourceIdentifier(resourceIdentifier);
 
-            var url = Prefixer.url(
-                workspace,
-                resourceIdentifier + (query.isEmpty() ? EMPTY_STRING : "?" + query));
+            var url = Prefixer.url(workspace,resourceIdentifier) + query;
             logger.info("URL: " + url);
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
@@ -82,6 +80,13 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
+    }
+
+    @NotNull
+    private static String getQueryString(RequestInfo request) {
+        return request.getQueryParameters().entrySet().stream()
+                .map(entry ->
+                        entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
     }
 
     private static void validateResourceIdentifier(String resourceIdentifier) throws BadRequestException {
