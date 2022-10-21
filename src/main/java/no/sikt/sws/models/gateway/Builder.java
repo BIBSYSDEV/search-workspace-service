@@ -2,8 +2,6 @@ package no.sikt.sws.models.gateway;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.sikt.sws.PrefixStripper;
 import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
@@ -23,13 +21,6 @@ public class Builder {
     private static final Logger logger = LoggerFactory.getLogger(Builder.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Function<String, String> toRegEx = prefix -> "(?<=[ /\"\\[])" + prefix + "-";
-
-    public static DefaultPrettyPrinter getPrettyPrinter() {
-        DefaultPrettyPrinter p = new DefaultPrettyPrinter();
-        DefaultPrettyPrinter.Indenter i = new DefaultIndenter("  ", "\n");
-        p.indentObjectsWith(i);
-        return p;
-    }
 
     public static String docFromValues(String workspacePrefix, String opensearchResponse) {
         var regex = toRegEx.apply(workspacePrefix);
