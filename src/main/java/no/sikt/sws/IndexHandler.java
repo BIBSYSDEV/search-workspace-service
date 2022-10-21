@@ -9,8 +9,11 @@ import nva.commons.apigateway.ProxyResponse;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
 import nva.commons.apigateway.exceptions.BadRequestException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.stream.Collectors;
 
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
@@ -40,24 +43,17 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             Context context
     ) throws ApiGatewayException {
 
-        var query = EMPTY_STRING;
-        try {
-            var uri = request.getRequestUri();
-            if (!uri.getQuery().isBlank()) {
-                query = "?" + uri.getQuery();
-            }
-        } catch (Exception ex) {
-            logger.info(ex.getMessage());
-        }
         var resourceIdentifier =  request.getPathParameter(RESOURCE_IDENTIFIER);
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
         var commandKind = OpenSearchCommandKind.fromString(resourceIdentifier);
+        var query = getQueryString(request);
+        query = query.isEmpty() ? EMPTY_STRING : "?" + query;
 
         try {
             validateResourceIdentifier(resourceIdentifier);
 
-            var url = Prefixer.url(workspace, resourceIdentifier) + query;
+            var url = Prefixer.url(workspace,resourceIdentifier) + query;
             logger.info("URL: " + url);
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
@@ -85,6 +81,13 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
+    }
+
+    @NotNull
+    private static String getQueryString(RequestInfo request) {
+        return request.getQueryParameters().entrySet().stream()
+                .map(entry ->
+                        entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
     }
 
     private static void validateResourceIdentifier(String resourceIdentifier) throws BadRequestException {
