@@ -10,11 +10,9 @@ import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.ReadableInstant;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
@@ -49,31 +47,28 @@ public class PrefixStripperTest {
     @TestFactory
     @DisplayName("Opensearch url prefixing")
     Stream<DynamicTest> testUrlPrefixFactory() {
-        var testCases = allRequestArguments().filter(TestCaseSws::isRequestTest);
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName; // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefix;      // -> test function
 
-        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+        var requestTests = allRequestArguments().filter(TestCaseSws::isRequestTest);
+
+        return DynamicTest.stream(requestTests, TestCaseSws::getName, this::assertUrlPrefix);
     }
 
     @TestFactory
     @DisplayName("Opensearch request-body prefixing")
     Stream<DynamicTest> testRequestPrefixFactory() {
-        var testCases = allRequestArguments().filter(TestCaseSws::isRequestBodyTest);
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName; // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertRequestPrefix;     // -> test function
 
-        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+        var requestBodyTests = allRequestArguments().filter(TestCaseSws::isRequestBodyTest);
+
+        return DynamicTest.stream(requestBodyTests, TestCaseSws::getName, this::assertRequestPrefix);
     }
 
     @TestFactory
     @DisplayName("Opensearch response-body stripping")
     Stream<DynamicTest> testResponseStrippingFactory() {
-        var testCases = allRequestArguments().filter(TestCaseSws::isResponseTest);
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName;  // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
 
-        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+        var responseTests = allRequestArguments().filter(TestCaseSws::isResponseTest);
+
+        return DynamicTest.stream(responseTests, TestCaseSws::getName, this::assertResponseStripping);
     }
 
     @Test
