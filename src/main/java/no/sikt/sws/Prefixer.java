@@ -3,7 +3,7 @@ package no.sikt.sws;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import no.sikt.sws.models.opensearch.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
 import nva.commons.core.JacocoGenerated;
@@ -43,9 +43,10 @@ public class Prefixer {
 
     /**
      * Prefixing of body.
-     * @param workspacePrefix prefix to apply
+     *
+     * @param workspacePrefix    prefix to apply
      * @param resourceIdentifier url with index name
-     * @param gatewayBody body to prefix
+     * @param gatewayBody        body to prefix
      * @return prefixed body
      */
     public static String body(String workspacePrefix, String resourceIdentifier, String gatewayBody)
@@ -59,8 +60,9 @@ public class Prefixer {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "workspacePrefix");
         }
 
-        var searchCommand = OpenSearchCommand.fromString(resourceIdentifier);
+        var searchCommand = OpenSearchCommandKind.fromString(resourceIdentifier);
         logger.info(searchCommand.name());
+
         switch (searchCommand) {
             case ALIAS:
                 return Prefixer.aliasBody(workspacePrefix,gatewayBody);
@@ -69,9 +71,9 @@ public class Prefixer {
             case SEARCH:
             case MAPPING:
             case DOC:
-                logger.debug("Return to sender (untouched) " + workspacePrefix + resourceIdentifier);
+                logger.info(" --> BODY UNTOUCHED");
                 return gatewayBody;
-            case OTHER:
+            case INDEX:
                 return Prefixer.indexesBody(workspacePrefix,gatewayBody);
             case NOT_IMPLEMENTED:
                 throw new BadRequestException("Not implemented " + resourceIdentifier);
@@ -130,7 +132,6 @@ public class Prefixer {
     }
 
     protected static String aliasBody(String workspacePrefix, String gatewayAliasBody) {
-        logger.info("aliasbody");
         return gatewayAliasBody
                 .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
                 .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");

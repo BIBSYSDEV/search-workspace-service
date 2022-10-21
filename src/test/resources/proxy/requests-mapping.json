@@ -7,7 +7,7 @@
       "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"workspace-mockname-age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
     },
     "requestOpensearch": {
-      "method": "GET",
+      "method": "PUT",
       "url": "workspace-mockname-index1/_mapping",
       "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"workspace-mockname-age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
     },
@@ -30,7 +30,7 @@
       "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
     },
     "requestOpensearch": {
-      "method": "GET",
+      "method": "PUT",
       "url": "workspace-mockname-index1_sondres_index_for_mapping/_mapping",
       "body": "{\"mappings\":{\"properties\":{\"year\":{\"type\":\"text\"},\"age\":{\"type\":\"integer\"},\"director\":{\"type\":\"text\"}}}}"
     },

@@ -22,6 +22,7 @@ public class Builder {
 
     private static final Logger logger = LoggerFactory.getLogger(Builder.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Function<String, String> toRegEx = prefix -> "(?<=[ /\"\\[])" + prefix + "-";
 
     public static DefaultPrettyPrinter getPrettyPrinter() {
         DefaultPrettyPrinter p = new DefaultPrettyPrinter();
@@ -29,7 +30,6 @@ public class Builder {
         p.indentObjectsWith(i);
         return p;
     }
-    private static final Function<String, String> toRegEx = prefix -> "(?<=[ /\"\\[])" + prefix + "-";
 
     public static String docFromValues(String workspacePrefix, String opensearchResponse) {
         var regex = toRegEx.apply(workspacePrefix);
@@ -71,7 +71,6 @@ public class Builder {
 
             return attempt(() -> objectMapper
                 .writerWithDefaultPrettyPrinter()
-//                .writer(getPrettyPrinter())
                 .writeValueAsString(retMap)).orElseThrow();
 
         } catch (JsonProcessingException ex) {
@@ -109,7 +108,6 @@ public class Builder {
     public static String toJson(Dto dto)  {
         return attempt(() -> objectMapper
             .writerWithDefaultPrettyPrinter()
-//            .writer(getPrettyPrinter())
             .writeValueAsString(dto)).orElseThrow();
     }
 

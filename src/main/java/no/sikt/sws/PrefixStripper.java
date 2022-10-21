@@ -1,12 +1,11 @@
 package no.sikt.sws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.constants.ApplicationConstants;
 import no.sikt.sws.models.gateway.Builder;
-import no.sikt.sws.models.opensearch.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
+import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
 import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
 import nva.commons.core.JacocoGenerated;
@@ -41,41 +40,61 @@ public class PrefixStripper {
 
     /**
      * Strips prefix from body.
-     * @param command OpenSearchCommand
+     *
+     * @param commandKind     OpenSearchCommand
+     * @param responseKind    OpenSearchResponseKind
      * @param workspacePrefix prefix to strip
-     * @param responseBody body to strip
+     * @param responseBody    body to strip
      * @return stripped body
      */
-    public static String body(OpenSearchCommand command, String workspacePrefix, String responseBody)
-            throws BadRequestException {
-        if (responseBody == null || workspacePrefix == null) {
-            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
-                    + ((responseBody == null) ? "[responseBody] " : EMPTY_STRING)
-                    + ((workspacePrefix == null) ? ApplicationConstants.WORKSPACE_PREFIX : EMPTY_STRING));
-        }
+    @SuppressWarnings("checkstyle:MissingSwitchDefault")
+    public static String body(OpenSearchCommandKind commandKind,
+                              OpenSearchResponseKind responseKind,
+                              String workspacePrefix,
+                              String responseBody) throws BadRequestException {
+
+        validateParameters(workspacePrefix, responseBody);
 
         //Regex that matches '{workspace}-' preceded by ' ', '/', '[' or '"'
         var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
 
-        switch (command) {
-            case ALIAS:
-            case BULK:
-            case MAPPING:
+        switch (responseKind) {
+            case ACK:
                 return responseBody.replaceAll(regex, EMPTY_STRING);
-            case OTHER:
-                return Builder.indexFromValues(workspacePrefix,responseBody);
             case ERROR:
                 return Builder.errorFromValues(workspacePrefix,responseBody);
-            case SEARCH:
-                return Builder.searchFromValues(workspacePrefix,responseBody);
-            case DOC:
-                return Builder.docFromValues(workspacePrefix,responseBody);
-            case NOT_IMPLEMENTED:
-                throw new BadRequestException("Not implemented");
-            case INVALID:
-                throw new BadRequestException("resourceIdentifier is invalid");
+            case CONTENT:
+                switch (commandKind) {
+                    case ALIAS:
+                    case MAPPING:
+                        return responseBody.replaceAll(regex, EMPTY_STRING);
+                    case DOC:
+                        return Builder.docFromValues(workspacePrefix,responseBody);
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + commandKind);
+                }
+            case CONTENT_COLLECTION:
+                switch (commandKind) {
+                    case BULK:
+                    case MAPPING:
+                        return responseBody.replaceAll(regex, EMPTY_STRING);
+                    case INDEX:
+                        return Builder.indexFromValues(workspacePrefix,responseBody);
+                    case SEARCH:
+                        return Builder.searchFromValues(workspacePrefix,responseBody);
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + commandKind);
+                }
             default:
-                throw new IllegalStateException("Unexpected value: " + command);
+                throw new IllegalStateException("Unexpected value: " + commandKind);
+        }
+    }
+
+    private static void validateParameters(String workspacePrefix, String responseBody) {
+        if (responseBody == null || workspacePrefix == null) {
+            throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
+                    + ((responseBody == null) ? "[responseBody] " : EMPTY_STRING)
+                    + ((workspacePrefix == null) ? ApplicationConstants.WORKSPACE_PREFIX : EMPTY_STRING));
         }
     }
 
@@ -86,7 +105,5 @@ public class PrefixStripper {
             throw new RuntimeException(e);
         }
     }
-
-
 
 }

@@ -1,6 +1,7 @@
 package no.sikt.sws;
 
-import no.sikt.sws.models.opensearch.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
+import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
 import no.sikt.sws.models.opensearch.WorkspaceResponse;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
@@ -152,10 +153,15 @@ public class PrefixStripperTest {
 
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
-        var command = OpenSearchCommand.fromString(testCase.getRequestGateway().getUrl());
+        var httpMethod = testCase.getRequestOpensearch().getMethod();
+        var command =
+            OpenSearchCommandKind.fromString(testCase.getRequestGateway().getUrl());
+        var responseKind =
+            OpenSearchResponseKind.fromString(httpMethod,command,openSearchResponse);
 
         logger.info("--> " + command.name());
-        var resultResponse = PrefixStripper.body(command,WORKSPACEPREFIX,openSearchResponse);
+        logger.info("<-- " + responseKind.name());
+        var resultResponse = PrefixStripper.body(command, responseKind, WORKSPACEPREFIX,openSearchResponse);
 
         assertEquals(expectedResponse,resultResponse);
     }
@@ -203,11 +209,12 @@ public class PrefixStripperTest {
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
         var gatewayBody = testCase.getRequestGateway().getBody();
+
         var resultBody = attempt(() ->
             Prefixer.body(WORKSPACEPREFIX, resourceIdentifier, gatewayBody)
-        );
+        ).get();
 
-        assertEquals(expectedBody,resultBody.get());
+        assertEquals(expectedBody,resultBody);
     }
 
     private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {

@@ -2,7 +2,8 @@ package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.exception.SearchException;
-import no.sikt.sws.models.opensearch.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
+import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
 import nva.commons.apigateway.ApiGatewayProxyHandler;
 import nva.commons.apigateway.ProxyResponse;
 import nva.commons.apigateway.RequestInfo;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import static com.amazonaws.http.HttpMethodName.POST;
 import static com.amazonaws.http.HttpMethodName.PUT;
 import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
-import static no.sikt.sws.models.opensearch.OpenSearchCommand.ERROR;
 
 /**
  * Created for checking if external libraries have been imported properly.
@@ -52,7 +52,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         var resourceIdentifier =  request.getPathParameter(RESOURCE_IDENTIFIER);
         var httpMethod = RequestUtil.getRequestHttpMethod(request);
         var workspace = RequestUtil.getWorkspace(request);
-        var openSearchCommand = OpenSearchCommand.fromString(resourceIdentifier);
+        var commandKind = OpenSearchCommandKind.fromString(resourceIdentifier);
 
         try {
             validateResourceIdentifier(resourceIdentifier);
@@ -70,9 +70,10 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             logger.info("response-code:" + response.getStatus());
             logger.info("raw response-body:" + response.getBody());
 
-            var responseBody = response.getStatus() < 300
-                    ? PrefixStripper.body(openSearchCommand,workspace, response.getBody())
-                    : PrefixStripper.body(ERROR,workspace, response.getBody());
+            var responseKind = OpenSearchResponseKind
+                .fromString(httpMethod,commandKind,response.getBody());
+
+            var responseBody = PrefixStripper.body(commandKind, responseKind,workspace, response.getBody());
 
             logger.info("stripped response-body:" + responseBody);
 
