@@ -55,7 +55,7 @@ public enum OpenSearchResponseKind {
 
     private static boolean checkforError(String responseBody) {
         var node = string2JsonNode(responseBody);
-        return node.has("error");
+        return node.has("error") && node.has("status");
     }
 
     private static JsonNode string2JsonNode(String s) {
