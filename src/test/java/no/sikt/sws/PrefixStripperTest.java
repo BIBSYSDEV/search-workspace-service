@@ -1,6 +1,7 @@
 package no.sikt.sws;
 
-import no.sikt.sws.models.opensearch.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
+import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
 import no.sikt.sws.models.opensearch.WorkspaceResponse;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
@@ -9,11 +10,9 @@ import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.ReadableInstant;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
@@ -41,45 +40,35 @@ public class PrefixStripperTest {
         loadTestCases(streamBuilder, "proxy/requests-cat.json");
         loadTestCases(streamBuilder, "proxy/requests-alias.json");
 
-
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
         return streamBuilder.build();
-    }
-
-    private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {
-        new TestCaseLoader(filename)
-                .getTestCases()
-                .forEach(streamBuilder::add);
-    }
-
-    @TestFactory
-    @DisplayName("Opensearch response-body stripping")
-    Stream<DynamicTest> testResponseStrippingFactory() {
-        var testCases = allRequestArguments().filter(TestCaseSws::isResponseTest);
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName;  // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertResponseStripping;  // -> test function
-
-        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
     }
 
     @TestFactory
     @DisplayName("Opensearch url prefixing")
     Stream<DynamicTest> testUrlPrefixFactory() {
-        var testCases = allRequestArguments().filter(TestCaseSws::isRequestTest);
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName; // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertUrlPrefix;      // -> test function
 
-        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+        var requestTests = allRequestArguments().filter(TestCaseSws::isRequestTest);
+
+        return DynamicTest.stream(requestTests, TestCaseSws::getName, this::assertUrlPrefix);
     }
 
     @TestFactory
     @DisplayName("Opensearch request-body prefixing")
     Stream<DynamicTest> testRequestPrefixFactory() {
-        var testCases = allRequestArguments().filter(TestCaseSws::isRequestBodyTest);
-        Function<TestCaseSws, String> displayNameGenerator = TestCaseSws::getName; // -> testcase name
-        ThrowingConsumer<TestCaseSws> testExecutor = this::assertRequestPrefix;     // -> test function
 
-        return DynamicTest.stream(testCases, displayNameGenerator, testExecutor);
+        var requestBodyTests = allRequestArguments().filter(TestCaseSws::isRequestBodyTest);
+
+        return DynamicTest.stream(requestBodyTests, TestCaseSws::getName, this::assertRequestPrefix);
+    }
+
+    @TestFactory
+    @DisplayName("Opensearch response-body stripping")
+    Stream<DynamicTest> testResponseStrippingFactory() {
+
+        var responseTests = allRequestArguments().filter(TestCaseSws::isResponseTest);
+
+        return DynamicTest.stream(responseTests, TestCaseSws::getName, this::assertResponseStripping);
     }
 
     @Test
@@ -97,33 +86,10 @@ public class PrefixStripperTest {
 
     }
 
-
-    void assertResponseIndexStripping(TestCaseSws testCase) {
-        logger.info(testCase.toString());
-        Assumptions.assumeTrue(testCase.isEnabled());
-
-        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
-            + " http://apigateway/ -> " + testCase.getRequestGateway().getUrl()
-            + " http://opensearch/" +  testCase.getRequestOpensearch().getUrl());
-
-        var expectedResponse = testCase.getResponseStripped();
-
-        var workspaceResponse = attempt(() ->
-            WorkspaceResponse.fromValues(WORKSPACEPREFIX,testCase.getResponse())).get();
-
-        var resultResponse = attempt(() -> objectMapper
-            .writerWithDefaultPrettyPrinter()
-            .writeValueAsString(workspaceResponse.indexList)).get();
-
-        assertEquals(expectedResponse,resultResponse);
-    }
-
-
     /**
      * Using for debuging a single test-case. Change the filename, testcase,
      * and assert-function on the last line as needed
      */
-
     @Test
     @Disabled
     void runSingleTestcase() throws BadRequestException {
@@ -153,6 +119,25 @@ public class PrefixStripperTest {
             .forEach(this::assertAliasPrefix);
     }
 
+    void assertResponseIndexStripping(TestCaseSws testCase) {
+        logger.info(testCase.toString());
+        Assumptions.assumeTrue(testCase.isEnabled());
+
+        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
+            + " http://apigateway/ -> " + testCase.getRequestGateway().getUrl()
+            + " http://opensearch/" +  testCase.getRequestOpensearch().getUrl());
+
+        var expectedResponse = testCase.getResponseStripped();
+
+        var workspaceResponse = attempt(() ->
+            WorkspaceResponse.fromValues(WORKSPACEPREFIX,testCase.getResponse())).get();
+
+        var resultResponse = attempt(() -> objectMapper
+            .writerWithDefaultPrettyPrinter()
+            .writeValueAsString(workspaceResponse.indexList)).get();
+
+        assertEquals(expectedResponse,resultResponse);
+    }
 
     void assertResponseStripping(TestCaseSws testCase) throws BadRequestException {
         logger.info(testCase.toString());
@@ -163,10 +148,15 @@ public class PrefixStripperTest {
 
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
-        var command = OpenSearchCommand.fromString(testCase.getRequestGateway().getUrl());
+        var httpMethod = testCase.getRequestOpensearch().getMethod();
+        var command =
+            OpenSearchCommandKind.fromString(testCase.getRequestGateway().getUrl());
+        var responseKind =
+            OpenSearchResponseKind.fromString(httpMethod,command,openSearchResponse);
 
         logger.info("--> " + command.name());
-        var resultResponse = PrefixStripper.body(command,WORKSPACEPREFIX,openSearchResponse);
+        logger.info("<-- " + responseKind.name());
+        var resultResponse = PrefixStripper.body(command, responseKind, WORKSPACEPREFIX,openSearchResponse);
 
         assertEquals(expectedResponse,resultResponse);
     }
@@ -200,7 +190,6 @@ public class PrefixStripperTest {
         assertEquals(expectedBody,resultBody.get());
     }
 
-
     /**
      * Testing body prefixing gateway request to opensearch requests.
      */
@@ -215,11 +204,18 @@ public class PrefixStripperTest {
         var expectedBody = testCase.getRequestOpensearch().getBody();
 
         var gatewayBody = testCase.getRequestGateway().getBody();
+
         var resultBody = attempt(() ->
             Prefixer.body(WORKSPACEPREFIX, resourceIdentifier, gatewayBody)
-        );
+        ).get();
 
-        assertEquals(expectedBody,resultBody.get());
+        assertEquals(expectedBody,resultBody);
+    }
+
+    private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {
+        new TestCaseLoader(filename)
+            .getTestCases()
+            .forEach(streamBuilder::add);
     }
 
 }
