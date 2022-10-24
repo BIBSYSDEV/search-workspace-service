@@ -60,10 +60,10 @@ public class Prefixer {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "workspacePrefix");
         }
 
-        var searchCommand = OpenSearchCommandKind.fromString(resourceIdentifier);
-        logger.info(searchCommand.name());
+        var commandKind = OpenSearchCommandKind.fromString(resourceIdentifier);
+        logger.info(commandKind.name());
 
-        switch (searchCommand) {
+        switch (commandKind) {
             case ALIAS:
                 return Prefixer.aliasBody(workspacePrefix,gatewayBody);
             case BULK:
