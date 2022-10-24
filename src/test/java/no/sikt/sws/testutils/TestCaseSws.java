@@ -3,7 +3,7 @@ package no.sikt.sws.testutils;
 import com.amazonaws.http.HttpMethodName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import no.sikt.sws.models.opensearch.OpenSearchCommand;
+import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -70,9 +70,9 @@ public class TestCaseSws implements Serializable, Comparable<TestCaseSws> {
     }
 
     public boolean isIndexRequest() {
-        var cmdKind = OpenSearchCommand.fromString(requestGateway.getUrl());
+        var cmdKind = OpenSearchCommandKind.fromString(requestGateway.getUrl());
 
-        return OpenSearchCommand.OTHER == cmdKind
+        return OpenSearchCommandKind.INDEX == cmdKind
             && HttpMethodName.GET == requestGateway.getMethod()
             && isRequestTest();
     }
