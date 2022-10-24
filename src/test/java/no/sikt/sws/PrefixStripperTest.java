@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PrefixStripperTest {
 
     private static final Logger logger = LoggerFactory.getLogger(PrefixStripperTest.class);
-    private static final String WORKSPACEPREFIX = "workspace-mockname";
+    static final String WORKSPACEPREFIX = "workspace-mockname";
 
     /**
     **  Merge all testcases into one stream.

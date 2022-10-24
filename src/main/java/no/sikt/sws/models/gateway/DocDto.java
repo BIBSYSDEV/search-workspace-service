@@ -1,10 +1,14 @@
 package no.sikt.sws.models.gateway;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.StringJoiner;
+
+import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
 public class DocDto implements Dto {
     @JsonProperty("_index")
@@ -43,7 +47,17 @@ public class DocDto implements Dto {
     @JsonProperty("_source")
     public JsonNode source;
 
+    @JsonProperty("sort")
+    public List<Integer> sort;
+
+
     public DocDto() {
+    }
+
+    @Override
+    public String strippedResponse(String workspacePrefix) {
+        indexName = indexName.replaceFirst(workspacePrefix + "-",EMPTY_STRING);
+        return toJson.apply(this);
     }
 
 
@@ -53,6 +67,14 @@ public class DocDto implements Dto {
                 .add("indexName='" + indexName + "'")
                 .add("id='" + id + "'")
                 .toString();
+    }
+
+    public static DocDto fromResponse(String opensearchResponse) {
+        try {
+            return objectMapper.readValue(opensearchResponse, DocDto.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
