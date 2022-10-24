@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 
 import static com.amazonaws.http.HttpMethodName.GET;
 import static com.amazonaws.http.HttpMethodName.POST;
@@ -24,8 +25,7 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
 import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
-import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
-import static no.sikt.sws.testutils.TestUtils.buildRequest;
+import static no.sikt.sws.testutils.TestUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -62,7 +62,7 @@ public class IndexHandlerTest extends TestCase {
 
         var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_mapping");
 
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams,null);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -84,7 +84,7 @@ public class IndexHandlerTest extends TestCase {
 
         var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_mapping");
 
-        var request = TestUtils.buildRequestWithBody(HttpMethod.POST, pathParams, body);
+        var request = TestUtils.buildRequestWithBody(HttpMethod.POST, pathParams,null, body);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -96,7 +96,7 @@ public class IndexHandlerTest extends TestCase {
     void shouldThrowBadRequestWhenGivenIndexBeginningWithUnderscore() throws IOException {
 
         var pathParams = buildPathParamsForIndex("_someindex");
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams,null);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -108,7 +108,7 @@ public class IndexHandlerTest extends TestCase {
     void shouldThrowBadRequestWhenUsingNonWhitelistedCharacters() throws IOException {
 
         var pathParams = buildPathParamsForIndex("some:index");
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams,null);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -120,7 +120,8 @@ public class IndexHandlerTest extends TestCase {
     void shuldPassQueryParams() throws IOException {
 
         var searchCommand = "_search?param1=1&param2=2";
-        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{\"hits\":0}");
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200,
+            "{ \"hits\": { \"total\": { \"value\": 0, \"relation\": \"eq\"  },\"hits\": []}}");
 
         when(openSearchClient.sendRequest(
                 GET,
@@ -128,9 +129,12 @@ public class IndexHandlerTest extends TestCase {
                 null)
         ).thenReturn(mockResponse);
 
-        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/" + searchCommand);
+        var uri = URI.create(searchCommand);
 
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/" + uri.getPath());
+        var queryParams = buildQueryParams(uri);
+
+        var request = buildRequest(HttpMethod.GET, pathParams,queryParams);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);

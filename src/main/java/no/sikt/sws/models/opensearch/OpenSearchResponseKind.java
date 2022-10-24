@@ -1,9 +1,8 @@
 package no.sikt.sws.models.opensearch;
 
 import com.amazonaws.http.HttpMethodName;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import no.unit.nva.commons.json.JsonUtils;
+import no.sikt.sws.models.gateway.ErrorDto;
+import nva.commons.apigateway.exceptions.BadRequestException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
 
@@ -30,7 +29,7 @@ public enum OpenSearchResponseKind {
     public static OpenSearchResponseKind fromString(
         HttpMethodName httpMethod,
         OpenSearchCommandKind commandKind,
-        String responseBody) {
+        String responseBody) throws BadRequestException {
 
         if (checkforError(responseBody)) {
             return ERROR;
@@ -45,25 +44,17 @@ public enum OpenSearchResponseKind {
             case SEARCH:
                 return CONTENT_COLLECTION;
             case MAPPING:
-                return (httpMethod == GET) ?  CONTENT_COLLECTION : CONTENT;
             case INDEX:
                 return (httpMethod == GET) ?  CONTENT_COLLECTION : ACK;
             default:
-                throw new IllegalStateException("Unexpected value: " + commandKind);
+                throw new BadRequestException(commandKind.name());
         }
     }
 
     private static boolean checkforError(String responseBody) {
-        var node = string2JsonNode(responseBody);
+        var node = ErrorDto.string2JsonNode.apply(responseBody);
         return node.has("error") && node.has("status");
     }
 
-    private static JsonNode string2JsonNode(String s) {
-        try {
-            return JsonUtils.dtoObjectMapper.readValue(s, JsonNode.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 }

@@ -12,7 +12,7 @@ public enum OpenSearchCommandKind {
     SEARCH(".*_search.*"),
     INDEX("index"),
     // the following are not executable
-    NOT_IMPLEMENTED("_"),
+    NOT_IMPLEMENTED("_.+"),
     INVALID("invalid");
     private static final String ALLOWED_INPUT = "[A-ZÆØÅa-zæøå*\\d/_-]*";
 
