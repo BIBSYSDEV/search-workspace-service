@@ -37,7 +37,6 @@ public class PrefixStripperTest {
         loadTestCases(streamBuilder, "proxy/requests-bulk.json");
         loadTestCases(streamBuilder, "proxy/requests-doc.json");
         loadTestCases(streamBuilder, "proxy/requests-indexes.json");
-        loadTestCases(streamBuilder, "proxy/requests-cat.json");
         loadTestCases(streamBuilder, "proxy/requests-alias.json");
 
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
