@@ -29,9 +29,19 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
 
     @Override
     protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
-        var timestamp = String.valueOf(new Date().getTime());
+
         var nameOfSnapshotRepo = "initialsnapshot"; //TODO: hardcoded RegisterSnapshotHandler
         var snapshotRepoPathRequest = "_snapshot/" + nameOfSnapshotRepo;
+
+        try {
+            var allSnaps = returnAllSnaps(nameOfSnapshotRepo);
+            var lastExistingSnapEpoch = deleteOldSnaps(allSnaps, snapshotRepoPathRequest);
+            logger.error("The last(base) snapshot to restore:" + lastExistingSnapEpoch);
+        } catch (Exception e) {
+            throw new SearchException("Something went wrong with deleting outdated snapshots", e);
+        }
+
+        var timestamp = String.valueOf(new Date().getTime());
         var createSnapshotName = "snap" + timestamp;
 
         try {
