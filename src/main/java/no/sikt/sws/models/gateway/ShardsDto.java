@@ -27,6 +27,7 @@ public class ShardsDto implements Dto {
     }
 
     @Override
+    @SuppressWarnings("unused")
     public String strippedResponse(String workspacePrefix) {
         var regex = toRegEx.apply(workspacePrefix);
         if (failures != null) {

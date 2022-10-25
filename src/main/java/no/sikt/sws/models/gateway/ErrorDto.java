@@ -2,7 +2,6 @@ package no.sikt.sws.models.gateway;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.StringJoiner;
 

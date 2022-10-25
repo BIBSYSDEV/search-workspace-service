@@ -108,7 +108,7 @@ public class PrefixStripper {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
                     + ((responseBody == null) ? "[responseBody] " : EMPTY_STRING)
                 + ((workspacePrefix == null) ? ApplicationConstants.WORKSPACE_PREFIX : EMPTY_STRING)
-                + ((commandKind.compareTo(NOT_IMPLEMENTED) < 0) ? "[CommandKind]" : EMPTY_STRING));
+                + (commandKind.compareTo(NOT_IMPLEMENTED) < 0 ? "[CommandKind]" : EMPTY_STRING));
         }
     }
 

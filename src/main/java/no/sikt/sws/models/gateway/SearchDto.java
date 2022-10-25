@@ -33,6 +33,7 @@ public class SearchDto implements Dto {
     }
 
     @Override
+    @SuppressWarnings("unused")
     public String strippedResponse(String workspacePrefix) {
         if (hits != null) {
             hits.hits.forEach(docDto ->
