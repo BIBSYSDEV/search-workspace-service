@@ -37,9 +37,8 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
         try {
             var allSnaps = returnAllSnaps(nameOfSnapshotRepo);
             var lastExistingSnapEpoch = deleteOldSnaps(allSnaps, snapshotRepoPathRequest);
-            logger.error("The last(base) snapshot to restore:"+lastExistingSnapEpoch);
-        }
-        catch (Exception e){
+            logger.error("The last(base) snapshot to restore:" + lastExistingSnapEpoch);
+        } catch (Exception e) {
             throw new SearchException("Something went wrong with deleting outdated snapshots", e);
         }
 
