@@ -60,7 +60,7 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
     protected String returnAllSnaps(String nameOfSnapshotRepo) throws ApiGatewayException {
         var snapshotGetAllRequests = "_snapshot/" + nameOfSnapshotRepo + "/_all";
         try {
-            var response = openSearchClient.sendRequest(HttpMethodName.PUT,
+            var response = openSearchClient.sendRequest(HttpMethodName.GET,
                     snapshotGetAllRequests,
                     null);
             logger.info("response-code:" + response.getStatus());
