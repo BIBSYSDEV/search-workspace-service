@@ -648,6 +648,16 @@
       "method": "PUT",
       "url": "workspace-mockname-evil",
       "body": "{\n  \"mappings\" : {\n    \"properties\" : {\n      \"workspace-mockname-evil-mapping\" : {\n        \"type\" : \"integer\"\n      }\n    }\n  },\n  \"aliases\" : {\n    \"workspace-mockname-workspace-mockname-evil-alias\" : { }\n  }\n}"
+    },
+    "response":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "workspace-mockname-evil"
+    },
+    "responseStripped":{
+      "acknowledged": true,
+      "shards_acknowledged": true,
+      "index": "evil"
     }
   },
   {
