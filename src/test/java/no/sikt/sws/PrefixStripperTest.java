@@ -1,10 +1,12 @@
 package no.sikt.sws;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
 import no.sikt.sws.models.opensearch.WorkspaceResponse;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
+import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
 import org.joda.time.Instant;
 import org.joda.time.Period;
@@ -200,7 +202,9 @@ public class PrefixStripperTest {
             + " http://opensearch/" + testCase.getRequestOpensearch().getUrl());
 
         var resourceIdentifier = testCase.getRequestGateway().getUrl();
-        var expectedBody = testCase.getRequestOpensearch().getBody();
+        var expectedBody = attempt(() -> JsonUtils.dtoObjectMapper
+                        .readValue(testCase.getRequestOpensearch().getBody(), JsonNode.class)
+                        .toPrettyString()).orElseThrow();
 
         var gatewayBody = testCase.getRequestGateway().getBody();
 

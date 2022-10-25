@@ -76,9 +76,7 @@ public class Prefixer {
             case INDEX:
                 return Prefixer.indexesBody(workspacePrefix,gatewayBody);
             case NOT_IMPLEMENTED:
-                throw new BadRequestException("Not implemented " + resourceIdentifier);
             case INVALID:
-                throw new BadRequestException("resourceIdentifier [" + resourceIdentifier + "] is invalid");
             default:
                 throw new IllegalStateException("Unexpected value: " + resourceIdentifier);
         }
