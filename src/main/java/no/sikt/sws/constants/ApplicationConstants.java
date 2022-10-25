@@ -17,6 +17,8 @@ public final class ApplicationConstants {
     public static final String OPENSEARCH_ENDPOINT_PROTOCOL = readOpenSearchEndpointProtocol();
     public static final String REQUIRED_PARAMETER_IS_NULL = "required parameter is null -> ";
     public static final String SCOPE_IDENTIFIER = readScopeIdentifier();
+
+    public static final String TEST_PARAMETER = readTestParameter();
     public static final String USER_POOL_NAME = "SWSUserPool";
     public static final String WORKSPACE_PREFIX = "[workspacePrefix]";
 
@@ -46,6 +48,10 @@ public final class ApplicationConstants {
 
     private static String readBackupRoleArn() {
         return ENVIRONMENT.readEnv("BACKUP_ROLE_ARN");
+    }
+
+    private static String readTestParameter() {
+        return ENVIRONMENT.readEnv("TEST_PARAMETER");
     }
 
 }

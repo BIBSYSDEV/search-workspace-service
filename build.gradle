@@ -99,6 +99,7 @@ test {
     environment "SCOPE_IDENTIFIER", "https://api.sws.aws.sikt.no/scopes"
     environment "API_GATEWAY_URL", "localhost:8080"
     environment "BACKUP_ROLE_ARN", "arn:aws:s3:::dummy-arn"
+    environment "TEST_PARAMETER", "not-set"
 
     useJUnitPlatform {}
     failFast = false

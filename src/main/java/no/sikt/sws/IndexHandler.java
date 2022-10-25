@@ -1,6 +1,7 @@
 package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import no.sikt.sws.constants.ApplicationConstants;
 import no.sikt.sws.exception.SearchException;
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
@@ -42,6 +43,13 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             RequestInfo request,
             Context context
     ) throws ApiGatewayException {
+
+        try {
+            var value = ApplicationConstants.TEST_PARAMETER;
+            logger.info("test-parameter value:" + value);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
 
         var resourceIdentifier =  request.getPathParameter(RESOURCE_IDENTIFIER);
         var httpMethod = RequestUtil.getRequestHttpMethod(request);

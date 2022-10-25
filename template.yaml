@@ -13,6 +13,7 @@ Globals:
         API_GATEWAY_URL: !Sub 'https://api.${CustomDomain}'
         BACKUP_BUCKET_NAME: !Sub '${BackupBucketName}'
         BACKUP_ROLE_ARN: !GetAtt SWSSnapshotRepoRole.Arn
+        TEST_PARAMETER: !Ref TestParameter
 
   Api:
     Cors:
@@ -37,6 +38,9 @@ Parameters:
   BackupBucketName:
     Type: String
     Description: Name of the S3 bucket for olensearch buckups
+  TestParameter:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/SWS/Temp/Parameter'
 
 Conditions:
   LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
