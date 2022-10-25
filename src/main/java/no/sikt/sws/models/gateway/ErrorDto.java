@@ -2,6 +2,7 @@ package no.sikt.sws.models.gateway;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.StringJoiner;
 
@@ -10,7 +11,7 @@ import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 public class ErrorDto implements Dto {
 
     @JsonProperty("error")
-    public String error;
+    public JsonNode error;
 
     @JsonProperty("status")
     public Number status;
@@ -29,7 +30,7 @@ public class ErrorDto implements Dto {
     @Override
     public String strippedResponse(String workspacePrefix) {
         var regex = toRegEx.apply(workspacePrefix);
-        error = error.replaceAll(regex,EMPTY_STRING);
+        error = string2JsonNode.apply(error.toString().replaceAll(regex,EMPTY_STRING));
         return toJson.apply(this);
     }
 
