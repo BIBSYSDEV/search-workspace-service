@@ -79,7 +79,7 @@ public class PrefixStripper {
                 switch (commandKind) {
                     case BULK:
                     case MAPPING:
-                        return responseBody.replaceAll(regex, EMPTY_STRING);    // stripping index names in body.
+                        return responseBody.replaceAll(regex, EMPTY_STRING);
                     case INDEX:
                         return IndexesDto.fromResponse(responseBody).stripper(workspacePrefix)
                             .toJsonCompact();
