@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: SWS Demo API
+  title: SWS API
   version: 1.0.0
 paths:
   /:
@@ -29,7 +29,7 @@ paths:
                 $ref: '#/components/schemas/Problem'
   /{resource+}:
     post:
-      summary: Create workspace/resource and/or add  content to a workspace-resource
+      summary: Create workspace/resource and/or add content to a workspace-resource
       parameters:
         - name: resource+
           in: path
