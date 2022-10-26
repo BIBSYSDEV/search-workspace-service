@@ -1,11 +1,11 @@
-package no.sikt.sws.models.gateway;
+package no.sikt.sws.models.opensearch;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.PrefixStripper;
 
-public class IndexDto implements Dto {
+public class IndexDto extends Dto {
 
     @JsonProperty("aliases")
     public JsonNode aliases;
@@ -17,6 +17,7 @@ public class IndexDto implements Dto {
     public JsonNode settings;
 
     public IndexDto() {
+        super();
     }
 
     public static IndexDto fromResponse(String opensearchResponse) {
@@ -28,20 +29,12 @@ public class IndexDto implements Dto {
     }
 
     @Override
-    public String strippedResponse(String workspacePrefix) {
+    public IndexDto stripper(String workspacePrefix) {
 
         aliases = PrefixStripper.node(aliases, workspacePrefix);
         settings = PrefixStripper.node(settings,workspacePrefix);
 
-        return toJson.apply(this);
+        return this;
     }
 
-    @Override
-    public String toString() {
-        return "OpenSearchIndexDto{"
-            + "aliases=" + aliases.toString()
-            + ", mappings=" + mappings.toString()
-            + ", settings=" + settings.toString()
-            + '}';
-    }
 }

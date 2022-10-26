@@ -3,8 +3,8 @@ package no.sikt.sws;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
 import junit.framework.TestCase;
-import no.sikt.sws.models.gateway.SearchDto;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
+import no.sikt.sws.models.opensearch.SearchDto;
 import no.sikt.sws.testutils.JsonStringMatcher;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestUtils;
@@ -27,7 +27,9 @@ import static com.amazonaws.http.HttpMethodName.POST;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.PrefixStripperTest.WORKSPACEPREFIX;
-import static no.sikt.sws.testutils.TestConstants.*;
+import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
+import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
+import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
 import static no.sikt.sws.testutils.TestUtils.*;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -170,15 +172,17 @@ public class IndexHandlerTest extends TestCase {
         handler.handleRequest(request, output, CONTEXT);
 
         var response = GatewayResponse.fromOutputStream(output, String.class);
-        var responseBody =  SearchDto
+        var resultBody =  SearchDto
                 .fromResponse(response.getBody())
-                .strippedResponse(WORKSPACEPREFIX);
+                .stripper(WORKSPACEPREFIX)
+                .toJsonCompact();
 
-        assertThat(responseBody, is(equalTo(testcase.getResponseStripped())));
+        assertEquals(compact(testcase.getResponseStripped()), compact(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
-
-
     }
 
+    private String compact(String body) {
+        return body.replaceAll("[\n\r ]", EMPTY_STRING);
+    }
 }

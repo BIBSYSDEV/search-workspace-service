@@ -1,7 +1,6 @@
 package no.sikt.sws.models.opensearch;
 
 import com.amazonaws.http.HttpMethodName;
-import no.sikt.sws.models.gateway.ErrorDto;
 import nva.commons.apigateway.exceptions.BadRequestException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
@@ -13,7 +12,6 @@ public enum OpenSearchResponseKind {
     CONTENT("content"),
     CONTENT_COLLECTION("content-collection")
     ;
-
 
     private final String val;
 
@@ -52,8 +50,7 @@ public enum OpenSearchResponseKind {
     }
 
     private static boolean checkforError(String responseBody) {
-        var node = ErrorDto.string2JsonNode.apply(responseBody);
-        return node.has("error") && node.has("status");
+        return  responseBody.contains("\"error\"") && responseBody.contains("\"status\"");
     }
 
 

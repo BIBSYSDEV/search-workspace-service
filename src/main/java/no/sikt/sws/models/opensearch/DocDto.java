@@ -1,4 +1,4 @@
-package no.sikt.sws.models.gateway;
+package no.sikt.sws.models.opensearch;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -6,11 +6,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.StringJoiner;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
-public class DocDto implements Dto {
+public class DocDto extends Dto {
     @JsonProperty("_index")
     public String indexName;
 
@@ -52,21 +51,13 @@ public class DocDto implements Dto {
 
 
     public DocDto() {
+        super();
     }
 
     @Override
-    public String strippedResponse(String workspacePrefix) {
+    public DocDto stripper(String workspacePrefix) {
         indexName = indexName.replaceFirst(workspacePrefix + "-",EMPTY_STRING);
-        return toJson.apply(this);
-    }
-
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", DocDto.class.getSimpleName() + "[", "]")
-                .add("indexName='" + indexName + "'")
-                .add("id='" + id + "'")
-                .toString();
+        return this;
     }
 
     public static DocDto fromResponse(String opensearchResponse) {

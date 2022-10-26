@@ -3,7 +3,7 @@ package no.sikt.sws;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import no.sikt.sws.exception.SearchException;
-import no.sikt.sws.models.opensearch.WorkspaceResponse;
+import no.sikt.sws.models.internal.WorkspaceResponse;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
