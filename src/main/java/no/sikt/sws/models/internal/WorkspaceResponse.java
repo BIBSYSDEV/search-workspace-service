@@ -1,11 +1,11 @@
-package no.sikt.sws.models.opensearch;
+package no.sikt.sws.models.internal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.sikt.sws.models.internal.InternalIndexDto;
+import no.sikt.sws.models.opensearch.OpenSearchIndexDto;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

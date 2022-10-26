@@ -2,7 +2,7 @@ package no.sikt.sws;
 
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
-import no.sikt.sws.models.opensearch.WorkspaceResponse;
+import no.sikt.sws.models.internal.WorkspaceResponse;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
 import nva.commons.apigateway.exceptions.BadRequestException;

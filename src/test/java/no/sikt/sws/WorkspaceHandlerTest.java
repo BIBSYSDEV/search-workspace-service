@@ -4,7 +4,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
 import junit.framework.TestCase;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
-import no.sikt.sws.models.opensearch.WorkspaceResponse;
+import no.sikt.sws.models.internal.WorkspaceResponse;
 import no.sikt.sws.testutils.TestUtils;
 import no.unit.nva.stubs.FakeContext;
 import nva.commons.apigateway.GatewayResponse;
