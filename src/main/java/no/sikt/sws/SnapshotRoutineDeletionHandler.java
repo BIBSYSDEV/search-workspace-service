@@ -107,6 +107,7 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
                 throw new SearchException(e.getMessage(), e);
             }
         }
+        logger.info("number of snapshots after deletion: " + arrayOfSnapshots.size());
         var lastExistingSnapEpoch = arrayOfSnapshots.get(0).getName();
         return lastExistingSnapEpoch;
     }
