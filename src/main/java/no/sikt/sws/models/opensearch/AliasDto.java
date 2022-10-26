@@ -1,16 +1,13 @@
-package no.sikt.sws.models.gateway;
+package no.sikt.sws.models.opensearch;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class AliasDto implements Dto {
+public class AliasDto extends Dto {
 
     @JsonProperty("actions")
     public JsonNode actions;
-
-    public AliasDto() {
-    }
 
     public static AliasDto fromResponse(String opensearchResponse) {
         try {
@@ -21,17 +18,11 @@ public class AliasDto implements Dto {
     }
 
     @Override
-    public String strippedResponse(String workspacePrefix) {
+    public AliasDto stripper(String workspacePrefix) {
         actions =  string2JsonNode.apply(actions.toString()
             .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
             .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2"));
-        return toJson.apply(this);
+        return this;
     }
 
-    @Override
-    public String toString() {
-        return "{\"AliasDto\":{"
-            + "  \"actions\":" + actions
-            + "}}";
-    }
 }

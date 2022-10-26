@@ -3,16 +3,13 @@ package no.sikt.sws;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.constants.ApplicationConstants;
-import no.sikt.sws.models.gateway.*;
-import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
-import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
+import no.sikt.sws.models.opensearch.*;
 import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
 import nva.commons.core.JacocoGenerated;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
-import static no.sikt.sws.models.opensearch.OpenSearchCommandKind.NOT_IMPLEMENTED;
 
 @JacocoGenerated
 public class PrefixStripper {
@@ -64,20 +61,17 @@ public class PrefixStripper {
             case ACK:
                 return responseBody.replaceAll(regex, EMPTY_STRING);
             case ERROR:
-                return ErrorDto
-                    .fromResponse(responseBody)
-                    .strippedResponse(workspacePrefix);
+                return ErrorDto.fromResponse(responseBody).stripper(workspacePrefix)
+                    .toJsonCompact();
             case CONTENT:
                 switch (commandKind) {
                     case ALIAS:
                     case MAPPING:
-                        return IndexDto
-                            .fromResponse(responseBody)
-                            .strippedResponse(workspacePrefix);
+                        return IndexDto.fromResponse(responseBody).stripper(workspacePrefix)
+                            .toJsonCompact();
                     case DOC:
-                        return DocDto
-                            .fromResponse(responseBody)
-                            .strippedResponse(workspacePrefix);
+                        return DocDto.fromResponse(responseBody).stripper(workspacePrefix)
+                            .toJsonCompact();
                     default:
                         throw new IllegalStateException(UNEXPECTED_VALUE + commandKind.name());
                 }
@@ -87,13 +81,11 @@ public class PrefixStripper {
                     case MAPPING:
                         return responseBody.replaceAll(regex, EMPTY_STRING);    // stripping index names in body.
                     case INDEX:
-                        return IndexesDto
-                            .fromResponse(responseBody)
-                            .strippedResponse(workspacePrefix);
+                        return IndexesDto.fromResponse(responseBody).stripper(workspacePrefix)
+                            .toJsonCompact();
                     case SEARCH:
-                        return SearchDto
-                            .fromResponse(responseBody)
-                            .strippedResponse(workspacePrefix);
+                        return SearchDto.fromResponse(responseBody).stripper(workspacePrefix)
+                            .toJsonCompact();
                     default:
                         throw new IllegalStateException(UNEXPECTED_VALUE + commandKind.name());
                 }
@@ -104,11 +96,11 @@ public class PrefixStripper {
 
     private static void validateParameters(String workspacePrefix, String responseBody,
                                            OpenSearchCommandKind commandKind) {
-        if (responseBody == null || workspacePrefix == null || commandKind.compareTo(NOT_IMPLEMENTED) >= 0) {
+        if (responseBody == null || workspacePrefix == null || commandKind.isNotValid()) {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL
                     + ((responseBody == null) ? "[responseBody] " : EMPTY_STRING)
                 + ((workspacePrefix == null) ? ApplicationConstants.WORKSPACE_PREFIX : EMPTY_STRING)
-                + (commandKind.compareTo(NOT_IMPLEMENTED) < 0 ? "[CommandKind]" : EMPTY_STRING));
+                + (commandKind.isNotValid() ? "[CommandKind]" : EMPTY_STRING));
         }
     }
 

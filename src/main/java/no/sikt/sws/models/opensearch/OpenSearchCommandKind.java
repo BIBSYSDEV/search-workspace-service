@@ -22,6 +22,10 @@ public enum OpenSearchCommandKind {
         this.val = val;
     }
 
+    public  boolean isNotValid() {
+        return this.compareTo(NOT_IMPLEMENTED) >= 0;
+    }
+
     @Override
     public String toString() {
         return val;
