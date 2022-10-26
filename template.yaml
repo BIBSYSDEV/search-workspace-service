@@ -409,7 +409,7 @@ Resources:
       Runtime: java11
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
       Events:
-        ScheduledEventTakingSnapshot:
+        ScheduledDeletionSnap:
           Type: Schedule
           Properties:
             Schedule: rate(1 hour)
