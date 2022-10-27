@@ -72,7 +72,6 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
             snapshotRow.setName(snapshotEntry.getString("snapshot"));
             snapshotRow.setEpochTime(snapshotEntry.getLong(nameOfTimeKey));
             arrayOfSnapshots.add(snapshotRow);
-            logger.info("arrayed snapshot pair: " + arrayOfSnapshots.get(i));
 
 
         }
