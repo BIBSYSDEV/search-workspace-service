@@ -29,7 +29,7 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
     @Override
     protected String processInput(Void input, RequestInfo renquestInfo, Context context) throws ApiGatewayException {
 
-        var nameOfSnapshotRepo = "initialsnapshot"; //TODO: hardcoded RegisterSnapshotHandler
+        var nameOfSnapshotRepo = "initialsnapshot";
         var snapshotRepoPathRequest = "_snapshot/" + nameOfSnapshotRepo;
 
         try {
