@@ -76,9 +76,6 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
         int numberOfSnapshots = arrayOfSnapshots.size();
         logger.info("number of retrieved snapshots: " + numberOfSnapshots);
 
-        Collections.sort(arrayOfSnapshots, Snapshot.Comparators.SNAP_COMPARATOR_TIME);
-
-
         try {
             arrayOfSnapshots.stream()
                     .filter(item -> item.getEpochTime().getTime() > fourteenDays)
