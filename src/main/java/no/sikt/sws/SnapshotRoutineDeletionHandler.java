@@ -34,7 +34,6 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
 
         try {
             var allSnaps = returnAllSnaps(nameOfSnapshotRepo);
-            logger.info("Retrieved snapshots:");
             var lastExistingSnapEpoch = deleteOldSnaps(allSnaps, snapshotRepoPathRequest);
             logger.info("The last(base) snapshot to restore:" + lastExistingSnapEpoch);
         } catch (Exception e) {
@@ -64,6 +63,7 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
 
         var arrayOfSnapshots = new ArrayList<Snapshot>();
         JSONObject allSNapObject = new JSONObject(jsonStringOFAllSnaps);
+        logger.info("Created Json object");
         JSONArray snapshots = allSNapObject.getJSONArray("snapshots");
 
         for (int i = 0; i < snapshots.length(); i++) {
