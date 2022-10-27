@@ -2,12 +2,12 @@ package no.sikt.sws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.sikt.sws.models.opensearch.WorkspaceResponse;
+import no.sikt.sws.models.internal.WorkspaceResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static no.sikt.sws.constants.ApplicationConstants.API_GATEWAY_URL;
 import static no.sikt.sws.testutils.TestConstants.OPEN_SEARCH_INDEX_LIST;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -44,7 +44,7 @@ public class WorkspaceResponseTest {
     void fromJsonValueNotEmpty() throws JsonProcessingException {
         var workspaceResponse = WorkspaceResponse.fromValues("mockWorkSpace", OPEN_SEARCH_INDEX_LIST);
 
-        assertTrue(workspaceResponse.indexList.containsKey("hallo"));
+        Assertions.assertTrue(workspaceResponse.indexList.containsKey("hallo"));
         assertEquals(1, workspaceResponse.indexList.size());
 
         var index = workspaceResponse.indexList.entrySet().iterator().next();
@@ -58,7 +58,7 @@ public class WorkspaceResponseTest {
 
         var workspaceResponse = WorkspaceResponse.fromValues("mockWorkSpace", indexList);
 
-        assertTrue(workspaceResponse.indexList.isEmpty());
+        Assertions.assertTrue(workspaceResponse.indexList.isEmpty());
     }
 
     @Test

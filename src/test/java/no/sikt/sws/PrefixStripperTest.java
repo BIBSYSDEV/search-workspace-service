@@ -2,7 +2,7 @@ package no.sikt.sws;
 
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
-import no.sikt.sws.models.opensearch.WorkspaceResponse;
+import no.sikt.sws.models.internal.WorkspaceResponse;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
 import nva.commons.apigateway.exceptions.BadRequestException;
@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.stream.Stream;
 
+import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
 import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PrefixStripperTest {
 
     private static final Logger logger = LoggerFactory.getLogger(PrefixStripperTest.class);
-    private static final String WORKSPACEPREFIX = "workspace-mockname";
+    static final String WORKSPACEPREFIX = "workspace-mockname";
 
     /**
     **  Merge all testcases into one stream.
@@ -37,7 +38,6 @@ public class PrefixStripperTest {
         loadTestCases(streamBuilder, "proxy/requests-bulk.json");
         loadTestCases(streamBuilder, "proxy/requests-doc.json");
         loadTestCases(streamBuilder, "proxy/requests-indexes.json");
-        loadTestCases(streamBuilder, "proxy/requests-cat.json");
         loadTestCases(streamBuilder, "proxy/requests-alias.json");
 
         logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
@@ -158,7 +158,7 @@ public class PrefixStripperTest {
         logger.info("<-- " + responseKind.name());
         var resultResponse = PrefixStripper.body(command, responseKind, WORKSPACEPREFIX,openSearchResponse);
 
-        assertEquals(expectedResponse,resultResponse);
+        assertEquals(toJsonCompact(expectedResponse),toJsonCompact(resultResponse));
     }
 
     void assertUrlPrefix(TestCaseSws testCase) {
@@ -185,9 +185,9 @@ public class PrefixStripperTest {
 
         var gatewayBody = testCase.getRequestGateway().getBody();
         var resultBody = attempt(() ->
-            Prefixer.body(WORKSPACEPREFIX,resourceIdentifier,gatewayBody));
+            Prefixer.body(WORKSPACEPREFIX,resourceIdentifier,gatewayBody)).get();
 
-        assertEquals(expectedBody,resultBody.get());
+        assertEquals(expectedBody,resultBody);
     }
 
     /**
@@ -202,20 +202,27 @@ public class PrefixStripperTest {
 
         var resourceIdentifier = testCase.getRequestGateway().getUrl();
         var expectedBody = testCase.getRequestOpensearch().getBody();
-
         var gatewayBody = testCase.getRequestGateway().getBody();
+        var command =
+            OpenSearchCommandKind.fromString(testCase.getRequestGateway().getUrl());
+
+        logger.info("--> " + command.name());
 
         var resultBody = attempt(() ->
             Prefixer.body(WORKSPACEPREFIX, resourceIdentifier, gatewayBody)
         ).get();
 
-        assertEquals(expectedBody,resultBody);
+        assertEquals(toJsonCompact(expectedBody),toJsonCompact(resultBody));
     }
 
     private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {
         new TestCaseLoader(filename)
             .getTestCases()
             .forEach(streamBuilder::add);
+    }
+
+    private String toJsonCompact(String body) {
+        return body.replaceAll("[\n\r ]", EMPTY_STRING);
     }
 
 }
