@@ -18,7 +18,7 @@ import java.util.Collections;
 
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
 
-    private static final Long sevenDaysInEpoch = Long.valueOf(604_800_000);
+    private static final Long fourteenDays = Long.valueOf(1_209_600_000);
     private static final Logger logger = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
@@ -27,7 +27,7 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
     }
 
     @Override
-    protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
+    protected String processInput(Void input, RequestInfo renquestInfo, Context context) throws ApiGatewayException {
 
         var nameOfSnapshotRepo = "initialsnapshot"; //TODO: hardcoded RegisterSnapshotHandler
         var snapshotRepoPathRequest = "_snapshot/" + nameOfSnapshotRepo;
@@ -48,8 +48,6 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
             var response = openSearchClient.sendRequest(HttpMethodName.GET,
                     snapshotGetAllRequests,
                     null);
-            logger.info("response-code:" + response.getStatus());
-            logger.info("response-body:" + response.getBody());
             return response.getBody();
         } catch (Exception e) {
             logger.error("Error when listing all snapshots:" + e.getMessage(), e);
@@ -82,7 +80,8 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
 
 
         try {
-            arrayOfSnapshots.stream().filter(item -> item.getEpochTime().getTime() > sevenDaysInEpoch)
+            arrayOfSnapshots.stream()
+                    .filter(item -> item.getEpochTime().getTime() > fourteenDays)
                     .forEach(snap -> {
 
                         var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
