@@ -67,12 +67,14 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
 
         for (int i = 0; i < snapshots.length(); i++) {
             JSONObject snapshotEntry = snapshots.getJSONObject(i);
-            logger.info("Object with number\"" + i + "\" is:" + snapshotEntry);
             var snapshotRow = new Snapshot();
+            String nameOfTimeKey = "end_time_in_millis";
+            logger.info("snapshot key:" + snapshotEntry.getString("snapshot"));
+            logger.info("snapshot key:" + snapshotEntry.getLong(nameOfTimeKey));
             snapshotRow.setName(snapshotEntry.getString("snapshot"));
-            if (snapshotEntry.getInt("end_time_in_millis") != 0
-                    && !(snapshotEntry.getString("end_time_in_millis").isEmpty())) {
-                snapshotRow.setEpochTime(snapshotEntry.getLong("end_time_in_millis"));
+            if (snapshotEntry.getInt(nameOfTimeKey) != 0
+                    && !(snapshotEntry.getString(nameOfTimeKey).isEmpty())) {
+                snapshotRow.setEpochTime(snapshotEntry.getLong(nameOfTimeKey));
                 arrayOfSnapshots.add(snapshotRow);
 
             }
