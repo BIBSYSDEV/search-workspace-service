@@ -79,35 +79,24 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
         logger.info("number of retrieved snapshots: " + numberOfSnapshots);
 
         Collections.sort(arrayOfSnapshots, Snapshot.Comparators.SNAP_COMPARATOR_TIME);
-        Collections.reverse(arrayOfSnapshots);
 
-        logger.info("closest snap: " + arrayOfSnapshots.get(0).getEpochTime());
-        logger.info("oldest snap: " + arrayOfSnapshots.get(arrayOfSnapshots.size() - 1).getEpochTime());
-        logger.info("number of retrieved snapshots: " + numberOfSnapshots);
-        Integer counter = 0;
-        while ((arrayOfSnapshots.get(0).getEpochTime().getTime()
-                - arrayOfSnapshots.get(counter).getEpochTime().getTime()) < sevenDaysInEpoch) {
-            counter++;
-        }
 
-        for (int i = numberOfSnapshots - 1; i > counter; i--) {
-            arrayOfSnapshots.remove(i);
+        try {
+            arrayOfSnapshots.stream().filter(item -> item.getEpochTime().getTime() > sevenDaysInEpoch)
+                    .forEach(snap -> {
+
+                        var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
+                                snapshotRepoPathRequest + "/" + snap.getName(),
+                                null);
+                        logger.info("for the snapshot: " + snap.getName()
+                                + " the response is: " + response.getStatus());
+
+                    });
+        } catch (Exception e) {
+            throw new SearchException(e.getMessage(), e);
         }
-        logger.info("number of retrieved snapshots: " + arrayOfSnapshots.size());
-        for (int i = 0; i < arrayOfSnapshots.size(); i++) {
-            try {
-                var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
-                        snapshotRepoPathRequest + "/" + arrayOfSnapshots.get(i).getName(),
-                        null);
-                logger.info("for the snapshot: " + arrayOfSnapshots.get(i).getName()
-                        + " the response is: " + response.getStatus());
-            } catch (Exception e) {
-                throw new SearchException(e.getMessage(), e);
-            }
-        }
-        logger.info("number of snapshots after deletion: " + arrayOfSnapshots.size());
-        var lastExistingSnapEpoch = arrayOfSnapshots.get(0).getName();
-        return lastExistingSnapEpoch;
+        var theNewestSnapshot = arrayOfSnapshots.get(arrayOfSnapshots.size() - 1).getName();
+        return theNewestSnapshot;
     }
 
     @Override
