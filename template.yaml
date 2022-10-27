@@ -374,7 +374,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
-      Description: Handler for registering snapshots manually. Needs to be run from Lambda test in console.
+      Description: Handler which takes manual ie via call snapshots of opensearch hourly
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -388,6 +388,28 @@ Resources:
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
       Events:
         ScheduledEventTakingSnapshot:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 hour)
+
+  SnapshotRoutineDeletionHandler :
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Description: automation of outdated snapshot deletion
+      Environment:
+        Variables:
+          ALLOWED_ORIGIN: '*'
+          OPENSEARCH_ENDPOINT_PROTOCOL: "https"
+          OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+      Handler: no.sikt.sws.SnapshotRoutineDeletionHandler::handleRequest
+      Runtime: java11
+      Role: !GetAtt   SWSSnapshotRepoRole.Arn
+      Events:
+        ScheduledDeletionSnap:
           Type: Schedule
           Properties:
             Schedule: rate(1 hour)

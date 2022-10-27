@@ -1,10 +1,13 @@
 package no.sikt.sws.models.internal;
 
-public class Snapshot {
-    String name;
-    Integer epochTime;
+import java.util.Comparator;
+import java.util.Date;
 
-    public Integer getEpochTime() {
+public class Snapshot implements Comparable<Snapshot> {
+    String name;
+    Date epochTime;
+
+    public Date getEpochTime() {
         return epochTime;
     }
 
@@ -16,7 +19,17 @@ public class Snapshot {
         this.name = name;
     }
 
-    public void setEpochTime(Integer epochTime) {
-        this.epochTime = epochTime;
+    public void setEpochTime(Long epochTime) {
+        this.epochTime = new Date(epochTime);
+    }
+
+    @Override
+    public int compareTo(Snapshot o) {
+        return Comparators.SNAP_COMPARATOR_TIME.compare(this, o);
+    }
+
+    public static class Comparators {
+        public static final Comparator<Snapshot> SNAP_COMPARATOR_TIME =
+                Comparator.comparingLong((Snapshot snap) -> snap.getEpochTime().getTime());
     }
 }
