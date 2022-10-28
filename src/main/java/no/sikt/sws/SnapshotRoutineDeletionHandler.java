@@ -3,20 +3,14 @@ package no.sikt.sws;
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.sikt.sws.exception.SearchException;
 import no.sikt.sws.models.internal.SnapshotsDto;
-import no.sikt.sws.models.internal.Snapshot;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 
 
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
@@ -64,25 +58,6 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
 
     protected String deleteOldSnaps(SnapshotsDto snapshotsDto, String snapshotRepoPathRequest)
             throws SearchException {
-
-/*
-        var arrayOfSnapshots = new ArrayList<Snapshot>();
-        JSONObject allSNapObject = new JSONObject(snapshotsDto);
-        JSONArray snapshots = allSNapObject.getJSONArray("snapshots");
-
-        for (int i = 0; i < snapshots.length(); i++) {
-            JSONObject snapshotEntry = snapshots.getJSONObject(i);
-            var snapshotRow = new Snapshot();
-            String nameOfTimeKey = "end_time_in_millis";
-            snapshotRow.setName(snapshotEntry.getString("snapshot"));
-            snapshotRow.setEpochTime(snapshotEntry.getLong(nameOfTimeKey));
-            arrayOfSnapshots.add(snapshotRow);
-
-
-        }
-        int numberOfSnapshots = arrayOfSnapshots.size();
-        logger.info("number of retrieved snapshots: " + numberOfSnapshots);
-*/
 
         try {
             snapshotsDto.snapshots.stream()

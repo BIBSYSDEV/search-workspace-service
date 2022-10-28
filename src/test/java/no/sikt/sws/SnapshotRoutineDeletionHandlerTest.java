@@ -28,8 +28,7 @@ import static org.mockito.Mockito.when;
 class SnapshotRoutineDeletionHandlerTest {
 
 
-    public static final String GET_ALL_URL = "_snapshot/"
-        +"initialsnapshot/_all";
+    public static final String GET_ALL_URL = "_snapshot/initialsnapshot/_all";
 
     public static final String TEST_CASE_FILE = "snapshot/request-snapshot.json";
     private static final Context CONTEXT = new FakeContext();
@@ -63,7 +62,7 @@ class SnapshotRoutineDeletionHandlerTest {
         var request = buildRequest(HttpMethod.GET, pathParams);
         when(openSearchClient.sendRequest(GET, GET_ALL_URL, null))
                 .thenReturn(mockResponse);
-        when (openSearchClient.sendRequest(HttpMethodName.DELETE, DELETE_URL_SNAP, null))
+        when(openSearchClient.sendRequest(HttpMethodName.DELETE, DELETE_URL_SNAP, null))
                         .thenReturn(mockDeleteResponse);
 
         handler.handleRequest(request, output, CONTEXT);
