@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory;
 import static no.sikt.sws.constants.ApplicationConstants.BACKUP_BUCKET_NAME;
 import static no.sikt.sws.constants.ApplicationConstants.BACKUP_ROLE_ARN;
 
-public class RegisterSnapshotRepoHandler extends ApiGatewayHandler<Void, String> {
-    private static final Logger logger = LoggerFactory.getLogger(RegisterSnapshotRepoHandler.class);
+public class SnapshotRegisterRepoHandler extends ApiGatewayHandler<Void, String> {
+    private static final Logger logger = LoggerFactory.getLogger(SnapshotRegisterRepoHandler.class);
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
-    public RegisterSnapshotRepoHandler() {
+    public SnapshotRegisterRepoHandler() {
         super(Void.class);
     }
 
