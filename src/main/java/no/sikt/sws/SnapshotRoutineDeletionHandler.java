@@ -13,12 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
 
-    private static final Long sevenDaysInEpoch = Long.valueOf(604_800_000);
+    private static final Long fourteenDays = Long.valueOf(1_209_600_000);
     private static final Logger logger = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
@@ -27,14 +26,13 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
     }
 
     @Override
-    protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
+    protected String processInput(Void input, RequestInfo renquestInfo, Context context) throws ApiGatewayException {
 
-        var nameOfSnapshotRepo = "initialsnapshot"; //TODO: hardcoded RegisterSnapshotHandler
+        var nameOfSnapshotRepo = "initialsnapshot";
         var snapshotRepoPathRequest = "_snapshot/" + nameOfSnapshotRepo;
 
         try {
             var allSnaps = returnAllSnaps(nameOfSnapshotRepo);
-            logger.info("Retrieved snapshots:");
             var lastExistingSnapEpoch = deleteOldSnaps(allSnaps, snapshotRepoPathRequest);
             logger.info("The last(base) snapshot to restore:" + lastExistingSnapEpoch);
         } catch (Exception e) {
@@ -49,8 +47,6 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
             var response = openSearchClient.sendRequest(HttpMethodName.GET,
                     snapshotGetAllRequests,
                     null);
-            logger.info("response-code:" + response.getStatus());
-            logger.info("response-body:" + response.getBody());
             return response.getBody();
         } catch (Exception e) {
             logger.error("Error when listing all snapshots:" + e.getMessage(), e);
@@ -69,47 +65,33 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
         for (int i = 0; i < snapshots.length(); i++) {
             JSONObject snapshotEntry = snapshots.getJSONObject(i);
             var snapshotRow = new Snapshot();
-            snapshotRow.setName(snapshotEntry.getString("name"));
-            if (snapshotEntry.getInt("end_time_in_millis") != 0
-                    && !(snapshotEntry.getString("end_time_in_millis").isEmpty())) {
-                snapshotRow.setEpochTime(snapshotEntry.getLong("end_time_in_millis"));
-                arrayOfSnapshots.add(snapshotRow);
+            String nameOfTimeKey = "end_time_in_millis";
+            snapshotRow.setName(snapshotEntry.getString("snapshot"));
+            snapshotRow.setEpochTime(snapshotEntry.getLong(nameOfTimeKey));
+            arrayOfSnapshots.add(snapshotRow);
 
-            }
+
         }
         int numberOfSnapshots = arrayOfSnapshots.size();
         logger.info("number of retrieved snapshots: " + numberOfSnapshots);
 
-        Collections.sort(arrayOfSnapshots, Snapshot.Comparators.SNAP_COMPARATOR_TIME);
-        Collections.reverse(arrayOfSnapshots);
+        try {
+            arrayOfSnapshots.stream()
+                    .filter(item -> item.getEpochTime().getTime() > fourteenDays)
+                    .forEach(snap -> {
 
-        logger.info("closest snap: " + arrayOfSnapshots.get(0).getEpochTime());
-        logger.info("oldest snap: " + arrayOfSnapshots.get(arrayOfSnapshots.size() - 1).getEpochTime());
-        logger.info("number of retrieved snapshots: " + numberOfSnapshots);
-        Integer counter = 0;
-        while ((arrayOfSnapshots.get(0).getEpochTime().getTime()
-                - arrayOfSnapshots.get(counter).getEpochTime().getTime()) < sevenDaysInEpoch) {
-            counter++;
-        }
+                        var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
+                                snapshotRepoPathRequest + "/" + snap.getName(),
+                                null);
+                        logger.info("for the snapshot: " + snap.getName()
+                                + " the response is: " + response.getStatus());
 
-        for (int i = numberOfSnapshots - 1; i > counter; i--) {
-            arrayOfSnapshots.remove(i);
+                    });
+        } catch (Exception e) {
+            throw new SearchException(e.getMessage(), e);
         }
-        logger.info("number of retrieved snapshots: " + arrayOfSnapshots.size());
-        for (int i = 0; i < arrayOfSnapshots.size(); i++) {
-            try {
-                var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
-                        snapshotRepoPathRequest + "/" + arrayOfSnapshots.get(i).getName(),
-                        null);
-                logger.info("for the snapshot: " + arrayOfSnapshots.get(i).getName()
-                        + " the response is: " + response.getStatus());
-            } catch (Exception e) {
-                throw new SearchException(e.getMessage(), e);
-            }
-        }
-        logger.info("number of snapshots after deletion: " + arrayOfSnapshots.size());
-        var lastExistingSnapEpoch = arrayOfSnapshots.get(0).getName();
-        return lastExistingSnapEpoch;
+        var theNewestSnapshot = arrayOfSnapshots.get(arrayOfSnapshots.size() - 1).getName();
+        return theNewestSnapshot;
     }
 
     @Override

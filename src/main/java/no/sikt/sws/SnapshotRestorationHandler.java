@@ -27,7 +27,7 @@ public class SnapshotRestorationHandler extends ApiGatewayHandler<SnapshotToRest
     protected String processInput(SnapshotToRestoreDto input, RequestInfo requestInfo, Context context)
             throws ApiGatewayException {
         var snapshotRepoPathRequest = "_snapshot/initialsnapshot/"
-                + input.snapshotName + "/_restore"; //TODO: snapshot name as parameter?
+                + input.snapshotName + "/_restore";
         try {
             var response = openSearchClient.sendRequest(HttpMethodName.POST,
                     snapshotRepoPathRequest,
