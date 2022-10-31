@@ -11,6 +11,8 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
+
 
 public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
     private static final Logger logger = LoggerFactory.getLogger(SnapshotTakingHandler.class);
@@ -31,7 +33,7 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
 
         try {
             var response = openSearchClient.sendRequest(HttpMethodName.PUT,
-                    snapshotRepoPathRequest + "/" + createSnapshotName,
+                SNAPSHOT_REPO_PATH_REQUEST + "/" + createSnapshotName,
                     null);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());

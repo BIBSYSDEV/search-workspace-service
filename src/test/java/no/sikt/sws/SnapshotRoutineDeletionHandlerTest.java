@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
+import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
 import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.testutils.TestUtils.buildRequest;
@@ -58,10 +59,10 @@ class SnapshotRoutineDeletionHandlerTest {
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, responseBody);
         final OpenSearchResponse mockDeleteResponse = new OpenSearchResponse(200, responseStripped);
 
-        var pathParams = buildPathParamsForIndex(GET_ALL_URL);
+        var pathParams = buildPathParamsForIndex(GET_URL_ALL);
         var request = buildRequest(HttpMethod.GET, pathParams);
 
-        when(openSearchClient.sendRequest(GET, GET_ALL_URL, null))
+        when(openSearchClient.sendRequest(GET, GET_URL_ALL, null))
             .thenReturn(mockResponse);
 
         when(openSearchClient.sendRequest(HttpMethodName.DELETE, DELETE_URL_SNAP, null))

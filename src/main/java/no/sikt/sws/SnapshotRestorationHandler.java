@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import nva.commons.apigateway.ApiGatewayHandler;
 
+import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
+
 
 public class SnapshotRestorationHandler extends ApiGatewayHandler<SnapshotToRestoreDto, String> {
 
