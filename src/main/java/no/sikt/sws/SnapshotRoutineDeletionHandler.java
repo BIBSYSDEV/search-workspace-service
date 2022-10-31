@@ -20,7 +20,7 @@ import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQU
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
 
     private static final Logger logger = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
-    //private static final Long FOURTEEN_DAYS =  14 * 24 * 60 * 60 * 1000L;
+    private static final Long FOURTEEN_DAYS =  14 * 24 * 60 * 60 * 1000L;
     public static final String SNAPSHOT_GET_ALL_REQUESTS = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
 
     public OpenSearchClient openSearchClient = new OpenSearchClient();
@@ -58,7 +58,7 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
         var responses = new ArrayList<String>();
         try {
             snapshotsDto.snapshots.stream()
-                //.filter(item -> item.getEpochTime() > FOURTEEN_DAYS)
+                .filter(item -> item.getEpochTime() > FOURTEEN_DAYS)
                 .forEach(snap -> {
                     var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
                         SNAPSHOT_REPO_PATH_REQUEST + "/" + snap.getName(),
