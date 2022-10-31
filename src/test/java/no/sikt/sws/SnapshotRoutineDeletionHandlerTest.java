@@ -60,17 +60,16 @@ class SnapshotRoutineDeletionHandlerTest {
 
         var pathParams = buildPathParamsForIndex(GET_ALL_URL);
         var request = buildRequest(HttpMethod.GET, pathParams);
+
         when(openSearchClient.sendRequest(GET, GET_ALL_URL, null))
-                .thenReturn(mockResponse);
+            .thenReturn(mockResponse);
+
         when(openSearchClient.sendRequest(HttpMethodName.DELETE, DELETE_URL_SNAP, null))
-                        .thenReturn(mockDeleteResponse);
+            .thenReturn(mockDeleteResponse);
 
         handler.handleRequest(request, output, CONTEXT);
 
-
-
         var response = GatewayResponse.fromOutputStream(output, String.class);
-
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
