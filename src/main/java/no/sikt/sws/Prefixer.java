@@ -60,10 +60,9 @@ public class Prefixer {
             throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "workspacePrefix");
         }
 
-        var searchCommand = OpenSearchCommandKind.fromString(resourceIdentifier);
-        logger.info(searchCommand.name());
+        var commandKind = OpenSearchCommandKind.fromString(resourceIdentifier);
 
-        switch (searchCommand) {
+        switch (commandKind) {
             case ALIAS:
                 return Prefixer.aliasBody(workspacePrefix,gatewayBody);
             case BULK:
@@ -71,14 +70,12 @@ public class Prefixer {
             case SEARCH:
             case MAPPING:
             case DOC:
-                logger.info(" --> BODY UNTOUCHED");
+                logger.info("           --> BODY UNTOUCHED");
                 return gatewayBody;
             case INDEX:
                 return Prefixer.indexesBody(workspacePrefix,gatewayBody);
             case NOT_IMPLEMENTED:
-                throw new BadRequestException("Not implemented " + resourceIdentifier);
             case INVALID:
-                throw new BadRequestException("resourceIdentifier [" + resourceIdentifier + "] is invalid");
             default:
                 throw new IllegalStateException("Unexpected value: " + resourceIdentifier);
         }
@@ -86,16 +83,18 @@ public class Prefixer {
 
     // replace {index} with {workspace}-{index} from responseBody
     public static String indexesBody(String workspacePrefix,String gatewayBody) {
+        logger.info("          --> TOUCHED BODY");
 
         var node =  string2JsonNode(gatewayBody);
 
         nodeUpdated(workspacePrefix,"aliases",node);
         nodeUpdated(workspacePrefix,"settings/index",node);
 
-        return node.toPrettyString();
+        return node.toString();
     }
 
-    private static void nodeUpdated(String workspacePrefix, String nodeName, JsonNode node) {
+
+    static void nodeUpdated(String workspacePrefix, String nodeName, JsonNode node) {
         if (node.has(nodeName)) {
             var objectNode = (ObjectNode) node.get(nodeName);
             var names = new ArrayList<String>();
@@ -109,6 +108,7 @@ public class Prefixer {
     }
 
     protected static String bulkBody(String workspacePrefix, String gatewayBulkBody) {
+        logger.info("          --> TOUCHED BODY");
 
         return convertBulkBodyToJsonList(gatewayBulkBody).stream().map(item -> {
             String indexName;
@@ -132,6 +132,7 @@ public class Prefixer {
     }
 
     protected static String aliasBody(String workspacePrefix, String gatewayAliasBody) {
+        logger.info("          --> TOUCHED BODY");
         return gatewayAliasBody
                 .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
                 .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");
