@@ -56,9 +56,10 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
     protected String deleteOldSnaps(SnapshotsDto snapshotsDto)
             throws SearchException {
         var responses = new ArrayList<String>();
+        var latest = snapshotsDto.getLatestEpocTime();
         try {
             snapshotsDto.snapshots.stream()
-                .filter(item -> item.getEpochTime() > FOURTEEN_DAYS)
+                .filter(item -> latest - item.getEpochTime() > FOURTEEN_DAYS)
                 .forEach(snap -> {
                     var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
                         SNAPSHOT_REPO_PATH_REQUEST + "/" + snap.getName(),
