@@ -4,11 +4,10 @@ import com.amazonaws.http.HttpMethodName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
-import org.apache.http.client.utils.URIBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.net.URISyntaxException;
+import java.net.URI;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
@@ -87,15 +86,11 @@ public class TestCaseSws implements Serializable, Comparable<TestCaseSws> {
     }
 
     public boolean isParamRequestTest()  {
-        try {
-            return
-                requestGateway != null
-                    && requestOpensearch != null
-                    && new URIBuilder(requestGateway.getUrl()).getQueryParams().size() > 0
-                    && new URIBuilder(requestOpensearch.getUrl()).getQueryParams().size() > 0;
-        } catch (URISyntaxException e) {
-            return false;
-        }
+        return
+            requestGateway != null
+                && requestOpensearch != null
+                && !URI.create(requestGateway.getUrl()).getQuery().isEmpty()
+                && !URI.create(requestOpensearch.getUrl()).getQuery().isEmpty();
     }
 
     @Override

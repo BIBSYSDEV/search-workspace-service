@@ -148,13 +148,13 @@ public class IndexHandlerTest extends TestCase {
 
     @TestFactory
     @DisplayName("Opensearch parameter requests")
-    public void testResponseStrippingFactory() {
+    public Stream<DynamicTest> testRequestWithQueryParameters() {
 
         var responseTests = allRequestArguments().filter(TestCaseSws::isParamRequestTest);
-        DynamicTest.stream(responseTests, TestCaseSws::getName, this::shouldHandleSearchRequestWithQueryParameters);
+        return DynamicTest.stream(responseTests, TestCaseSws::getName, this::searchRequestWithQueryParameters);
     }
 
-    void shouldHandleSearchRequestWithQueryParameters(TestCaseSws testCase) throws IOException {
+    void searchRequestWithQueryParameters(TestCaseSws testCase) throws IOException {
 
         this.output = new ByteArrayOutputStream();
         when(openSearchClient.sendRequest(
