@@ -226,5 +226,92 @@
         ]
       }
     }
+  },
+  {
+    "name": "GET search from root with queryparameter",
+    "requestGateway": {
+      "method": "GET",
+      "url": "_search?q=age:33",
+      "body": null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "_search?q=age:33",
+      "body": null
+    },
+    "response": {
+      "took": 58,
+      "timed_out": false,
+      "_shards": {
+        "total": 11,
+        "successful": 11,
+        "skipped": 0,
+        "failed": 0
+      },
+      "hits": {
+        "total": {
+          "value": 2,
+          "relation": "eq"
+        },
+        "max_score": 1,
+        "hits": [
+          {
+            "_index": "workspace-mockname-index-3",
+            "_id": "3",
+            "_score": 1,
+            "_source": {
+              "navn": "Test-3",
+              "age": 33
+            }
+          },
+          {
+            "_index": "workspace-mockname-test1-index-3",
+            "_id": "3",
+            "_score": 1,
+            "_source": {
+              "navn": "Test-3",
+              "age": 33
+            }
+          }
+        ]
+      }
+    },
+    "responseStripped": {
+      "took": 58,
+      "timed_out": false,
+      "_shards": {
+        "total": 11,
+        "successful": 11,
+        "skipped": 0,
+        "failed": 0
+      },
+      "hits": {
+        "total": {
+          "value": 2,
+          "relation": "eq"
+        },
+        "max_score": 1,
+        "hits": [
+          {
+            "_index": "index-3",
+            "_id": "3",
+            "_score": 1,
+            "_source": {
+              "navn": "Test-3",
+              "age": 33
+            }
+          },
+          {
+            "_index": "test1-index-3",
+            "_id": "3",
+            "_score": 1,
+            "_source": {
+              "navn": "Test-3",
+              "age": 33
+            }
+          }
+        ]
+      }
+    }
   }
 ]

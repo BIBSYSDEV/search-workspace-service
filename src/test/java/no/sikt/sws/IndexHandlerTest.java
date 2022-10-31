@@ -7,13 +7,13 @@ import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import no.sikt.sws.models.opensearch.SearchDto;
 import no.sikt.sws.testutils.JsonStringMatcher;
 import no.sikt.sws.testutils.TestCaseLoader;
+import no.sikt.sws.testutils.TestCaseSws;
 import no.sikt.sws.testutils.TestUtils;
 import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.stubs.FakeContext;
 import no.unit.nva.testutils.HandlerRequestBuilder;
 import nva.commons.apigateway.GatewayResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -21,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.stream.Stream;
 
 import static com.amazonaws.http.HttpMethodName.GET;
 import static com.amazonaws.http.HttpMethodName.POST;
@@ -145,25 +146,29 @@ public class IndexHandlerTest extends TestCase {
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
 
-    @Test
-    void shouldHandleSearchRequestWithQueryParameters() throws IOException {
+    @TestFactory
+    @DisplayName("Opensearch parameter requests")
+    public void testResponseStrippingFactory() {
 
-        var testcase =
-                new TestCaseLoader("proxy/requests-search.json")
-                .getTestCase("GET search by queryparameter");
+        var responseTests = allRequestArguments().filter(TestCaseSws::isParamRequestTest);
+        DynamicTest.stream(responseTests, TestCaseSws::getName, this::shouldHandleSearchRequestWithQueryParameters);
+    }
 
+    void shouldHandleSearchRequestWithQueryParameters(TestCaseSws testCase) throws IOException {
+
+        this.output = new ByteArrayOutputStream();
         when(openSearchClient.sendRequest(
-                testcase.getRequestOpensearch().getMethod(),
-                testcase.getRequestOpensearch().getUrl(),
-                testcase.getRequestOpensearch().getBody())
-        ).thenReturn(new OpenSearchResponse(200, testcase.getResponse()));
+                testCase.getRequestOpensearch().getMethod(),
+                testCase.getRequestOpensearch().getUrl(),
+                testCase.getRequestOpensearch().getBody())
+        ).thenReturn(new OpenSearchResponse(200, testCase.getResponse()));
 
-        var gatewayUrl = URI.create(testcase.getRequestGateway().getUrl());
+        var gatewayUrl = URI.create(testCase.getRequestGateway().getUrl());
         var pathParams = buildPathParamsForIndex(gatewayUrl.getPath());
         var queryParams = buildQueryParams(gatewayUrl);
 
         var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
-                .withHttpMethod(testcase.getRequestGateway().getMethod().name())
+                .withHttpMethod(testCase.getRequestGateway().getMethod().name())
                 .withPathParameters(pathParams)
                 .withQueryParameters(queryParams)
                 .withAuthorizerClaim(SCOPE_CLAIM, "https://api.sws.aws.sikt.no/scopes/workspace-mockname")
@@ -177,12 +182,26 @@ public class IndexHandlerTest extends TestCase {
                 .stripper(WORKSPACEPREFIX)
                 .toJsonCompact();
 
-        assertEquals(compact(testcase.getResponseStripped()), compact(resultBody));
+        assertEquals(compact(testCase.getResponseStripped()), compact(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
 
     private String compact(String body) {
         return body.replaceAll("[\n\r ]", EMPTY_STRING);
+    }
+
+    static Stream<TestCaseSws> allRequestArguments() {
+        var streamBuilder = Stream.<TestCaseSws>builder();
+
+        loadTestCases(streamBuilder, "proxy/requests-search.json");
+
+        return streamBuilder.build();
+    }
+
+    private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {
+        new TestCaseLoader(filename)
+            .getTestCases()
+            .forEach(streamBuilder::add);
     }
 }
