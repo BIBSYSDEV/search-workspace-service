@@ -26,13 +26,12 @@ public class SnapshotRegisterRepoHandler extends ApiGatewayHandler<Void, String>
 
     @Override
     protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
-        var settings = new SnapshotSettingsRequestDto(BACKUP_BUCKET_NAME, null, BACKUP_ROLE_ARN, "/snapshots");
+        var settings = new SnapshotSettingsRequestDto(BACKUP_BUCKET_NAME, null, BACKUP_ROLE_ARN, "snapshots");
         var request = new SnapshotRequestDto("s3", settings);
 
         try {
             logger.info(BACKUP_BUCKET_NAME);
             var requestStr = JsonUtils.dtoObjectMapper.writeValueAsString(request);
-            var snapshotRepoName = "initialsnapshot";
             var response = openSearchClient.sendRequest(HttpMethodName.PUT,
                 SNAPSHOT_REPO_PATH_REQUEST,
                     requestStr);
