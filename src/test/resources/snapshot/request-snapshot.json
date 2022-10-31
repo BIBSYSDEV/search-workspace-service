@@ -1,0 +1,33 @@
+[
+  {
+    "name": "GET (all) snapshots",
+    "response": {
+      "snapshots": [
+        {
+          "snapshot": "snap1665487673861",
+          "uuid": "bv-57UiqTaqQumdvXL7REA",
+          "version_id": 135248027,
+          "version": "1.3.2",
+          "indices": [
+            ".kibana_1"
+          ],
+          "data_streams": [],
+          "include_global_state": true,
+          "state": "SUCCESS",
+          "start_time": "2022-10-11T11:27:55.181Z",
+          "start_time_in_millis": 1665487675181,
+          "end_time": "2022-10-11T11:27:55.381Z",
+          "end_time_in_millis": 1665487675381,
+          "duration_in_millis": 200,
+          "failures": [],
+          "shards": {
+            "total": 1,
+            "failed": 0,
+            "successful": 1
+          }
+        }
+      ]
+    },
+    "responseStripped": {"acknowledged":true}
+  }
+]

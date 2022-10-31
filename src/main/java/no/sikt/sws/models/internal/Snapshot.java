@@ -1,10 +1,15 @@
 package no.sikt.sws.models.internal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Comparator;
 import java.util.Date;
 
 public class Snapshot implements Comparable<Snapshot> {
+    @JsonProperty
     String name;
+
+    @JsonProperty
     Date epochTime;
 
     public Date getEpochTime() {
