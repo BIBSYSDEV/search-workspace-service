@@ -32,8 +32,13 @@ public class OpenSearchClient {
             = Arrays.asList(BAD_REQUEST, NOT_FOUND, METHOD_NOT_ALLOWED, NOT_ACCEPTABLE);
 
     private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
+    private final AmazonHttpClient httpClient;
 
     private boolean passError;
+
+    protected OpenSearchClient(AmazonHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
 
     HttpResponseHandler<String> httpResponseHandler = new HttpResponseHandler<>() {
         @Override
@@ -76,6 +81,8 @@ public class OpenSearchClient {
         }
     };
 
+
+
     public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path, String data) {
 
         var pathWithoutParams = stripParametersFromPath(path).toString();
@@ -104,7 +111,7 @@ public class OpenSearchClient {
         signAwsRequest(request);
 
         try {
-            var response = new AmazonHttpClient(new ClientConfiguration())
+            var response = httpClient
                     .requestExecutionBuilder()
                     .executionContext(new ExecutionContext(true))
                     .errorResponseHandler(errorResponseHandler)
@@ -153,8 +160,15 @@ public class OpenSearchClient {
     }
 
     public static OpenSearchClient passthroughClient() {
-        var client = new OpenSearchClient();
+        var httpClient = AmazonHttpClient.builder().clientConfiguration(new ClientConfiguration()).build();
+        var client = new OpenSearchClient(httpClient);
         client.setPassError(true);
+        return client;
+    }
+
+    public static OpenSearchClient defaultClient() {
+        var httpClient = AmazonHttpClient.builder().clientConfiguration(new ClientConfiguration()).build();
+        var client = new OpenSearchClient(httpClient);
         return client;
     }
 

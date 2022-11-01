@@ -19,7 +19,7 @@ public class SnapshotRestorationHandler extends ApiGatewayHandler<SnapshotToRest
     private static final Logger logger = LoggerFactory.getLogger(SnapshotRestorationHandler.class);
     public static final String SNAPSHOT_REPO_NAME = "_snapshot/snapshots/";
     public static final String RESTORE_COMMAND = "/_restore";
-    public OpenSearchClient openSearchClient = new OpenSearchClient();
+    public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotRestorationHandler() {
         super(SnapshotToRestoreDto.class);

@@ -14,7 +14,7 @@ import static com.amazonaws.http.HttpMethodName.GET;
 
 public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse> {
 
-    public OpenSearchClient openSearchClient = new OpenSearchClient();
+    public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceHandler.class);
