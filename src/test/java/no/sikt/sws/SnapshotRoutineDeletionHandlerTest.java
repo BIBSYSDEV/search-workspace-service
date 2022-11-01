@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
+import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
 import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.testutils.TestUtils.buildRequest;
@@ -28,11 +29,11 @@ import static org.mockito.Mockito.when;
 class SnapshotRoutineDeletionHandlerTest {
 
 
-    public static final String GET_ALL_URL = "_snapshot/initialsnapshot/_all";
+    public static final String GET_URL_ALL = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
 
     public static final String TEST_CASE_FILE = "snapshot/request-snapshot.json";
     private static final Context CONTEXT = new FakeContext();
-    public static final String DELETE_URL_SNAP = "_snapshot/initialsnapshot/snap1665487673861";
+    public static final String DELETE_URL_SNAP = SNAPSHOT_REPO_PATH_REQUEST + "/snap1665487673861";
 
     private ByteArrayOutputStream output;
     @InjectMocks
@@ -58,19 +59,18 @@ class SnapshotRoutineDeletionHandlerTest {
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, responseBody);
         final OpenSearchResponse mockDeleteResponse = new OpenSearchResponse(200, responseStripped);
 
-        var pathParams = buildPathParamsForIndex(GET_ALL_URL);
+        var pathParams = buildPathParamsForIndex(GET_URL_ALL);
         var request = buildRequest(HttpMethod.GET, pathParams);
-        when(openSearchClient.sendRequest(GET, GET_ALL_URL, null))
-                .thenReturn(mockResponse);
+
+        when(openSearchClient.sendRequest(GET, GET_URL_ALL, null))
+            .thenReturn(mockResponse);
+
         when(openSearchClient.sendRequest(HttpMethodName.DELETE, DELETE_URL_SNAP, null))
-                        .thenReturn(mockDeleteResponse);
+            .thenReturn(mockDeleteResponse);
 
         handler.handleRequest(request, output, CONTEXT);
 
-
-
         var response = GatewayResponse.fromOutputStream(output, String.class);
-
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }

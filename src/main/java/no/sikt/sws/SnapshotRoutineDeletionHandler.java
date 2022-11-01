@@ -12,14 +12,17 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+
+import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
+
 
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
 
-    private static final Long fourteenDays = Long.valueOf(1_209_600_000);
     private static final Logger logger = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
-    public static final String INITIALSNAPSHOT = "initialsnapshot";
-    public static final String SNAPSHOT_REPO_PATH_REQUEST = "_snapshot/" + INITIALSNAPSHOT;
+    private static final Long FOURTEEN_DAYS =  14 * 24 * 60 * 60 * 1000L;
     public static final String SNAPSHOT_GET_ALL_REQUESTS = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
+
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
     public SnapshotRoutineDeletionHandler() {
@@ -28,17 +31,12 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
 
     @Override
     protected String processInput(Void input, RequestInfo renquestInfo, Context context) throws ApiGatewayException {
-
-
-
         try {
             var allSnaps = returnAllSnaps();
-            var lastExistingSnapEpoch = deleteOldSnaps(allSnaps, SNAPSHOT_REPO_PATH_REQUEST);
-            logger.info("The last(base) snapshot to restore:" + lastExistingSnapEpoch);
+            return deleteOldSnaps(allSnaps);
         } catch (Exception e) {
             throw new SearchException("Something went wrong with deleting outdated snapshots", e);
         }
-        return "undefined";
     }
 
     protected SnapshotsDto returnAllSnaps() throws ApiGatewayException {
@@ -48,39 +46,37 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
                     null);
             ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                     false);
-            var returnValue =  objectMapper.readValue(response.getBody(), SnapshotsDto.class);
-            return returnValue;
+            return objectMapper.readValue(response.getBody(), SnapshotsDto.class);
         } catch (Exception e) {
             logger.error("Error when listing all snapshots:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
     }
 
-    protected String deleteOldSnaps(SnapshotsDto snapshotsDto, String snapshotRepoPathRequest)
+    protected String deleteOldSnaps(SnapshotsDto snapshotsDto)
             throws SearchException {
-
+        var responses = new ArrayList<String>();
+        var latest = snapshotsDto.getLatestEpocTime();
         try {
             snapshotsDto.snapshots.stream()
-                    .filter(item -> item.getEpochTime() > fourteenDays)
-                    .forEach(snap -> {
-
-                        var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
-                                snapshotRepoPathRequest + "/" + snap.getName(),
-                                null);
-                        logger.info("for the snapshot: " + snap.getName()
-                                + " the response is: " + response.getStatus());
-
-                    });
+                .filter(item -> latest - item.getEpochTime() > FOURTEEN_DAYS)
+                .forEach(snap -> {
+                    var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
+                        SNAPSHOT_REPO_PATH_REQUEST + "/" + snap.getName(),
+                            null);
+                    logger.info("for the snapshot: " + snap.getName()
+                            + " the response is: " + response.getStatus());
+                    responses.add(response.getBody());
+                });
+            return String.join(",", responses);
         } catch (Exception e) {
             throw new SearchException(e.getMessage(), e);
         }
-        return "unvalidated";
     }
 
     @Override
     protected Integer getSuccessStatusCode(Void input, String output) {
         return 200;
     }
-
 
 }
