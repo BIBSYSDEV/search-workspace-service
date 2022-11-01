@@ -1,8 +1,6 @@
 package no.sikt.sws;
 
 import com.amazonaws.*;
-import com.amazonaws.auth.AWS4Signer;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.http.*;
 import no.sikt.sws.exception.OpenSearchException;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
@@ -26,18 +24,19 @@ import static software.amazon.awssdk.http.HttpStatusCode.*;
 public class OpenSearchClient {
 
 
-    private static final String ELASTIC_SEARCH_SERVICE_NAME = "es";
     private static final String NULL_STRING = "null";
     private static final List<Integer> FORWARDED_ES_ERROR_CODES
             = Arrays.asList(BAD_REQUEST, NOT_FOUND, METHOD_NOT_ALLOWED, NOT_ACCEPTABLE);
 
     private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
     private final AmazonHttpClient httpClient;
+    private final AwsSignerWrapper awsSignerWrapper;
 
     private boolean passError;
 
-    protected OpenSearchClient(AmazonHttpClient httpClient) {
+    protected OpenSearchClient(AmazonHttpClient httpClient, AwsSignerWrapper awsSignerWrapper) {
         this.httpClient = httpClient;
+        this.awsSignerWrapper = awsSignerWrapper;
     }
 
     HttpResponseHandler<String> httpResponseHandler = new HttpResponseHandler<>() {
@@ -136,22 +135,11 @@ public class OpenSearchClient {
     }
 
     private void signAwsRequest(Request<Void> request) {
-        var awsSigner = getAws4Signer();
-        var credentials = new DefaultAWSCredentialsProviderChain().getCredentials();
-        awsSigner.sign(request, credentials);
+        awsSignerWrapper.signRequest(request);
     }
 
     private URI buildUri(String path) {
         return URI.create(OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path);
-    }
-
-
-    @JacocoGenerated
-    private AWS4Signer getAws4Signer() {
-        AWS4Signer signer = new AWS4Signer();
-        signer.setServiceName(ELASTIC_SEARCH_SERVICE_NAME);
-        signer.setRegionName(ELASTICSEARCH_REGION);
-        return signer;
     }
 
     @JacocoGenerated
@@ -160,15 +148,21 @@ public class OpenSearchClient {
     }
 
     public static OpenSearchClient passthroughClient() {
-        var httpClient = AmazonHttpClient.builder().clientConfiguration(new ClientConfiguration()).build();
-        var client = new OpenSearchClient(httpClient);
+        var httpClient
+                = AmazonHttpClient.builder().clientConfiguration(new ClientConfiguration()).build();
+        var signer = new AwsSignerWrapper();
+
+        var client = new OpenSearchClient(httpClient, signer);
         client.setPassError(true);
         return client;
     }
 
     public static OpenSearchClient defaultClient() {
-        var httpClient = AmazonHttpClient.builder().clientConfiguration(new ClientConfiguration()).build();
-        var client = new OpenSearchClient(httpClient);
+        var httpClient
+                = AmazonHttpClient.builder().clientConfiguration(new ClientConfiguration()).build();
+        var signer = new AwsSignerWrapper();
+
+        var client = new OpenSearchClient(httpClient, signer);
         return client;
     }
 
