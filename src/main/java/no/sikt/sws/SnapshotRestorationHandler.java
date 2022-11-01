@@ -16,6 +16,8 @@ public class SnapshotRestorationHandler extends ApiGatewayHandler<SnapshotToRest
 
 
     private static final Logger logger = LoggerFactory.getLogger(SnapshotRestorationHandler.class);
+    public static final String SNAPSHOT_REPO_NAME = "_snapshot/snapshots/";
+    public static final String RESTORE_COMMAND = "/_restore";
     public OpenSearchClient openSearchClient = new OpenSearchClient();
 
     public SnapshotRestorationHandler() {
@@ -26,8 +28,11 @@ public class SnapshotRestorationHandler extends ApiGatewayHandler<SnapshotToRest
     @Override
     protected String processInput(SnapshotToRestoreDto input, RequestInfo requestInfo, Context context)
             throws ApiGatewayException {
-        var snapshotRepoPathRequest = "_snapshot/initialsnapshot/"
-                + input.snapshotName + "/_restore";
+        logger.info("retrieved name of snapshot: " + input.snapshotName);
+        logger.info("full call : " + SNAPSHOT_REPO_NAME
+                + input.snapshotName + RESTORE_COMMAND);
+        var snapshotRepoPathRequest = SNAPSHOT_REPO_NAME
+                + input.snapshotName + RESTORE_COMMAND;
         try {
             var response = openSearchClient.sendRequest(HttpMethodName.POST,
                     snapshotRepoPathRequest,
