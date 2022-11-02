@@ -23,7 +23,7 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
     private static final Long FOURTEEN_DAYS =  14 * 24 * 60 * 60 * 1000L;
     public static final String SNAPSHOT_GET_ALL_REQUESTS = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
 
-    public OpenSearchClient openSearchClient = new OpenSearchClient();
+    public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotRoutineDeletionHandler() {
         super(Void.class);

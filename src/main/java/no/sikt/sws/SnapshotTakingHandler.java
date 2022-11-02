@@ -16,7 +16,7 @@ import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQU
 
 public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
     private static final Logger logger = LoggerFactory.getLogger(SnapshotTakingHandler.class);
-    public OpenSearchClient openSearchClient = new OpenSearchClient();
+    public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotTakingHandler() {
         super(Void.class);

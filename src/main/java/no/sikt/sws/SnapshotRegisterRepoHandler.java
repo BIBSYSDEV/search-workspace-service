@@ -18,7 +18,7 @@ import static no.sikt.sws.constants.ApplicationConstants.*;
 
 public class SnapshotRegisterRepoHandler extends ApiGatewayHandler<Void, String> {
     private static final Logger logger = LoggerFactory.getLogger(SnapshotRegisterRepoHandler.class);
-    public OpenSearchClient openSearchClient = new OpenSearchClient();
+    public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotRegisterRepoHandler() {
         super(Void.class);
