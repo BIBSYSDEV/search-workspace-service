@@ -231,12 +231,12 @@
     "name": "GET search from root with queryparameter",
     "requestGateway": {
       "method": "GET",
-      "url": "_search?q=age:33",
+      "url": "_search?q=age:>33",
       "body": null
     },
     "requestOpensearch": {
       "method": "GET",
-      "url": "_search?q=age:33",
+      "url": "_search?q=age:>33",
       "body": null
     },
     "response": {
