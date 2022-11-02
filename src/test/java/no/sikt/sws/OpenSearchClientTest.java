@@ -8,16 +8,12 @@ import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatcher;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.amazonaws.http.HttpMethodName.*;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
@@ -110,37 +106,4 @@ public class OpenSearchClientTest {
         OpenSearchResponse response = openSearchClient.sendRequest(POST, "sondre-test/_search?q=age:>33", null);
         assertEquals(200, response.getStatus());
     }
-
-    private class RequestMatcher implements ArgumentMatcher<Request> {
-
-        private Request sourceRequest;
-
-        public RequestMatcher(Request sourceRequest) {
-            this.sourceRequest = sourceRequest;
-        }
-
-        @Override
-        public boolean matches(Request request) {
-            if (!sourceRequest.getEndpoint().equals(request.getEndpoint())) {
-                return false;
-            }
-            if (!sourceRequest.getParameters().equals(request.getParameters())) {
-                return false;
-            }
-
-            if (sourceRequest.getContent() != null) {
-                var excepctedContent = new BufferedReader(new InputStreamReader(sourceRequest.getContent()))
-                        .lines().collect(Collectors.joining("\n"));
-
-                var actualContent = new BufferedReader(new InputStreamReader(request.getContent()))
-                        .lines().collect(Collectors.joining("\n"));
-
-                if (!excepctedContent.equals(actualContent)) {
-                    return false;
-                }
-            }
-            return sourceRequest.getEndpoint().equals(request.getEndpoint());
-        }
-    }
-
 }
