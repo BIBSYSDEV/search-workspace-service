@@ -2,53 +2,64 @@ package no.sikt.sws;
 
 import com.amazonaws.DefaultRequest;
 import com.amazonaws.Request;
+import com.amazonaws.Response;
 import com.amazonaws.http.HttpResponse;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
-import no.sikt.sws.testutils.FakeAwsClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.ArgumentMatcher;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.amazonaws.http.HttpMethodName.*;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_PROTOCOL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class OpenSearchClientTest {
 
     final HttpResponse httpResponse = mock(HttpResponse.class);
+    final AwsClientWrapper awsClient = mock(AwsClientWrapper.class);
     final AwsSignerWrapper awsSigner = mock(AwsSignerWrapper.class);
+
+    final Response emptyResponse = new Response<>("", httpResponse);
+
+    private OpenSearchClient openSearchClient;
 
     @BeforeEach
     public void setup() {
+
+        openSearchClient = new OpenSearchClient(awsClient, awsSigner);
+
 
         var content = "{}";
         var statusCode = 200;
 
         when(httpResponse.getStatusCode()).thenReturn(statusCode);
         when(httpResponse.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
-
     }
 
     @Test
     void testPlainGet() {
         var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test";
 
-        Request<Void> request = new DefaultRequest<>("es");
-        request.setHttpMethod(GET);
-        request.setEndpoint(URI.create(expectedUri));
+        Request<Void> expectedRequest = new DefaultRequest<>("es");
+        expectedRequest.setHttpMethod(GET);
+        expectedRequest.setEndpoint(URI.create(expectedUri));
 
-        var openSearchClient = new OpenSearchClient(new FakeAwsClient(request, httpResponse), awsSigner);
+        when(awsClient.execute(argThat(new RequestMatcher(expectedRequest)))).thenReturn(emptyResponse);
+
         OpenSearchResponse response = openSearchClient.sendRequest(GET, "sondre-test", null);
         assertEquals(200, response.getStatus());
     }
@@ -63,7 +74,8 @@ public class OpenSearchClientTest {
         expectedRequest.setEndpoint(URI.create(expectedUri));
         expectedRequest.setContent(inputStream);
 
-        var openSearchClient = new OpenSearchClient(new FakeAwsClient(expectedRequest, httpResponse), awsSigner);
+        when(awsClient.execute(argThat(new RequestMatcher(expectedRequest)))).thenReturn(emptyResponse);
+
         OpenSearchResponse response = openSearchClient.sendRequest(POST, "sondre-test/_bulk", "{}");
         assertEquals(200, response.getStatus());
     }
@@ -77,7 +89,8 @@ public class OpenSearchClientTest {
         expectedRequest.setEndpoint(URI.create(expectedUri));
         expectedRequest.setParameters(Map.of("size", List.of("1")));
 
-        var openSearchClient = new OpenSearchClient(new FakeAwsClient(expectedRequest, httpResponse), awsSigner);
+        when(awsClient.execute(argThat(new RequestMatcher(expectedRequest)))).thenReturn(emptyResponse);
+
         OpenSearchResponse response = openSearchClient.sendRequest(POST, "sondre-test/_search?size=1", null);
         assertEquals(200, response.getStatus());
     }
@@ -92,9 +105,42 @@ public class OpenSearchClientTest {
         expectedRequest.setEndpoint(URI.create(expectedUri));
         expectedRequest.setParameters(Map.of("q", List.of("age:>33")));
 
-        var openSearchClient = new OpenSearchClient(new FakeAwsClient(expectedRequest, httpResponse), awsSigner);
+        when(awsClient.execute(argThat(new RequestMatcher(expectedRequest)))).thenReturn(emptyResponse);
+
         OpenSearchResponse response = openSearchClient.sendRequest(POST, "sondre-test/_search?q=age:>33", null);
         assertEquals(200, response.getStatus());
+    }
+
+    private class RequestMatcher implements ArgumentMatcher<Request> {
+
+        private Request sourceRequest;
+
+        public RequestMatcher(Request sourceRequest) {
+            this.sourceRequest = sourceRequest;
+        }
+
+        @Override
+        public boolean matches(Request request) {
+            if (!sourceRequest.getEndpoint().equals(request.getEndpoint())) {
+                return false;
+            }
+            if (!sourceRequest.getParameters().equals(request.getParameters())) {
+                return false;
+            }
+
+            if (sourceRequest.getContent() != null) {
+                var excepctedContent = new BufferedReader(new InputStreamReader(sourceRequest.getContent()))
+                        .lines().collect(Collectors.joining("\n"));
+
+                var actualContent = new BufferedReader(new InputStreamReader(request.getContent()))
+                        .lines().collect(Collectors.joining("\n"));
+
+                if (!excepctedContent.equals(actualContent)) {
+                    return false;
+                }
+            }
+            return sourceRequest.getEndpoint().equals(request.getEndpoint());
+        }
     }
 
 }

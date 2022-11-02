@@ -1,10 +1,10 @@
 package no.sikt.sws;
 
-import com.amazonaws.*;
-import com.amazonaws.http.*;
+import com.amazonaws.DefaultRequest;
+import com.amazonaws.Request;
+import com.amazonaws.http.HttpMethodName;
 import no.sikt.sws.exception.OpenSearchException;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
-import nva.commons.core.JacocoGenerated;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,72 +18,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static no.sikt.sws.constants.ApplicationConstants.*;
-import static software.amazon.awssdk.http.HttpStatusCode.*;
+import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
+import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_PROTOCOL;
 
 public class OpenSearchClient {
-
-
     private static final String NULL_STRING = "null";
-    private static final List<Integer> FORWARDED_ES_ERROR_CODES
-            = Arrays.asList(BAD_REQUEST, NOT_FOUND, METHOD_NOT_ALLOWED, NOT_ACCEPTABLE);
-
     private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
-    private final AmazonHttpClient httpClient;
+    private final AwsClientWrapper awsClientWrapper;
     private final AwsSignerWrapper awsSignerWrapper;
 
-    private boolean passError;
-
-    protected OpenSearchClient(AmazonHttpClient httpClient, AwsSignerWrapper awsSignerWrapper) {
-        this.httpClient = httpClient;
+    protected OpenSearchClient(AwsClientWrapper awsClientWrapper, AwsSignerWrapper awsSignerWrapper) {
+        this.awsClientWrapper = awsClientWrapper;
         this.awsSignerWrapper = awsSignerWrapper;
     }
 
-    HttpResponseHandler<String> httpResponseHandler = new HttpResponseHandler<>() {
-        @Override
-        public String handle(HttpResponse response) throws Exception {
-            var bytes = response.getContent().readAllBytes();
-            var responseCode = response.getStatusCode();
-            var bodyString = new String(bytes);
-            logger.info("Handling response: " + responseCode + " " + bodyString);
-            return bodyString;
-        }
-
-        @Override
-        public boolean needsConnectionLeftOpen() {
-            return false;
-        }
-    };
-
-    HttpResponseHandler<SdkBaseException> errorResponseHandler = new HttpResponseHandler<>() {
-
-        @Override
-        public AmazonClientException handle(HttpResponse response) throws Exception {
-
-            var responseCode = response.getStatusCode();
-            var bytes = response.getContent().readAllBytes();
-            var bodyString = new String(bytes);
-
-            if (passError && FORWARDED_ES_ERROR_CODES.contains(responseCode)) {
-                return new OpenSearchException(responseCode, bodyString);
-            }
-
-
-            logger.error("Handling error: " + responseCode + " " + bodyString);
-
-            return new AmazonClientException("OpenSearchError: " + " " + responseCode + " " + bodyString);
-        }
-
-        @Override
-        public boolean needsConnectionLeftOpen() {
-            return false;
-        }
-    };
-
-
-
     public OpenSearchResponse sendRequest(HttpMethodName httpMethod, String path, String data) {
 
+        var request = buildRequest(httpMethod, path, data);
+        signAwsRequest(request);
+
+        try {
+            var response = awsClientWrapper.execute(request);
+            return new OpenSearchResponse(response.getHttpResponse().getStatusCode(), response.getAwsResponse());
+
+        } catch (OpenSearchException e) {
+            logger.info(e.getMessage());
+            logger.info("Creating OpenSearchResponse " + e.getStatus() + " " + e.getBody());
+            return new OpenSearchResponse(e.getStatus(), e.getBody());
+        }
+
+
+    }
+
+    private Request<Void> buildRequest(HttpMethodName httpMethod, String path, String data) {
         var pathWithoutParams = stripParametersFromPath(path).toString();
         var endpoint = buildUri(pathWithoutParams);
         var query = buildUri(path).getQuery();
@@ -107,24 +74,7 @@ public class OpenSearchClient {
             request.setHeaders(headers);
         }
 
-        signAwsRequest(request);
-
-        try {
-            var response = httpClient
-                    .requestExecutionBuilder()
-                    .executionContext(new ExecutionContext(true))
-                    .errorResponseHandler(errorResponseHandler)
-                    .request(request)
-                    .execute(httpResponseHandler);
-            return new OpenSearchResponse(response.getHttpResponse().getStatusCode(), response.getAwsResponse());
-
-        } catch (OpenSearchException e) {
-            logger.info(e.getMessage());
-            logger.info("Creating OpenSearchResponse " + e.getStatus() + " " + e.getBody());
-            return new OpenSearchResponse(e.getStatus(), e.getBody());
-        }
-
-
+        return request;
     }
 
     @NotNull
@@ -142,27 +92,19 @@ public class OpenSearchClient {
         return URI.create(OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path);
     }
 
-    @JacocoGenerated
-    public void setPassError(boolean passError) {
-        this.passError = passError;
-    }
-
     public static OpenSearchClient passthroughClient() {
-        var httpClient
-                = AmazonHttpClient.builder().clientConfiguration(new ClientConfiguration()).build();
+        var awsClient = new AwsClientWrapper(true);
         var signer = new AwsSignerWrapper();
 
-        var client = new OpenSearchClient(httpClient, signer);
-        client.setPassError(true);
+        var client = new OpenSearchClient(awsClient, signer);
         return client;
     }
 
     public static OpenSearchClient defaultClient() {
-        var httpClient
-                = AmazonHttpClient.builder().clientConfiguration(new ClientConfiguration()).build();
+        var awsClient = new AwsClientWrapper(false);
         var signer = new AwsSignerWrapper();
 
-        var client = new OpenSearchClient(httpClient, signer);
+        var client = new OpenSearchClient(awsClient, signer);
         return client;
     }
 
