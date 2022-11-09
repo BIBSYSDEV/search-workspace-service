@@ -51,15 +51,15 @@ public class OpenSearchClient {
     }
 
     private Request<Void> buildRequest(HttpMethodName httpMethod, String path, String data) {
-        var pathWithoutParams = stripParametersFromPath(path).toString();
-        var endpoint = buildUri(pathWithoutParams);
-        var query = buildUri(path).getQuery();
+        var splitPath = path.split("\\?");
+        var endpoint = buildUrl(splitPath[0]);
+        var query = splitPath.length > 1 ? splitPath[1] : null;
 
         logger.info(endpoint + " - " + query);
 
         Request<Void> request = new DefaultRequest<>("es");
         request.setHttpMethod(httpMethod);
-        request.setEndpoint(endpoint);
+        request.setEndpoint(URI.create(endpoint));
 
         if (query != null) {
             request.setParameters(getStringListMap(query));
@@ -88,8 +88,8 @@ public class OpenSearchClient {
         awsSignerWrapper.signRequest(request);
     }
 
-    private URI buildUri(String path) {
-        return URI.create(OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path);
+    private String buildUrl(String path) {
+        return OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/" + path;
     }
 
     public static OpenSearchClient passthroughClient() {
@@ -106,19 +106,5 @@ public class OpenSearchClient {
 
         var client = new OpenSearchClient(awsClient, signer);
         return client;
-    }
-
-    private URI stripParametersFromPath(String path) {
-        try {
-            URI uri = new URI(path);
-            return new URI(uri.getScheme(),
-                    uri.getAuthority(),
-                    uri.getPath(),
-                    null, // Ignore the query part of the input url
-                    uri.getFragment());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
     }
 }

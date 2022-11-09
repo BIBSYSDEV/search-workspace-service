@@ -92,7 +92,24 @@ public class OpenSearchClientTest {
     }
 
     @Test
-    @Disabled("Marina will fix in upcoming task")
+    void testMultipleQueryParameters() {
+        var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_search";
+
+        Request<Void> expectedRequest = new DefaultRequest<>("es");
+        expectedRequest.setHttpMethod(POST);
+        expectedRequest.setEndpoint(URI.create(expectedUri));
+        expectedRequest.setParameters(Map.of(
+                "param1", List.of("a"),
+                "param2", List.of("b")
+        ));
+
+        when(awsClient.execute(argThat(new RequestMatcher(expectedRequest)))).thenReturn(emptyResponse);
+
+        OpenSearchResponse response = openSearchClient.sendRequest(POST, "sondre-test/_search?param1=a&param2=b", null);
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
     void testAdvancedQueryParameters() {
         var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_search";
 
