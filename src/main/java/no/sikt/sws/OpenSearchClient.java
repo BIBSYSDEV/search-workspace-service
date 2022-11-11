@@ -110,17 +110,4 @@ public class OpenSearchClient {
         return client;
     }
 
-    private URI stripParametersFromPath(String path) {
-        try {
-            URI uri = new URI(path);
-            return new URI(uri.getScheme(),
-                    uri.getAuthority(),
-                    uri.getPath(),
-                    null, // Ignore the query part of the input url
-                    uri.getFragment());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 }
