@@ -51,15 +51,17 @@ public class OpenSearchClient {
     }
 
     private Request<Void> buildRequest(HttpMethodName httpMethod, String path, String data) {
-        var pathWithoutParams = stripParametersFromPath(path).toString();
-        var endpoint = buildUri(pathWithoutParams);
-        var query = buildUri(path).getQuery();
+
+        var splitPath = path.split("\\?", 2);
+        var endpoint = splitPath[0];
+        var query = splitPath.length > 1 ? splitPath[1] : null;
+
 
         logger.info(endpoint + " - " + query);
 
         Request<Void> request = new DefaultRequest<>("es");
         request.setHttpMethod(httpMethod);
-        request.setEndpoint(endpoint);
+        request.setEndpoint(buildUri(endpoint));
 
         if (query != null) {
             request.setParameters(getStringListMap(query));
