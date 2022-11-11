@@ -11,10 +11,12 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
+
 
 public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
     private static final Logger logger = LoggerFactory.getLogger(SnapshotTakingHandler.class);
-    public OpenSearchClient openSearchClient = new OpenSearchClient();
+    public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotTakingHandler() {
         super(Void.class);
@@ -23,15 +25,12 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
     @Override
     protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
 
-        var nameOfSnapshotRepo = "initialsnapshot";
-        var snapshotRepoPathRequest = "_snapshot/" + nameOfSnapshotRepo;
-
         var timestamp = String.valueOf(new Date().getTime());
         var createSnapshotName = "snap" + timestamp;
 
         try {
             var response = openSearchClient.sendRequest(HttpMethodName.PUT,
-                    snapshotRepoPathRequest + "/" + createSnapshotName,
+                SNAPSHOT_REPO_PATH_REQUEST + "/" + createSnapshotName,
                     null);
             logger.info("response-code:" + response.getStatus());
             logger.info("response-body:" + response.getBody());

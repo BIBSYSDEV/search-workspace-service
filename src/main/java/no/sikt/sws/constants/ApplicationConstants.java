@@ -11,6 +11,7 @@ public final class ApplicationConstants {
     public static final String BACKEND_SCOPE_RESOURCE_SERVER_NAME = "Scopes for backend";
     public static final String BACKUP_BUCKET_NAME = readBackupBucketName();
     public static final String BACKUP_ROLE_ARN = readBackupRoleArn();
+    public static final String SNAPSHOT_REPO_PATH_REQUEST = "_snapshot/snapshots";
     public static final String ELASTICSEARCH_REGION = readElasticSearchRegion();
     public static final String EMPTY_STRING = "";
     public static final String OPENSEARCH_ENDPOINT_ADDRESS = readOpenSearchEndpointAddress();
