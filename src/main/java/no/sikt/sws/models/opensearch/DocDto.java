@@ -47,7 +47,7 @@ public class DocDto extends Dto {
     public JsonNode source;
 
     @JsonProperty("sort")
-    public List<Integer> sort;
+    public List<Long> sort;
 
 
     public DocDto() {
