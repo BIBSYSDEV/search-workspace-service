@@ -92,7 +92,6 @@ public class OpenSearchClientTest {
     }
 
     @Test
-    @Disabled("Marina will fix in upcoming task")
     void testAdvancedQueryParameters() {
         var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_search";
 
