@@ -7,7 +7,6 @@ import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.net.URI;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
@@ -89,8 +88,8 @@ public class TestCaseSws implements Serializable, Comparable<TestCaseSws> {
         return
             requestGateway != null
                 && requestOpensearch != null
-                && !URI.create(requestGateway.getUrl()).getQuery().isEmpty()
-                && !URI.create(requestOpensearch.getUrl()).getQuery().isEmpty();
+                && requestGateway.getUrl().contains("?")
+                && requestOpensearch.getUrl().contains("?");
     }
 
     @Override

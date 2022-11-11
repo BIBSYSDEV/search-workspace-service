@@ -163,9 +163,9 @@ public class IndexHandlerTest extends TestCase {
                 testCase.getRequestOpensearch().getBody())
         ).thenReturn(new OpenSearchResponse(200, testCase.getResponse()));
 
-        var gatewayUrl = URI.create(testCase.getRequestGateway().getUrl());
-        var pathParams = buildPathParamsForIndex(gatewayUrl.getPath());
-        var queryParams = buildQueryParams(gatewayUrl);
+        var gatewayUrl = testCase.getRequestGateway().getUrl().split("\\?",2);
+        var pathParams = buildPathParamsForIndex(gatewayUrl[0]);
+        var queryParams = buildQueryParams(gatewayUrl[1]);
 
         var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
                 .withHttpMethod(testCase.getRequestGateway().getMethod().name())
