@@ -27,6 +27,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
     public static final String RESOURCE_IDENTIFIER = "resource";
     // Regex: may only contain big and small latin letters, norwegian letters, digits, '/', '-' and '_'
     private static final String ALLOWED_INPUT = "[A-Za-zÆØÅæøå\\d/&?=_-]*";
+    public static final String INTERNAL_ERROR = "Internal error";
     public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
 
 
@@ -78,8 +79,8 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             logger.error(be.getLocalizedMessage());
             throw be;
         } catch (Exception e) {
-            logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
-            throw new SearchException(e.getMessage(), e);
+            logger.error("Error: " + e.getMessage(), e);
+            throw new SearchException(INTERNAL_ERROR, e);
         }
     }
 

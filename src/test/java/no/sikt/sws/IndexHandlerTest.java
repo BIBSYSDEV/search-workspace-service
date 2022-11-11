@@ -12,6 +12,7 @@ import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.stubs.FakeContext;
 import no.unit.nva.testutils.HandlerRequestBuilder;
 import nva.commons.apigateway.GatewayResponse;
+import nva.commons.apigateway.exceptions.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,7 +26,9 @@ import java.net.URI;
 import static com.amazonaws.http.HttpMethodName.GET;
 import static com.amazonaws.http.HttpMethodName.POST;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
+import static no.sikt.sws.IndexHandler.INTERNAL_ERROR;
 import static no.sikt.sws.PrefixStripperTest.WORKSPACEPREFIX;
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
@@ -33,10 +36,15 @@ import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
 import static no.sikt.sws.testutils.TestUtils.*;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class IndexHandlerTest extends TestCase {
@@ -120,6 +128,26 @@ public class IndexHandlerTest extends TestCase {
         var response = GatewayResponse.fromOutputStream(output, String.class);
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_BAD_REQUEST)));
+    }
+
+    @Test
+    void shouldNotExposeErrorMessageOnInternalErrors() throws IOException, BadRequestException {
+        var secretNonJsonString = "some invalid json";
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, secretNonJsonString);
+
+        when(openSearchClient.sendRequest(GET, TEST_WORKSPACE_PREFIX + TEST_INDEX_1, null))
+            .thenReturn(mockResponse);
+
+
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1);
+
+        var request = buildRequest(HttpMethod.GET, pathParams);
+
+        handler.handleRequest(request, output, CONTEXT);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
+
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_INTERNAL_ERROR)));
+        assertThat(response.getBody(), not(containsString(secretNonJsonString)));
     }
 
     @Test
