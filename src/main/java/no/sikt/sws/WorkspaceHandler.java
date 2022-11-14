@@ -18,6 +18,7 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
 
 
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceHandler.class);
+    public static final String INTERNAL_ERROR = "Internal error";
 
     public WorkspaceHandler() {
         super(Void.class);
@@ -52,8 +53,8 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
 
             return response.getBody();
         } catch (Exception e) {
-            logger.error("Error when communicating with opensearch:" + e.getMessage(), e);
-            throw new SearchException(e.getMessage(), e);
+            logger.error("Error: " + e.getMessage(), e);
+            throw new SearchException(INTERNAL_ERROR, e);
         }
     }
 
