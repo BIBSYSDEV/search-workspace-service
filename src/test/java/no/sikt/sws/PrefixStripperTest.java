@@ -1,14 +1,11 @@
 package no.sikt.sws;
 
+import no.sikt.sws.models.internal.WorkspaceResponse;
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
-import no.sikt.sws.models.internal.WorkspaceResponse;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
 import nva.commons.apigateway.exceptions.BadRequestException;
-import org.joda.time.Instant;
-import org.joda.time.Period;
-import org.joda.time.ReadableInstant;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,19 +25,16 @@ public class PrefixStripperTest {
     /**
     **  Merge all testcases into one stream.
     **/
-    static Stream<TestCaseSws> allRequestArguments() {
-        final ReadableInstant before = new Instant();
-        logger.info("Test cases loading");
-        var streamBuilder = Stream.<TestCaseSws>builder();
+    static Stream<TestCaseSws> getStreamOfTestCases() {
+        var streamBuilder = new TestCaseLoader.Builder();
 
-        loadTestCases(streamBuilder, "proxy/requests-mapping.json");
-        loadTestCases(streamBuilder, "proxy/requests-search.json");
-        loadTestCases(streamBuilder, "proxy/requests-bulk.json");
-        loadTestCases(streamBuilder, "proxy/requests-doc.json");
-        loadTestCases(streamBuilder, "proxy/requests-indexes.json");
-        loadTestCases(streamBuilder, "proxy/requests-alias.json");
+        streamBuilder.loadResource("proxy/requests-mapping.json");
+        streamBuilder.loadResource("proxy/requests-search.json");
+        streamBuilder.loadResource("proxy/requests-bulk.json");
+        streamBuilder.loadResource("proxy/requests-doc.json");
+        streamBuilder.loadResource("proxy/requests-indexes.json");
+        streamBuilder.loadResource("proxy/requests-alias.json");
 
-        logger.info("loaded -> {} ms.", new Period(before,new Instant()).getMillis());
         return streamBuilder.build();
     }
 
@@ -48,7 +42,7 @@ public class PrefixStripperTest {
     @DisplayName("Opensearch url prefixing")
     Stream<DynamicTest> testUrlPrefixFactory() {
 
-        var requestTests = allRequestArguments().filter(TestCaseSws::isRequestTest);
+        var requestTests = getStreamOfTestCases().filter(TestCaseSws::isRequestTest);
 
         return DynamicTest.stream(requestTests, TestCaseSws::getName, this::assertUrlPrefix);
     }
@@ -57,7 +51,7 @@ public class PrefixStripperTest {
     @DisplayName("Opensearch request-body prefixing")
     Stream<DynamicTest> testRequestPrefixFactory() {
 
-        var requestBodyTests = allRequestArguments().filter(TestCaseSws::isRequestBodyTest);
+        var requestBodyTests = getStreamOfTestCases().filter(TestCaseSws::isRequestBodyTest);
 
         return DynamicTest.stream(requestBodyTests, TestCaseSws::getName, this::assertRequestPrefix);
     }
@@ -66,7 +60,7 @@ public class PrefixStripperTest {
     @DisplayName("Opensearch response-body stripping")
     Stream<DynamicTest> testResponseStrippingFactory() {
 
-        var responseTests = allRequestArguments().filter(TestCaseSws::isResponseTest);
+        var responseTests = getStreamOfTestCases().filter(TestCaseSws::isResponseTest);
 
         return DynamicTest.stream(responseTests, TestCaseSws::getName, this::assertResponseStripping);
     }
@@ -213,12 +207,6 @@ public class PrefixStripperTest {
         ).get();
 
         assertEquals(toJsonCompact(expectedBody),toJsonCompact(resultBody));
-    }
-
-    private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {
-        new TestCaseLoader(filename)
-            .getTestCases()
-            .forEach(streamBuilder::add);
     }
 
     private String toJsonCompact(String body) {

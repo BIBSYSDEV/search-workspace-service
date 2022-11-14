@@ -148,13 +148,14 @@ public class IndexHandlerTest extends TestCase {
 
     @TestFactory
     @DisplayName("Opensearch parameter requests")
+    @SuppressWarnings("JUnitMalformedDeclaration")
     public Stream<DynamicTest> testRequestWithQueryParameters() {
 
-        var responseTests = allRequestArguments().filter(TestCaseSws::isParamRequestTest);
-        return DynamicTest.stream(responseTests, TestCaseSws::getName, this::searchRequestWithQueryParameters);
+        var responseTests = getStreamOfTestCases().filter(TestCaseSws::isParamRequestTest);
+        return DynamicTest.stream(responseTests, TestCaseSws::getName, this::assertTestCaseWithRequestQueryParameters);
     }
 
-    void searchRequestWithQueryParameters(TestCaseSws testCase) throws IOException {
+    void assertTestCaseWithRequestQueryParameters(TestCaseSws testCase) throws IOException {
 
         this.output = new ByteArrayOutputStream();
         when(openSearchClient.sendRequest(
@@ -191,17 +192,10 @@ public class IndexHandlerTest extends TestCase {
         return body.replaceAll("[\n\r ]", EMPTY_STRING);
     }
 
-    static Stream<TestCaseSws> allRequestArguments() {
-        var streamBuilder = Stream.<TestCaseSws>builder();
-
-        loadTestCases(streamBuilder, "proxy/requests-search.json");
-
-        return streamBuilder.build();
+    static Stream<TestCaseSws> getStreamOfTestCases() {
+        return new TestCaseLoader.Builder()
+            .loadResource("proxy/requests-search.json")
+            .build();
     }
 
-    private static void loadTestCases(Stream.Builder<TestCaseSws> streamBuilder, String filename) {
-        new TestCaseLoader(filename)
-            .getTestCases()
-            .forEach(streamBuilder::add);
-    }
 }
