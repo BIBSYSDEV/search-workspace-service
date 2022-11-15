@@ -2,6 +2,7 @@ package no.sikt.sws.models.opensearch;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
@@ -18,6 +19,9 @@ public class SearchDto extends Dto {
 
     @JsonProperty("hits")
     public HitsDto hits;
+
+    @JsonProperty("aggregations")
+    public JsonNode aggregations;
 
     public SearchDto() {
         super();

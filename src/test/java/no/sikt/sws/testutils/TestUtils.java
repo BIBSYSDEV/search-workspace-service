@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static no.sikt.sws.IndexHandler.RESOURCE_IDENTIFIER;
+import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 
@@ -55,5 +56,9 @@ public final class TestUtils {
                 .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE)
                 .withBody(body)
                 .build();
+    }
+
+    public static String readCompact(String body) {
+        return body.replaceAll("[\n\r ]", EMPTY_STRING);
     }
 }

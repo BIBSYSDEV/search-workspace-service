@@ -1,51 +1,48 @@
 package no.sikt.sws;
 
+import com.amazonaws.HttpMethod;
+import com.amazonaws.services.lambda.runtime.Context;
+import junit.framework.TestCase;
+import no.sikt.sws.models.opensearch.OpenSearchResponse;
+import no.sikt.sws.models.opensearch.SearchDto;
+import no.sikt.sws.testutils.JsonStringMatcher;
+import no.sikt.sws.testutils.TestCaseLoader;
+import no.sikt.sws.testutils.TestUtils;
+import no.unit.nva.commons.json.JsonUtils;
+import no.unit.nva.stubs.FakeContext;
+import no.unit.nva.testutils.HandlerRequestBuilder;
+import nva.commons.apigateway.GatewayResponse;
+import nva.commons.apigateway.exceptions.BadRequestException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+
 import static com.amazonaws.http.HttpMethodName.GET;
 import static com.amazonaws.http.HttpMethodName.POST;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.*;
 import static no.sikt.sws.PrefixStripperTest.WORKSPACEPREFIX;
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
-import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
-import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
-import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
-import static no.sikt.sws.testutils.TestUtils.buildQueryParams;
-import static no.sikt.sws.testutils.TestUtils.buildRequest;
+import static no.sikt.sws.testutils.TestConstants.*;
+import static no.sikt.sws.testutils.TestUtils.*;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import com.amazonaws.HttpMethod;
-import com.amazonaws.services.lambda.runtime.Context;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.util.stream.Stream;
-import junit.framework.TestCase;
-import no.sikt.sws.models.opensearch.OpenSearchResponse;
-import no.sikt.sws.models.opensearch.SearchDto;
-import no.sikt.sws.testutils.JsonStringMatcher;
-import no.sikt.sws.testutils.TestCaseLoader;
-import no.sikt.sws.testutils.TestCaseSws;
-import no.sikt.sws.testutils.TestUtils;
-import no.unit.nva.commons.json.JsonUtils;
-import no.unit.nva.stubs.FakeContext;
-import no.unit.nva.testutils.HandlerRequestBuilder;
-import nva.commons.apigateway.GatewayResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 public class IndexHandlerTest extends TestCase {
 
@@ -215,13 +212,41 @@ public class IndexHandlerTest extends TestCase {
                 .stripper(WORKSPACEPREFIX)
                 .toJsonCompact();
 
-        assertEquals(compact(testCase.getResponseStripped()), compact(resultBody));
+        Assertions.assertEquals(readCompact(testcase.getResponseStripped()), readCompact(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
 
-    private String compact(String body) {
-        return body.replaceAll("[\n\r ]", EMPTY_STRING);
+    @Test
+    void shouldHandleSearchRequestWithAggregation() throws IOException {
+
+        var testcase =
+                new TestCaseLoader("proxy/requests-aggregation.json")
+                        .getTestCase("GET search with aggregation");
+        var requestOpensearch = testcase.getRequestOpensearch();
+        var requestGateway = testcase.getRequestGateway();
+
+        when(openSearchClient.sendRequest(
+                requestOpensearch.getMethod(),
+                requestOpensearch.getUrl(),
+                requestOpensearch.getBody())
+        ).thenReturn(new OpenSearchResponse(200, testcase.getResponse()));
+
+        var gatewayUrl = URI.create(requestGateway.getUrl());
+        var pathParams = buildPathParamsForIndex(gatewayUrl.getPath());
+        var request = buildRequestWithBody(HttpMethod.GET, pathParams, requestGateway.getBody());
+
+        handler.handleRequest(request, output, CONTEXT);
+
+        var response = GatewayResponse.fromOutputStream(output, String.class);
+        var resultBody =  SearchDto
+                .fromResponse(response.getBody())
+                .stripper(TEST_WORKSPACE_PREFIX)
+                .toJsonCompact();
+
+        Assertions.assertEquals(readCompact(testcase.getResponseStripped()), readCompact(resultBody));
+
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
 
     Stream<TestCaseSws> getSearchRequestTestCasesStream() {

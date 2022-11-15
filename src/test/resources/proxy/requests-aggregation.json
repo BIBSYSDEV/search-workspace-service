@@ -1,0 +1,59 @@
+[
+  {
+    "name": "GET search with aggregation",
+    "requestGateway": {
+      "method": "GET",
+      "url": "index1/_search",
+      "body": "{\"size\": 0,\"aggs\": {\"Institusjon\": {\"terms\": {\"field\": \"entityDescription.contributors.identity.name.keyword\"}}}}"
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-sondre-index1/_search",
+      "body": "{\"size\": 0,\"aggs\": {\"Institusjon\": {\"terms\": {\"field\": \"entityDescription.contributors.identity.name.keyword\"}}}}"
+    },
+    "response": {
+      "took": 3,
+      "timed_out": false,
+      "_shards": {
+        "total": 2,
+        "successful": 2,
+        "skipped": 0,
+        "failed": 0
+      },
+      "aggregations" : {
+        "response_codes" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [
+            {
+              "key" : "Kjetil Møkkelgjerd",
+              "doc_count" : 1
+            }
+          ]
+        }
+      }
+    },
+    "responseStripped": {
+      "took": 3,
+      "timed_out": false,
+      "_shards": {
+        "total": 2,
+        "successful": 2,
+        "skipped": 0,
+        "failed": 0
+      },
+      "aggregations" : {
+        "response_codes" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [
+            {
+              "key" : "Kjetil Møkkelgjerd",
+              "doc_count" : 1
+            }
+          ]
+        }
+      }
+    }
+  }
+]
