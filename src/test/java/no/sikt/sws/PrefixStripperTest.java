@@ -1,21 +1,24 @@
 package no.sikt.sws;
 
+import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
+import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
+import static nva.commons.core.attempt.Try.attempt;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.stream.Stream;
 import no.sikt.sws.models.internal.WorkspaceResponse;
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
 import no.sikt.sws.testutils.TestCaseLoader;
 import no.sikt.sws.testutils.TestCaseSws;
 import nva.commons.apigateway.exceptions.BadRequestException;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.stream.Stream;
-
-import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
-import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
-import static nva.commons.core.attempt.Try.attempt;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PrefixStripperTest {
 
@@ -26,16 +29,15 @@ public class PrefixStripperTest {
     **  Merge all testcases into one stream.
     **/
     static Stream<TestCaseSws> getStreamOfTestCases() {
-        var streamBuilder = new TestCaseLoader.Builder();
 
-        streamBuilder.loadResource("proxy/requests-mapping.json");
-        streamBuilder.loadResource("proxy/requests-search.json");
-        streamBuilder.loadResource("proxy/requests-bulk.json");
-        streamBuilder.loadResource("proxy/requests-doc.json");
-        streamBuilder.loadResource("proxy/requests-indexes.json");
-        streamBuilder.loadResource("proxy/requests-alias.json");
-
-        return streamBuilder.build();
+        return new TestCaseLoader.Builder()
+                   .loadResource("proxy/requests-mapping.json")
+                   .loadResource("proxy/requests-search.json")
+                   .loadResource("proxy/requests-bulk.json")
+                   .loadResource("proxy/requests-doc.json")
+                   .loadResource("proxy/requests-indexes.json")
+                   .loadResource("proxy/requests-alias.json")
+                   .build();
     }
 
     @TestFactory
@@ -209,6 +211,9 @@ public class PrefixStripperTest {
         assertEquals(toJsonCompact(expectedBody),toJsonCompact(resultBody));
     }
 
+    /**
+        Use in tests only (removes all spaces).
+     */
     private String toJsonCompact(String body) {
         return body.replaceAll("[\n\r ]", EMPTY_STRING);
     }
