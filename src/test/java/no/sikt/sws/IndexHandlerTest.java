@@ -217,7 +217,7 @@ public class IndexHandlerTest extends TestCase {
                 .stripper(TEST_PREFIX_MOCKNAME)
                 .toJsonCompact();
 
-        Assertions.assertEquals(readCompact(testCase.getResponseStripped()), readCompact(resultBody));
+        Assertions.assertEquals(stripWhitespace(testCase.getResponseStripped()), stripWhitespace(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
@@ -253,7 +253,7 @@ public class IndexHandlerTest extends TestCase {
                 .stripper(TEST_PREFIX_SONDRE)
                 .toJsonCompact();
 
-        Assertions.assertEquals(readCompact(testcase.getResponseStripped()), readCompact(resultBody));
+        Assertions.assertEquals(stripWhitespace(testcase.getResponseStripped()), stripWhitespace(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
