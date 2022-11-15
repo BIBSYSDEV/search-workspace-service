@@ -1,36 +1,18 @@
 package no.sikt.sws;
 
-import com.amazonaws.HttpMethod;
-import com.amazonaws.services.lambda.runtime.Context;
-import junit.framework.TestCase;
-import no.sikt.sws.models.opensearch.OpenSearchResponse;
-import no.sikt.sws.models.opensearch.SearchDto;
-import no.sikt.sws.testutils.JsonStringMatcher;
-import no.sikt.sws.testutils.TestCaseLoader;
-import no.sikt.sws.testutils.TestUtils;
-import no.unit.nva.commons.json.JsonUtils;
-import no.unit.nva.stubs.FakeContext;
-import no.unit.nva.testutils.HandlerRequestBuilder;
-import nva.commons.apigateway.GatewayResponse;
-import nva.commons.apigateway.exceptions.BadRequestException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URI;
-
 import static com.amazonaws.http.HttpMethodName.GET;
 import static com.amazonaws.http.HttpMethodName.POST;
-import static java.net.HttpURLConnection.*;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.PrefixStripperTest.WORKSPACEPREFIX;
-import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
-import static no.sikt.sws.testutils.TestConstants.*;
-import static no.sikt.sws.testutils.TestUtils.*;
+import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
+import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
+import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
+import static no.sikt.sws.testutils.TestUtils.buildQueryParams;
+import static no.sikt.sws.testutils.TestUtils.buildRequest;
+import static no.sikt.sws.testutils.TestUtils.buildRequestWithBody;
+import static no.sikt.sws.testutils.TestUtils.readCompact;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -40,6 +22,32 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import com.amazonaws.HttpMethod;
+import com.amazonaws.services.lambda.runtime.Context;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.util.stream.Stream;
+import junit.framework.TestCase;
+import no.sikt.sws.models.opensearch.OpenSearchResponse;
+import no.sikt.sws.models.opensearch.SearchDto;
+import no.sikt.sws.testutils.JsonStringMatcher;
+import no.sikt.sws.testutils.TestCaseLoader;
+import no.sikt.sws.testutils.TestCaseSws;
+import no.sikt.sws.testutils.TestUtils;
+import no.unit.nva.commons.json.JsonUtils;
+import no.unit.nva.stubs.FakeContext;
+import no.unit.nva.testutils.HandlerRequestBuilder;
+import nva.commons.apigateway.GatewayResponse;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class IndexHandlerTest extends TestCase {
 
@@ -167,25 +175,35 @@ public class IndexHandlerTest extends TestCase {
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
 
-    @Test
-    void shouldHandleSearchRequestWithQueryParameters() throws IOException {
+    @TestFactory
+    @DisplayName("Opensearch parameter requests")
+    @SuppressWarnings("JUnitMalformedDeclaration")
+    public Stream<DynamicTest> testRequestWithQueryParameters() {
 
-        var testcase =
-                new TestCaseLoader("proxy/requests-search.json")
-                .getTestCase("GET search by queryparameter");
+        var requestsWithParameters =
+            getSearchRequestTestCasesStream().filter(TestCaseSws::isParamRequestTest);
 
+        return DynamicTest.stream(
+            requestsWithParameters,
+            TestCaseSws::getName,
+            this::assertTestCaseWithRequestQueryParameters);
+    }
+
+    void assertTestCaseWithRequestQueryParameters(TestCaseSws testCase) throws IOException {
+
+        this.output = new ByteArrayOutputStream();
         when(openSearchClient.sendRequest(
-                testcase.getRequestOpensearch().getMethod(),
-                testcase.getRequestOpensearch().getUrl(),
-                testcase.getRequestOpensearch().getBody())
-        ).thenReturn(new OpenSearchResponse(200, testcase.getResponse()));
+                testCase.getRequestOpensearch().getMethod(),
+                testCase.getRequestOpensearch().getUrl(),
+                testCase.getRequestOpensearch().getBody())
+        ).thenReturn(new OpenSearchResponse(200, testCase.getResponse()));
 
-        var gatewayUrl = URI.create(testcase.getRequestGateway().getUrl());
-        var pathParams = buildPathParamsForIndex(gatewayUrl.getPath());
-        var queryParams = buildQueryParams(gatewayUrl);
+        var gatewayUrl = testCase.getRequestGateway().getUrl().split("\\?",2);
+        var pathParams = buildPathParamsForIndex(gatewayUrl[0]);
+        var queryParams = buildQueryParams(gatewayUrl[1]);
 
         var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
-                .withHttpMethod(testcase.getRequestGateway().getMethod().name())
+                .withHttpMethod(testCase.getRequestGateway().getMethod().name())
                 .withPathParameters(pathParams)
                 .withQueryParameters(queryParams)
                 .withAuthorizerClaim(SCOPE_CLAIM, "https://api.sws.aws.sikt.no/scopes/workspace-mockname")
@@ -199,7 +217,7 @@ public class IndexHandlerTest extends TestCase {
                 .stripper(WORKSPACEPREFIX)
                 .toJsonCompact();
 
-        Assertions.assertEquals(readCompact(testcase.getResponseStripped()), readCompact(resultBody));
+        Assertions.assertEquals(readCompact(testCase.getResponseStripped()), readCompact(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
@@ -235,4 +253,11 @@ public class IndexHandlerTest extends TestCase {
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
+
+    Stream<TestCaseSws> getSearchRequestTestCasesStream() {
+        return new TestCaseLoader.Builder()
+            .loadResource("proxy/requests-search.json")
+            .build();
+    }
+
 }

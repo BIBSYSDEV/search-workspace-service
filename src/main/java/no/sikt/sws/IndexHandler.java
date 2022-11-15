@@ -25,8 +25,7 @@ import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_N
 public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
     public static final String RESOURCE_IDENTIFIER = "resource";
-    // Regex: may only contain big and small latin letters, norwegian letters, digits, '/', '-' and '_'
-    private static final String ALLOWED_INPUT = "[A-Za-zÆØÅæøå\\d/&?=_-]*";
+
     public static final String INTERNAL_ERROR = "Internal error";
     public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
 
@@ -52,7 +51,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         query = query.isEmpty() ? EMPTY_STRING : "?" + query;
 
         try {
-            validateResourceIdentifier(resourceIdentifier);
+            validateResourceIdentifier(resourceIdentifier, commandKind);
 
             var url = Prefixer.url(workspace,resourceIdentifier) + query;
             logger.info("URL: " + url);
@@ -91,11 +90,13 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
                         entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
     }
 
-    private static void validateResourceIdentifier(String resourceIdentifier) throws BadRequestException {
-        if (resourceIdentifier.startsWith("_") || !resourceIdentifier.matches(ALLOWED_INPUT)) {
+    private static void validateResourceIdentifier(String resourceIdentifier, OpenSearchCommandKind commandKind)
+            throws BadRequestException {
+
+        if (commandKind.isNotValid()) {
             throw new BadRequestException(
                     "Root operations and indeces starting with '_' or containing anything but letters, digits, '/',"
-                            + " '-' or '_'are not allowed. Got: " + resourceIdentifier);
+                    + " '-' or '_'are not allowed. Got: " + resourceIdentifier);
         }
     }
 

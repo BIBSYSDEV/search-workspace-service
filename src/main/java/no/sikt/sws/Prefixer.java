@@ -34,9 +34,11 @@ public class Prefixer {
         if (resourceIdentifier == null || resourceIdentifier.isEmpty()) {
             return workspacePrefix + "-*";
 
+        } else if (resourceIdentifier.startsWith("_search")) {
+            return workspacePrefix + "-*/" + resourceIdentifier;
+
         } else if (resourceIdentifier.startsWith("_")) {
             return resourceIdentifier;
-
         }
         return workspacePrefix + "-" + resourceIdentifier;
     }

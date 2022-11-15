@@ -84,6 +84,14 @@ public class TestCaseSws implements Serializable, Comparable<TestCaseSws> {
             && requestOpensearch.getBody() != null;
     }
 
+    public boolean isParamRequestTest()  {
+        return
+            requestGateway != null
+                && requestOpensearch != null
+                && requestGateway.getUrl().contains("?")
+                && requestOpensearch.getUrl().contains("?");
+    }
+
     @Override
     public String toString() {
         return  "[" + this.name + "]";

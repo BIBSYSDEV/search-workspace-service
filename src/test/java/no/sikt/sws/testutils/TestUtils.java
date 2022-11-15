@@ -7,7 +7,6 @@ import no.unit.nva.testutils.HandlerRequestBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,8 +25,8 @@ public final class TestUtils {
     }
 
     @NotNull
-    public static Map<String, String> buildQueryParams(URI uri) {
-        return Arrays.stream(uri.getQuery().split("&"))
+    public static Map<String, String> buildQueryParams(String query) {
+        return Arrays.stream(query.split("&"))
             .map(param -> {
                 var pair = param.split("=");
                 return Map.entry(pair[0], pair[1]);

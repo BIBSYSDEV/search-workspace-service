@@ -3,9 +3,11 @@ package no.sikt.sws.models.opensearch;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import nva.commons.core.JacocoGenerated;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
@@ -68,4 +70,87 @@ public class DocDto extends Dto {
         }
     }
 
+    public String getIndexName() {
+        return indexName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Number getVersion() {
+        return version;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public JsonNode getShards() {
+        return shards;
+    }
+
+    public Number getSeqNo() {
+        return seqNo;
+    }
+
+    public Number getPrimaryTerm() {
+        return primaryTerm;
+    }
+
+    public Boolean getFound() {
+        return found;
+    }
+
+    public Number getScore() {
+        return score;
+    }
+
+    public Collection<String> getLinks() {
+        return links;
+    }
+
+    public JsonNode getSource() {
+        return source;
+    }
+
+    public List<Long> getSort() {
+        return sort;
+    }
+
+    @Override
+    @JacocoGenerated
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DocDto docDto = (DocDto) o;
+        return Objects.equals(getIndexName(), docDto.getIndexName())
+            && Objects.equals(getType(), docDto.getType())
+            && Objects.equals(getId(), docDto.getId())
+            && Objects.equals(getVersion(), docDto.getVersion())
+            && Objects.equals(getResult(), docDto.getResult())
+            && Objects.equals(getShards(), docDto.getShards())
+            && Objects.equals(getSeqNo(), docDto.getSeqNo())
+            && Objects.equals(getPrimaryTerm(), docDto.getPrimaryTerm())
+            && Objects.equals(getFound(), docDto.getFound())
+            && Objects.equals(getScore(), docDto.getScore())
+            && Objects.equals(getLinks(), docDto.getLinks())
+            && Objects.equals(getSource(), docDto.getSource())
+            && Objects.equals(getSort(), docDto.getSort());
+    }
+
+    @Override
+    @JacocoGenerated
+    public int hashCode() {
+        return Objects.hash(getIndexName(), getType(), getId(), getVersion(), getResult(), getShards(), getSeqNo(),
+            getPrimaryTerm(), getFound(), getScore(), getLinks(), getSource(), getSort());
+    }
 }
