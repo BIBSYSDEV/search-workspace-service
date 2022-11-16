@@ -72,7 +72,7 @@ public class IndexHandlerTest extends TestCase {
 
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
 
-        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + TEST_INDEX_1 + "/_mapping", null))
+        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + "/_mapping", null))
                 .thenReturn(mockResponse);
 
 
@@ -94,7 +94,7 @@ public class IndexHandlerTest extends TestCase {
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
         when(openSearchClient.sendRequest(
                 eq(POST),
-                eq(TEST_PREFIX_SONDRE + TEST_INDEX_1 + "/_mapping"),
+                eq(TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + "/_mapping"),
                 argThat(new JsonStringMatcher(body.toString())))
         ).thenReturn(mockResponse);
 
@@ -137,7 +137,7 @@ public class IndexHandlerTest extends TestCase {
         var secretNonJsonString = "some invalid json";
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, secretNonJsonString);
 
-        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + TEST_INDEX_1, null))
+        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1, null))
             .thenReturn(mockResponse);
 
 
@@ -217,7 +217,9 @@ public class IndexHandlerTest extends TestCase {
                 .stripper(TEST_PREFIX_MOCKNAME)
                 .toJsonCompact();
 
-        Assertions.assertEquals(stripWhitespace(testCase.getResponseStripped()), stripWhitespace(resultBody));
+        Assertions.assertEquals(
+                stripWhitespaceNewLine(testCase.getResponseStripped()),
+                stripWhitespaceNewLine(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
@@ -253,7 +255,9 @@ public class IndexHandlerTest extends TestCase {
                 .stripper(TEST_PREFIX_SONDRE)
                 .toJsonCompact();
 
-        Assertions.assertEquals(stripWhitespace(testcase.getResponseStripped()), stripWhitespace(resultBody));
+        Assertions.assertEquals(
+                stripWhitespaceNewLine(testcase.getResponseStripped()),
+                stripWhitespaceNewLine(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }

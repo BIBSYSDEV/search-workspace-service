@@ -61,7 +61,7 @@ public final class TestUtils {
                 .build();
     }
 
-    public static String stripWhitespace(String body) {
+    public static String stripWhitespaceNewLine(String body) {
         return body.replaceAll("[\n\r ]", EMPTY_STRING);
     }
 }

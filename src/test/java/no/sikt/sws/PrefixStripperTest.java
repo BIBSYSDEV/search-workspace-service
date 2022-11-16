@@ -126,7 +126,7 @@ public class PrefixStripperTest {
         var expectedResponse = testCase.getResponseStripped();
 
         var workspaceResponse = attempt(() ->
-            WorkspaceResponse.fromValues(TEST_PREFIX_MOCKNAME,testCase.getResponse())).get();
+            WorkspaceResponse.fromValues(TEST_PREFIX_MOCKNAME, testCase.getResponse())).get();
 
         var resultResponse = attempt(() -> objectMapper
             .writerWithDefaultPrettyPrinter()
@@ -185,7 +185,7 @@ public class PrefixStripperTest {
 
         var gatewayBody = testCase.getRequestGateway().getBody();
         var resultBody = attempt(() ->
-            Prefixer.body(TEST_PREFIX_MOCKNAME,resourceIdentifier,gatewayBody)).get();
+            Prefixer.body(TEST_PREFIX_MOCKNAME, resourceIdentifier, gatewayBody)).get();
 
         assertEquals(expectedBody,resultBody);
     }
