@@ -17,9 +17,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
-import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
-import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
 import static java.net.HttpURLConnection.HTTP_OK;
+import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
+import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE_MOCKNAME;
+import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
 import static no.sikt.sws.testutils.TestUtils.buildRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -60,7 +61,7 @@ class SnapshotRoutineDeletionHandlerTest {
         final OpenSearchResponse mockDeleteResponse = new OpenSearchResponse(200, responseStripped);
 
         var pathParams = buildPathParamsForIndex(GET_URL_ALL);
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_MOCKNAME);
 
         when(openSearchClient.sendRequest(GET, GET_URL_ALL, null))
             .thenReturn(mockResponse);

@@ -1,33 +1,7 @@
 package no.sikt.sws;
 
-import static com.amazonaws.http.HttpMethodName.GET;
-import static com.amazonaws.http.HttpMethodName.POST;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static no.sikt.sws.PrefixStripperTest.WORKSPACEPREFIX;
-import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
-import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
-import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
-import static no.sikt.sws.testutils.TestUtils.buildQueryParams;
-import static no.sikt.sws.testutils.TestUtils.buildRequest;
-import static no.sikt.sws.testutils.TestUtils.buildRequestWithBody;
-import static no.sikt.sws.testutils.TestUtils.readCompact;
-import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.util.stream.Stream;
 import junit.framework.TestCase;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import no.sikt.sws.models.opensearch.SearchDto;
@@ -48,6 +22,32 @@ import org.junit.jupiter.api.TestFactory;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.util.stream.Stream;
+
+import static com.amazonaws.http.HttpMethodName.GET;
+import static com.amazonaws.http.HttpMethodName.POST;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
+import static no.sikt.sws.testutils.TestConstants.TEST_PREFIX_MOCKNAME;
+import static no.sikt.sws.testutils.TestConstants.TEST_PREFIX_SONDRE;
+import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE_MOCKNAME;
+import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE_SONDRE;
+import static no.sikt.sws.testutils.TestUtils.*;
+import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 public class IndexHandlerTest extends TestCase {
 
@@ -72,13 +72,13 @@ public class IndexHandlerTest extends TestCase {
 
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
 
-        when(openSearchClient.sendRequest(GET, TEST_WORKSPACE_PREFIX + TEST_INDEX_1 + "/_mapping", null))
+        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + TEST_INDEX_1 + "/_mapping", null))
                 .thenReturn(mockResponse);
 
 
         var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_mapping");
 
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -94,13 +94,13 @@ public class IndexHandlerTest extends TestCase {
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
         when(openSearchClient.sendRequest(
                 eq(POST),
-                eq(TEST_WORKSPACE_PREFIX + TEST_INDEX_1 + "/_mapping"),
+                eq(TEST_PREFIX_SONDRE + TEST_INDEX_1 + "/_mapping"),
                 argThat(new JsonStringMatcher(body.toString())))
         ).thenReturn(mockResponse);
 
         var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_mapping");
 
-        var request = TestUtils.buildRequestWithBody(HttpMethod.POST, pathParams, body);
+        var request = TestUtils.buildRequestWithBody(HttpMethod.POST, pathParams, body, TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -112,7 +112,7 @@ public class IndexHandlerTest extends TestCase {
     void shouldThrowBadRequestWhenGivenIndexBeginningWithUnderscore() throws IOException {
 
         var pathParams = buildPathParamsForIndex("_someindex");
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_PREFIX_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -124,7 +124,7 @@ public class IndexHandlerTest extends TestCase {
     void shouldThrowBadRequestWhenUsingNonWhitelistedCharacters() throws IOException {
 
         var pathParams = buildPathParamsForIndex("some:index");
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -137,13 +137,13 @@ public class IndexHandlerTest extends TestCase {
         var secretNonJsonString = "some invalid json";
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, secretNonJsonString);
 
-        when(openSearchClient.sendRequest(GET, TEST_WORKSPACE_PREFIX + TEST_INDEX_1, null))
+        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + TEST_INDEX_1, null))
             .thenReturn(mockResponse);
 
 
         var pathParams = buildPathParamsForIndex(TEST_INDEX_1);
 
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -167,7 +167,7 @@ public class IndexHandlerTest extends TestCase {
         ).thenReturn(mockResponse);
 
         var pathParams = buildPathParamsForIndex(uri.toString());
-        var request = buildRequest(HttpMethod.GET, pathParams);
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -206,7 +206,7 @@ public class IndexHandlerTest extends TestCase {
                 .withHttpMethod(testCase.getRequestGateway().getMethod().name())
                 .withPathParameters(pathParams)
                 .withQueryParameters(queryParams)
-                .withAuthorizerClaim(SCOPE_CLAIM, "https://api.sws.aws.sikt.no/scopes/workspace-mockname")
+                .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE_MOCKNAME)
                 .build();
 
         handler.handleRequest(request, output, CONTEXT);
@@ -214,7 +214,7 @@ public class IndexHandlerTest extends TestCase {
         var response = GatewayResponse.fromOutputStream(output, String.class);
         var resultBody =  SearchDto
                 .fromResponse(response.getBody())
-                .stripper(WORKSPACEPREFIX)
+                .stripper(TEST_PREFIX_MOCKNAME)
                 .toJsonCompact();
 
         Assertions.assertEquals(readCompact(testCase.getResponseStripped()), readCompact(resultBody));
@@ -239,14 +239,18 @@ public class IndexHandlerTest extends TestCase {
 
         var gatewayUrl = URI.create(requestGateway.getUrl());
         var pathParams = buildPathParamsForIndex(gatewayUrl.getPath());
-        var request = buildRequestWithBody(HttpMethod.GET, pathParams, requestGateway.getBody());
+        var request = buildRequestWithBody(
+                HttpMethod.GET,
+                pathParams,
+                requestGateway.getBody(),
+                TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
 
         var response = GatewayResponse.fromOutputStream(output, String.class);
         var resultBody =  SearchDto
                 .fromResponse(response.getBody())
-                .stripper(TEST_WORKSPACE_PREFIX)
+                .stripper(TEST_PREFIX_SONDRE)
                 .toJsonCompact();
 
         Assertions.assertEquals(readCompact(testcase.getResponseStripped()), readCompact(resultBody));

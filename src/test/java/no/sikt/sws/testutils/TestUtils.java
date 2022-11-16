@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import static no.sikt.sws.IndexHandler.RESOURCE_IDENTIFIER;
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
-import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE;
+import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE_SONDRE;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 
 public final class TestUtils {
@@ -35,25 +35,28 @@ public final class TestUtils {
     }
 
     public static InputStream buildRequest(HttpMethod httpMethod,
-                                           Map<String,String> pathParams)
+                                           Map<String, String> pathParams,
+                                           String scopeClaim)
             throws JsonProcessingException {
 
         return new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
                 .withHttpMethod(httpMethod.toString())
                 .withPathParameters(pathParams)
-                .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE)
+                .withAuthorizerClaim(SCOPE_CLAIM, scopeClaim)
                 .build();
     }
 
-    public static  <T> InputStream buildRequestWithBody(HttpMethod httpMethod,
-                                                        Map<String,String> pathParams,
-                                                        T body)
-            throws JsonProcessingException {
+    public static <T> InputStream buildRequestWithBody(
+            HttpMethod httpMethod,
+            Map<String, String> pathParams,
+            T body,
+            String scopeClaim
+    ) throws JsonProcessingException {
 
         return new HandlerRequestBuilder<T>(JsonUtils.dtoObjectMapper)
                 .withHttpMethod(httpMethod.toString())
                 .withPathParameters(pathParams)
-                .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE)
+                .withAuthorizerClaim(SCOPE_CLAIM, scopeClaim)
                 .withBody(body)
                 .build();
     }
