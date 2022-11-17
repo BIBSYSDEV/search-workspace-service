@@ -1,6 +1,7 @@
 package no.sikt.sws;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
+import static no.sikt.sws.testutils.TestConstants.TEST_PREFIX_MOCKNAME;
 import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
 import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +24,6 @@ import org.slf4j.LoggerFactory;
 public class PrefixStripperTest {
 
     private static final Logger logger = LoggerFactory.getLogger(PrefixStripperTest.class);
-    static final String WORKSPACEPREFIX = "workspace-mockname";
 
     /**
     **  Merge all testcases into one stream.
@@ -126,7 +126,7 @@ public class PrefixStripperTest {
         var expectedResponse = testCase.getResponseStripped();
 
         var workspaceResponse = attempt(() ->
-            WorkspaceResponse.fromValues(WORKSPACEPREFIX,testCase.getResponse())).get();
+            WorkspaceResponse.fromValues(TEST_PREFIX_MOCKNAME, testCase.getResponse())).get();
 
         var resultResponse = attempt(() -> objectMapper
             .writerWithDefaultPrettyPrinter()
@@ -152,7 +152,11 @@ public class PrefixStripperTest {
 
         logger.info("--> " + command.name());
         logger.info("<-- " + responseKind.name());
-        var resultResponse = PrefixStripper.body(command, responseKind, WORKSPACEPREFIX,openSearchResponse);
+        var resultResponse = PrefixStripper.body(
+                command,
+                responseKind,
+                TEST_PREFIX_MOCKNAME,
+                openSearchResponse);
 
         assertEquals(toJsonCompact(expectedResponse),toJsonCompact(resultResponse));
     }
@@ -163,7 +167,7 @@ public class PrefixStripperTest {
 
         var gatewayUrl = testCase.getRequestGateway().getUrl();
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
-        var resultUrl = Prefixer.url(WORKSPACEPREFIX,gatewayUrl);
+        var resultUrl = Prefixer.url(TEST_PREFIX_MOCKNAME,gatewayUrl);
 
         logger.info("--> " + testCase.getRequestOpensearch().getMethod()
                 + " http://opensearch/" + resultUrl);
@@ -181,7 +185,7 @@ public class PrefixStripperTest {
 
         var gatewayBody = testCase.getRequestGateway().getBody();
         var resultBody = attempt(() ->
-            Prefixer.body(WORKSPACEPREFIX,resourceIdentifier,gatewayBody)).get();
+            Prefixer.body(TEST_PREFIX_MOCKNAME, resourceIdentifier, gatewayBody)).get();
 
         assertEquals(expectedBody,resultBody);
     }
@@ -205,7 +209,7 @@ public class PrefixStripperTest {
         logger.info("--> " + command.name());
 
         var resultBody = attempt(() ->
-            Prefixer.body(WORKSPACEPREFIX, resourceIdentifier, gatewayBody)
+            Prefixer.body(TEST_PREFIX_MOCKNAME, resourceIdentifier, gatewayBody)
         ).get();
 
         assertEquals(toJsonCompact(expectedBody),toJsonCompact(resultBody));

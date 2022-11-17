@@ -6,7 +6,6 @@ import com.amazonaws.Response;
 import com.amazonaws.http.HttpResponse;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -15,11 +14,12 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static com.amazonaws.http.HttpMethodName.*;
+import static com.amazonaws.http.HttpMethodName.GET;
+import static com.amazonaws.http.HttpMethodName.POST;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_PROTOCOL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +29,7 @@ public class OpenSearchClientTest {
     final AwsClientWrapper awsClient = mock(AwsClientWrapper.class);
     final AwsSignerWrapper awsSigner = mock(AwsSignerWrapper.class);
 
-    final Response emptyResponse = new Response<>("", httpResponse);
+    final Response<String> emptyResponse = new Response<>("", httpResponse);
 
     private OpenSearchClient openSearchClient;
 

@@ -20,8 +20,7 @@ import java.io.IOException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static no.sikt.sws.testutils.TestConstants.OPEN_SEARCH_INDEX_LIST;
-import static no.sikt.sws.testutils.TestConstants.TEST_WORKSPACE_PREFIX;
+import static no.sikt.sws.testutils.TestConstants.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -50,10 +49,10 @@ public class WorkspaceHandlerTest extends TestCase {
     void callToOpenSearchMapsToCorrectResponse() throws IOException {
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, OPEN_SEARCH_INDEX_LIST);
 
-        when(openSearchClient.sendRequest(GET, TEST_WORKSPACE_PREFIX + "*", null))
+        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-*", null))
                 .thenReturn(mockResponse);
 
-        var request = TestUtils.buildRequest(HttpMethod.GET,null);
+        var request = TestUtils.buildRequest(HttpMethod.GET,null, TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, WorkspaceResponse.class);

@@ -34,7 +34,7 @@ public class PrefixStripper {
         var replaceWithGroup1andGroup3 = "$1$3";
         return string2JsonNode(
             node.toString()
-                .replaceAll(regex,replaceWithGroup1andGroup3));
+                .replaceAll(regex, replaceWithGroup1andGroup3));
     }
 
     /**
