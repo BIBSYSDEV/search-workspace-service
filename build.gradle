@@ -12,6 +12,7 @@ plugins {
     id 'java-library'
     id 'checkstyle'
     id 'pmd'
+    id 'jacoco'
 }
 
 repositories {
@@ -82,13 +83,6 @@ checkstyle {
     maxWarnings = 0
 }
 
-//jacocoTestReport {
-//    reports {
-//        xml.required = true
-//    }
-//}
-
-
 test {
     environment "ALLOWED_ORIGIN", "*"
     environment "COGNITO_HOST", "https://example.com"
@@ -108,31 +102,35 @@ test {
         exceptionFormat "full"
     }
 
-//    finalizedBy jacocoTestReport
+    finalizedBy jacocoTestReport
 }
 
-//jacocoTestCoverageVerification {
-//    violationRules {
-//        rule {
-//            limit {
-//                counter = 'METHOD'
-//                value = 'COVEREDRATIO'
-//                minimum = 1.000
-//            }
-//        }
-//
-//        rule {
-//            limit {
-//                counter = 'CLASS'
-//                value = 'COVEREDRATIO'
-//                minimum = 1.000
-//            }
-//        }
-//    }
-//}
+check.dependsOn jacocoTestCoverageVerification
+jacocoTestCoverageVerification.dependsOn(jacocoTestReport)
 
-//check.dependsOn jacocoTestCoverageVerification
-//jacocoTestCoverageVerification.dependsOn(jacocoTestReport)
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 1.000
+            }
+        }
+
+        rule {
+            limit {
+                counter = 'CLASS'
+                value = 'COVEREDRATIO'
+                minimum = 1.000
+            }
+        }
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+}
 
 
 tasks.withType(Checkstyle) {
@@ -142,62 +140,3 @@ tasks.withType(Checkstyle) {
         html.stylesheet rootProject.resources.text.fromFile('config/checkstyle/checkstyle-simple.xsl')
     }
 }
-
-
-def getReportTasks(JacocoReport pRootTask) {
-    getProjectList().collect {
-        it.tasks.withType(JacocoReport).findAll { it != pRootTask }
-    }.flatten()
-}
-
-
-//task jacocoMerge(type: JacocoMerge) {
-//    group = LifecycleBasePlugin.VERIFICATION_GROUP
-//    description = 'Merge the JaCoCo data files from all subprojects into one'
-//    project.afterEvaluate {
-//        // do it at the end of the config phase to be sure all information is present
-//        FileCollection execFiles = project.objects.fileCollection()   // an empty FileCollection
-//        getProjectList().each { Project subproject ->
-//            if (subproject.pluginManager.hasPlugin('jacoco')) {
-//                def testTasks = subproject.tasks.withType(Test)
-//                dependsOn(testTasks)   // ensure that .exec files are actually present
-//
-//                testTasks.each { Test task ->
-//                    // The JacocoTaskExtension is the source of truth for the location of the .exec file.
-//                    JacocoTaskExtension extension = task.getExtensions().findByType(JacocoTaskExtension.class)
-//                    if (extension != null) {
-//                        execFiles.from extension.getDestinationFile()
-//                    }
-//                }
-//            }
-//        }
-//        executionData = execFiles
-//    }
-//    doFirst {
-//        // .exec files might be missing if a project has no tests. Filter in execution phase.
-//        executionData = executionData.filter { it.canRead() }
-//    }
-//}
-
-//task jacocoRootReport(type: JacocoReport, dependsOn: tasks.jacocoMerge) {
-//    group = LifecycleBasePlugin.VERIFICATION_GROUP
-//    description = 'Generates an aggregate report from all subprojects'
-//
-//    logger.lifecycle 'Using aggregated file: ' + tasks.jacocoMerge.destinationFile
-//    executionData.from tasks.jacocoMerge.destinationFile
-//
-//    project.afterEvaluate {
-//        // The JacocoReport tasks are the source of truth for class files and sources.
-//        def reportTasks = getReportTasks(tasks.jacocoRootReport)
-//        classDirectories.from project.files({
-//            reportTasks.collect { it.classDirectories }.findAll { it != null }
-//        })
-//        sourceDirectories.from project.files({
-//            reportTasks.collect { it.sourceDirectories }.findAll { it != null }
-//        })
-//    }
-//
-//    reports {
-//        xml.required = true
-//    }
-//}

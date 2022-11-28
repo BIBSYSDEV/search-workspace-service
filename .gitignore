@@ -11,3 +11,9 @@ build
 # sam
 .aws-sam
 sam-enviorment.json
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
