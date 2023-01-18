@@ -19,7 +19,7 @@ public class AwsClientWrapper {
     private final boolean passError;
 
     private static final List<Integer> FORWARDED_ES_ERROR_CODES
-            = Arrays.asList(BAD_REQUEST, NOT_FOUND, METHOD_NOT_ALLOWED, NOT_ACCEPTABLE);
+            = Arrays.asList(BAD_REQUEST, NOT_FOUND, METHOD_NOT_ALLOWED, NOT_ACCEPTABLE, INTERNAL_SERVER_ERROR);
 
     private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
 

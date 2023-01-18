@@ -513,3 +513,5 @@ Resources:
         VolumeType: gp2
       CognitoOptions:
         Enabled: false
+      AdvancedOptions:
+        max_clause_count: 2048
