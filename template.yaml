@@ -514,4 +514,4 @@ Resources:
       CognitoOptions:
         Enabled: false
       AdvancedOptions:
-        max_clause_count: 2048
+        "indices.query.bool.max_clause_count": "2048"
