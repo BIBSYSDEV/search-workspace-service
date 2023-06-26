@@ -493,20 +493,20 @@ Resources:
       ClusterConfig: !If [ LargeElasticSearch,
         {
           DedicatedMasterEnabled: true,
-          DedicatedMasterType: t2.medium.search,
+          DedicatedMasterType: t3.medium.search,
           DedicatedMasterCount: 3,
           InstanceCount: 2,
           ZoneAwarenessEnabled: false,
-          InstanceType: t2.medium.search
+          InstanceType: t3.medium.search
         },
         {
           DedicatedMasterEnabled: false,
           InstanceCount: 1,
           ZoneAwarenessEnabled: false,
-          InstanceType: t2.medium.search
+          InstanceType: t3.medium.search
         }
       ]
-      EngineVersion: "OpenSearch_2.3"
+      EngineVersion: "OpenSearch_2.5"
       EBSOptions:
         EBSEnabled: true
         VolumeSize: 10
