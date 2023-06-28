@@ -509,7 +509,7 @@ Resources:
       EngineVersion: "OpenSearch_2.5"
       EBSOptions:
         EBSEnabled: true
-        VolumeSize: 10
+        VolumeSize: 50
         VolumeType: gp2
       CognitoOptions:
         Enabled: false
