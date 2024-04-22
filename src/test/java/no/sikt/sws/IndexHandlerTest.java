@@ -3,6 +3,8 @@ package no.sikt.sws;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
 import junit.framework.TestCase;
+import no.sikt.sws.models.opensearch.IndexDto;
+import no.sikt.sws.models.opensearch.IndexesDto;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import no.sikt.sws.models.opensearch.SearchDto;
 import no.sikt.sws.testutils.JsonStringMatcher;
@@ -31,6 +33,7 @@ import java.util.stream.Stream;
 import static com.amazonaws.http.HttpMethodName.GET;
 import static com.amazonaws.http.HttpMethodName.POST;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_ENTITY_TOO_LARGE;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
@@ -167,6 +170,61 @@ public class IndexHandlerTest extends TestCase {
         ).thenReturn(mockResponse);
 
         var pathParams = buildPathParamsForIndex(uri.toString());
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
+
+        handler.handleRequest(request, output, CONTEXT);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
+
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
+    }
+
+    @Test
+    void shouldReturn413ForTooLargeResponse() throws IOException {
+        var longStr = "a".repeat(10000000);
+        var responseStr = "{ \"indexname\": {\"mappings\":{ \"data\":\"" + longStr + "\"}}}";
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, responseStr);
+
+        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1, null))
+            .thenReturn(mockResponse);
+
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1);
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
+
+        handler.handleRequest(request, output, CONTEXT);
+        var gatewayResponse = GatewayResponse.fromOutputStream(output, String.class);
+
+        assertThat(gatewayResponse.getStatusCode(), is(equalTo(HTTP_ENTITY_TOO_LARGE)));
+    }
+
+    @Test
+    void shouldReturn200ForNotTooLargeResponse() throws IOException {
+        var longStr = "a".repeat(1000000);
+        var responseStr = "{ \"indexname\": {\"mappings\":{ \"data\":\"" + longStr + "\"}}}";
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, responseStr);
+
+        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1, null))
+            .thenReturn(mockResponse);
+
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1);
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
+
+        handler.handleRequest(request, output, CONTEXT);
+        var gatewayResponse = GatewayResponse.fromOutputStream(output, String.class);
+
+        assertThat(gatewayResponse.getStatusCode(), is(equalTo(HTTP_OK)));
+    }
+
+    @Test
+    void shouldPassSearchScrollDirectlyToOpensearch() throws IOException {
+
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
+
+        when(openSearchClient.sendRequest(GET, "_search/scroll", null))
+            .thenReturn(mockResponse);
+
+
+        var pathParams = buildPathParamsForIndex("_search/scroll");
+
         var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);

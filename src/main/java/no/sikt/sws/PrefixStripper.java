@@ -84,6 +84,7 @@ public class PrefixStripper {
                         return IndexesDto.fromResponse(responseBody).stripper(workspacePrefix)
                             .toJsonCompact();
                     case SEARCH:
+                    case SCROLL:
                         return SearchDto.fromResponse(responseBody).stripper(workspacePrefix)
                             .toJsonCompact();
                     default:

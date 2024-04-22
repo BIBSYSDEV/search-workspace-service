@@ -10,6 +10,7 @@ public enum OpenSearchCommandKind {
     DOC(".*/_doc.*"),
     MAPPING("_mapping"),
     SEARCH(".*_search.*"),
+    SCROLL("_search/scroll"),
     INDEX("index"),
     // the following are not executable
     NOT_IMPLEMENTED("_.+"),
@@ -35,6 +36,11 @@ public enum OpenSearchCommandKind {
         if (resourceIdentifier == null || resourceIdentifier.isEmpty()) {
             return INVALID;
         }
+
+        if (SCROLL.val.equals(resourceIdentifier)) {
+            return SCROLL;
+        }
+
         //find last item in resourceIdentifier, if only one item (none), use resourceIdentifier
         var resource = new ArrayDeque<>(Arrays.asList(resourceIdentifier.split("/"))).getLast();
         String finalResource = (resource.isEmpty() ? resourceIdentifier : resource).split("[?]")[0];

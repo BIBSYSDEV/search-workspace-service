@@ -23,6 +23,10 @@ public class SearchDto extends Dto {
     @JsonProperty("aggregations")
     public JsonNode aggregations;
 
+    @JsonProperty("_scroll_id")
+    public String scrollId;
+
+
     public SearchDto() {
         super();
     }
