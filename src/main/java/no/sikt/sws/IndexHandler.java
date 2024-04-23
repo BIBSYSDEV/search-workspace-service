@@ -59,7 +59,6 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             validateResourceIdentifier(resourceIdentifier, commandKind);
 
             var url = Prefixer.url(workspace,resourceIdentifier) + query;
-            logger.info("URL: " + url);
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
                 throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "[requestBody]");
@@ -68,15 +67,11 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             var requestBody = Prefixer.body(workspace, resourceIdentifier, body);
             var response = openSearchClient.sendRequest(httpMethod, url, requestBody);
 
-            logger.info("response-code:" + response.getStatus());
-            logger.info("raw response-body:" + response.getBody());
-
             var responseKind = OpenSearchResponseKind
                 .fromString(httpMethod,commandKind,response.getBody());
 
             var responseBody = PrefixStripper.body(commandKind, responseKind,workspace, response.getBody());
             assertThatLambdaCanHandleResponseSize(responseBody);
-            logger.info("stripped response-body:" + responseBody);
 
             return new ProxyResponse<>(response.getStatus(), responseBody);
         } catch (BadRequestException | RequestTooLargeException e) {
