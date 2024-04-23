@@ -29,7 +29,7 @@ public enum OpenSearchResponseKind {
         OpenSearchCommandKind commandKind,
         String responseBody) throws BadRequestException {
 
-        if (checkforError(responseBody)) {
+        if (checkForError(responseBody)) {
             return ERROR;
         }
 
@@ -40,6 +40,7 @@ public enum OpenSearchResponseKind {
                 return CONTENT;
             case BULK:
             case SEARCH:
+            case SCROLL:
                 return CONTENT_COLLECTION;
             case MAPPING:
             case INDEX:
@@ -49,7 +50,7 @@ public enum OpenSearchResponseKind {
         }
     }
 
-    private static boolean checkforError(String responseBody) {
+    private static boolean checkForError(String responseBody) {
         return  responseBody.contains("\"error\"") && responseBody.contains("\"status\"");
     }
 

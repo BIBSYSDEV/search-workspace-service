@@ -33,7 +33,8 @@ public class Prefixer {
         logger.debug("prefixing " + workspacePrefix + resourceIdentifier);
         if (resourceIdentifier == null || resourceIdentifier.isEmpty()) {
             return workspacePrefix + "-*";
-
+        } else if ("_search/scroll".equals(resourceIdentifier)) {
+            return resourceIdentifier;
         } else if (resourceIdentifier.startsWith("_search")) {
             return workspacePrefix + "-*/" + resourceIdentifier;
 

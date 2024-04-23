@@ -1,7 +1,9 @@
 package no.sikt.sws;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import java.nio.charset.StandardCharsets;
 import no.sikt.sws.exception.SearchException;
+import no.sikt.sws.models.RequestTooLargeException;
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
 import nva.commons.apigateway.ApiGatewayProxyHandler;
@@ -27,6 +29,9 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
     public static final String RESOURCE_IDENTIFIER = "resource";
 
     public static final String INTERNAL_ERROR = "Internal error";
+    public static final String TOO_LARGE_RESULTS = "Search response too large. Try to narrow down the search or use "
+                                                   + "pagination";
+    public static final int AWS_LAMBDA_RESPONSE_LIMIT_BYTES = 5 * 1024 * 1024;
     public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
 
 
@@ -53,33 +58,35 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         try {
             validateResourceIdentifier(resourceIdentifier, commandKind);
 
-            var url = Prefixer.url(workspace,resourceIdentifier) + query;
-            logger.info("URL: " + url);
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
                 throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "[requestBody]");
             }
 
+            var url = Prefixer.url(workspace,resourceIdentifier) + query;
             var requestBody = Prefixer.body(workspace, resourceIdentifier, body);
             var response = openSearchClient.sendRequest(httpMethod, url, requestBody);
-
-            logger.info("response-code:" + response.getStatus());
-            logger.info("raw response-body:" + response.getBody());
 
             var responseKind = OpenSearchResponseKind
                 .fromString(httpMethod,commandKind,response.getBody());
 
             var responseBody = PrefixStripper.body(commandKind, responseKind,workspace, response.getBody());
-
-            logger.info("stripped response-body:" + responseBody);
+            assertThatLambdaCanHandleResponseSize(responseBody);
 
             return new ProxyResponse<>(response.getStatus(), responseBody);
-        } catch (BadRequestException be) {
-            logger.error(be.getLocalizedMessage());
-            throw be;
+        } catch (BadRequestException | RequestTooLargeException e) {
+            logger.error(e.getLocalizedMessage());
+            throw e;
         } catch (Exception e) {
             logger.error("Error: " + e.getMessage(), e);
             throw new SearchException(INTERNAL_ERROR, e);
+        }
+    }
+
+    private static void assertThatLambdaCanHandleResponseSize(String responseBody) throws RequestTooLargeException {
+        int sizeInBytes = responseBody.getBytes(StandardCharsets.UTF_8).length;
+        if (sizeInBytes > AWS_LAMBDA_RESPONSE_LIMIT_BYTES) {
+            throw new RequestTooLargeException(TOO_LARGE_RESULTS);
         }
     }
 
