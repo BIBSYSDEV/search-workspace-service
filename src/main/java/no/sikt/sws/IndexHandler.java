@@ -58,12 +58,12 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         try {
             validateResourceIdentifier(resourceIdentifier, commandKind);
 
-            var url = Prefixer.url(workspace,resourceIdentifier) + query;
 
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
                 throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "[requestBody]");
             }
 
+            var url = Prefixer.url(workspace,resourceIdentifier) + query;
             var requestBody = Prefixer.body(workspace, resourceIdentifier, body);
             var response = openSearchClient.sendRequest(httpMethod, url, requestBody);
 
