@@ -73,6 +73,7 @@ public class Prefixer {
             case SEARCH:
             case MAPPING:
             case DOC:
+            case SCROLL:
                 logger.info("           --> BODY UNTOUCHED");
                 return gatewayBody;
             case INDEX:
