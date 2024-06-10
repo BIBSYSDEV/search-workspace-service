@@ -48,8 +48,10 @@ public class DocDto extends Dto {
     @JsonProperty("_source")
     public JsonNode source;
 
+    //@JsonDeserialize(using = ExampleDeserializer.class)
+    //@JsonSerialize(using = CustomDateSerializer.class )
     @JsonProperty("sort")
-    public List<Long> sort;
+    public List<Object> sort;
 
 
     public DocDto() {
@@ -118,7 +120,7 @@ public class DocDto extends Dto {
         return source;
     }
 
-    public List<Long> getSort() {
+    public List<Object> getSort() {
         return sort;
     }
 

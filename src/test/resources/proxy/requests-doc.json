@@ -136,7 +136,7 @@
     }
   },
   {
-    "name": "GET doc with id - large values",
+    "name": "GET doc with id - sort as large long",
     "requestGateway": {
       "method": "GET",
       "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
@@ -163,6 +163,37 @@
       },
       "sort": [
         1618099200000
+      ]
+    }
+  },
+  {
+    "name": "GET doc with id - sort as string",
+    "requestGateway": {
+      "method": "GET",
+      "url": "index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "requestOpensearch": {
+      "method": "GET",
+      "url": "workspace-mockname-index1/_doc/vw2ZMYMB7qJ3vkuEHt6j",
+      "body":null
+    },
+    "response": {
+      "_index": "workspace-mockname-index1",
+      "_id": "wA2eMYMB7qJ3vkuEet4E",
+      "_source": {
+      },
+      "sort": [
+        "some.field"
+      ]
+    },
+    "responseStripped": {
+      "_index": "index1",
+      "_id": "wA2eMYMB7qJ3vkuEet4E",
+      "_source": {
+      },
+      "sort": [
+        "some.field"
       ]
     }
   },
