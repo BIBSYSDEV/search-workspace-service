@@ -49,7 +49,7 @@ public class DocDto extends Dto {
     public JsonNode source;
 
     @JsonProperty("sort")
-    public List<Long> sort;
+    public List<Object> sort;
 
 
     public DocDto() {
@@ -118,7 +118,7 @@ public class DocDto extends Dto {
         return source;
     }
 
-    public List<Long> getSort() {
+    public List<Object> getSort() {
         return sort;
     }
 
