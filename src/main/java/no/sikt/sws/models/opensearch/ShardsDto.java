@@ -3,8 +3,7 @@ package no.sikt.sws.models.opensearch;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Collection;
-
-import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
+import java.util.Objects;
 
 public class ShardsDto extends Dto {
 
@@ -21,7 +20,7 @@ public class ShardsDto extends Dto {
     public Number failed;
 
     @JsonProperty("failures")
-    public Collection<String> failures;
+    public Collection<FailureDto> failures;
 
     public ShardsDto() {
         super();
@@ -30,12 +29,8 @@ public class ShardsDto extends Dto {
     @Override
     @SuppressWarnings("unused")
     public ShardsDto stripper(String workspacePrefix) {
-        var regex = toRegEx.apply(workspacePrefix);
-        if (failures != null) {
-            failures.forEach(failure ->
-                failure = failure.replaceAll(regex,EMPTY_STRING));
-        } else {
-            logger.info(toString());
+        if (Objects.nonNull(this.failures)) {
+            this.failures.forEach(failureDto -> failureDto.stripper(workspacePrefix));
         }
         return this;
     }

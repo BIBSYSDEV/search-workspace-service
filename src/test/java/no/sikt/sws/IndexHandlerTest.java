@@ -156,7 +156,7 @@ public class IndexHandlerTest extends TestCase {
     }
 
     @Test
-    void shuldPassQueryParams() throws IOException {
+    void shouldPassQueryParams() throws IOException {
 
         var searchCommand = "_search?param1=1&param2=2";
         var uri = URI.create(TEST_INDEX_1 + "/" + searchCommand);
@@ -194,6 +194,32 @@ public class IndexHandlerTest extends TestCase {
         var gatewayResponse = GatewayResponse.fromOutputStream(output, String.class);
 
         assertThat(gatewayResponse.getStatusCode(), is(equalTo(HTTP_ENTITY_TOO_LARGE)));
+    }
+
+    @Test
+    void shouldReturnShardsFailures() throws IOException {
+
+        var responseStr = "{\"took\":47354,\"timed_out\":false,\"_shards\":{\"total\":5,\"successful\":4,"
+                          + "\"skipped\":0,\"failed\":1,"
+                          + "\"failures\":[{\"shard\":3,\"index\":\"" + TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + "\","
+                          + "\"node\":\"KtsKT2hORLCAKelYrRrX-Q\",\"reason\":"
+                          + "{\"type\":\"rejected_execution_exception\","
+                          + "\"reason\":\"cancelled task with reason: heap usage exceeded [283.4mb >= 69.2mb]\"}}]}}";
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(500, responseStr);
+
+        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + "/_search", null))
+            .thenReturn(mockResponse);
+
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_search");
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
+
+        handler.handleRequest(request, output, CONTEXT);
+        var gatewayResponse = GatewayResponse.fromOutputStream(output, String.class);
+        var json = JsonUtils.dtoObjectMapper.readTree(gatewayResponse.getBody());
+        var index = json.get("_shards").get("failures").get(0).get("index").textValue();
+        assertThat(gatewayResponse.getStatusCode(), is(equalTo(HTTP_INTERNAL_ERROR)));
+        assertThat(index, is(equalTo(TEST_INDEX_1)));
+
     }
 
     @Test
