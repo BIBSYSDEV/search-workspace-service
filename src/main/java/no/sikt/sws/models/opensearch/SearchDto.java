@@ -3,6 +3,7 @@ package no.sikt.sws.models.opensearch;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Objects;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
@@ -48,7 +49,7 @@ public class SearchDto extends Dto {
         } else {
             logger.info(toString());
         }
-        if (shards != null) {
+        if (Objects.nonNull(shards)) {
             shards.stripper(workspacePrefix);
         }
 
