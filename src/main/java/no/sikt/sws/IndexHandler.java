@@ -58,7 +58,6 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         try {
             validateResourceIdentifier(resourceIdentifier, commandKind);
 
-
             if (body == null && (PUT ==  httpMethod || POST == httpMethod)) {
                 throw new IllegalArgumentException(REQUIRED_PARAMETER_IS_NULL + "[requestBody]");
             }
@@ -102,7 +101,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
         if (commandKind.isNotValid()) {
             throw new BadRequestException(
-                    "Root operations and indeces starting with '_' or containing anything but letters, digits, '/',"
+                    "Root operations and indices starting with '_' or containing anything but letters, digits, '/',"
                     + " '-' or '_'are not allowed. Got: " + resourceIdentifier);
         }
     }

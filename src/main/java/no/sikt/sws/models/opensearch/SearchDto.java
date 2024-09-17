@@ -48,10 +48,10 @@ public class SearchDto extends Dto {
         } else {
             logger.info(toString());
         }
-        if (shards != null && shards.failures != null) {
-            shards.failures.forEach(failure ->
-                failure = failure.replaceAll(workspacePrefix + "-", EMPTY_STRING));
+        if (shards != null) {
+            shards.stripper(workspacePrefix);
         }
+
         return this;
     }
 
