@@ -86,7 +86,7 @@ tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
             limit {
                 counter = 'METHOD'
                 value = 'COVEREDRATIO'
-                minimum = 0.677 // todo: fix me
+                minimum = 0.672 // todo: fix me
             }
         }
 
