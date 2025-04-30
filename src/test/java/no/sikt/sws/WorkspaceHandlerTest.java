@@ -2,7 +2,6 @@ package no.sikt.sws;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
-import junit.framework.TestCase;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import no.sikt.sws.models.internal.WorkspaceResponse;
 import no.sikt.sws.testutils.TestUtils;
@@ -26,7 +25,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.when;
 
-public class WorkspaceHandlerTest extends TestCase {
+public class WorkspaceHandlerTest {
 
 
     private static final Context CONTEXT = new FakeContext();

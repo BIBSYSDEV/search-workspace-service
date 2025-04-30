@@ -2,9 +2,6 @@ package no.sikt.sws;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.lambda.runtime.Context;
-import junit.framework.TestCase;
-import no.sikt.sws.models.opensearch.IndexDto;
-import no.sikt.sws.models.opensearch.IndexesDto;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import no.sikt.sws.models.opensearch.SearchDto;
 import no.sikt.sws.testutils.JsonStringMatcher;
@@ -52,7 +49,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-public class IndexHandlerTest extends TestCase {
+public class IndexHandlerTest  {
 
     private static final Context CONTEXT = new FakeContext();
     private ByteArrayOutputStream output;
