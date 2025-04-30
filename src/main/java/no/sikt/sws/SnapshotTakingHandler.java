@@ -8,6 +8,7 @@ import no.sikt.sws.exception.SearchException;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
+import nva.commons.core.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,12 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
     public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotTakingHandler() {
-        super(Void.class);
+        super(Void.class, new Environment());
+    }
+
+    @Override
+    protected void validateRequest(Void unused, RequestInfo requestInfo, Context context) throws ApiGatewayException {
+        // no op
     }
 
     @Override

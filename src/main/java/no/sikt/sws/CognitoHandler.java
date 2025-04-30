@@ -6,6 +6,8 @@ import no.sikt.sws.models.internal.CognitoCredentialsDto;
 import no.sikt.sws.models.internal.CreateUserClientDto;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
+import nva.commons.apigateway.exceptions.ApiGatewayException;
+import nva.commons.core.Environment;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,13 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Cogni
     private static final String allowedNameRegex = "^[a-zA-Z0-9]*$";
 
     public CognitoHandler() {
-        super(CreateUserClientDto.class);
+        super(CreateUserClientDto.class, new Environment());
+    }
+
+    @Override
+    protected void validateRequest(CreateUserClientDto createUserClientDto, RequestInfo requestInfo, Context context)
+        throws ApiGatewayException {
+        // no op
     }
 
     @Override

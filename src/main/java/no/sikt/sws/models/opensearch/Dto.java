@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.unit.nva.commons.json.JsonUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,6 @@ public abstract class Dto {
         JsonUtils.dtoObjectMapper.readValue(nodeAsString, JsonNode.class)).get();
 
     @JsonIgnore
-    @NotNull
     protected static DefaultPrettyPrinter getPrettyPrinterFormatted() {
         DefaultPrettyPrinter p = new DefaultPrettyPrinter();
         DefaultPrettyPrinter.Indenter i = new DefaultIndenter("  ", "\n");
@@ -45,7 +43,6 @@ public abstract class Dto {
     }
 
     @JsonIgnore
-    @NotNull
     public static DefaultPrettyPrinter getPrettyPrinterCompact() {
         DefaultPrettyPrinter p = new DefaultPrettyPrinter();
         DefaultPrettyPrinter.Indenter i = new DefaultIndenter(EMPTY_STRING, EMPTY_STRING);

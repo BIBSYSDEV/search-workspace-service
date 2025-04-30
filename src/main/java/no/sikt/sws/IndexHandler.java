@@ -11,7 +11,6 @@ import nva.commons.apigateway.ProxyResponse;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
 import nva.commons.apigateway.exceptions.BadRequestException;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +81,11 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         }
     }
 
+    @Override
+    protected void validateRequest(String s, RequestInfo requestInfo, Context context) throws ApiGatewayException {
+        // no-op
+    }
+
     private static void assertThatLambdaCanHandleResponseSize(String responseBody) throws RequestTooLargeException {
         int sizeInBytes = responseBody.getBytes(StandardCharsets.UTF_8).length;
         if (sizeInBytes > AWS_LAMBDA_RESPONSE_LIMIT_BYTES) {
@@ -89,7 +93,6 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         }
     }
 
-    @NotNull
     private static String getQueryString(RequestInfo request) {
         return request.getQueryParameters().entrySet().stream()
                 .map(entry ->

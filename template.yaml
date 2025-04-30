@@ -6,6 +6,9 @@ Globals:
   Function:
     Timeout: 60
     MemorySize: 1800
+    Runtime: java21
+    Architectures:
+      - arm64
     Environment:
       Variables:
         ELASTICSEARCH_REGION: "eu-west-1"
@@ -13,6 +16,9 @@ Globals:
         API_GATEWAY_URL: !Sub 'https://api.${CustomDomain}'
         BACKUP_BUCKET_NAME: !Sub '${BackupBucketName}'
         BACKUP_ROLE_ARN: !GetAtt SWSSnapshotRepoRole.Arn
+        COGNITO_AUTHORIZER_URLS: !GetAtt UserPool.ProviderURL
+        API_HOST: !Sub 'api.${CustomDomain}'
+
 
   Api:
     Cors:
@@ -305,7 +311,6 @@ Resources:
             Path: /{resource+}
             RestApiId: !Ref SWSApi
       Handler: no.sikt.sws.IndexHandler::handleRequest
-      Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn
 
 
@@ -330,7 +335,6 @@ Resources:
             Path: /
             RestApiId: !Ref SWSApi
       Handler: no.sikt.sws.WorkspaceHandler::handleRequest
-      Runtime: java11
       Role: !GetAtt SWSLambdaTriggerRole.Arn
 
   CognitoHandler:
@@ -347,7 +351,6 @@ Resources:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.CognitoHandler::handleRequest
-      Runtime: java11
       Role: !GetAtt SWSCognitoRole.Arn
 
   SnapshotRegisterRepoHandler:
@@ -364,7 +367,6 @@ Resources:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.SnapshotRegisterRepoHandler::handleRequest
-      Runtime: java11
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
 
@@ -382,7 +384,6 @@ Resources:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.SnapshotTakingHandler::handleRequest
-      Runtime: java11
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
       Events:
         ScheduledEventTakingSnapshot:
@@ -404,7 +405,6 @@ Resources:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.SnapshotRoutineDeletionHandler::handleRequest
-      Runtime: java11
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
       Events:
         ScheduledDeletionSnap:
@@ -426,7 +426,6 @@ Resources:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.SnapshotTakingHandler::handleRequest
-      Runtime: java11
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
 

@@ -5,7 +5,6 @@ import com.amazonaws.Request;
 import com.amazonaws.http.HttpMethodName;
 import no.sikt.sws.exception.OpenSearchException;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +78,6 @@ public class OpenSearchClient {
         return request;
     }
 
-    @NotNull
     private Map<String, List<String>> getStringListMap(String query) {
         return Arrays.stream(query.split("&"))
                 .map(param -> Map.entry(param.split("=")[0], param.split("=")[1]))

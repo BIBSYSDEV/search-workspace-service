@@ -4,7 +4,6 @@ import com.amazonaws.http.HttpMethodName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
@@ -109,7 +108,7 @@ public class TestCaseSws implements Serializable, Comparable<TestCaseSws> {
     }
 
     @Override
-    public int compareTo(@NotNull TestCaseSws o) {
+    public int compareTo(TestCaseSws o) {
         return this.name.compareTo(o.name);
     }
 

@@ -9,6 +9,7 @@ import no.sikt.sws.models.internal.SnapshotsDto;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
+import nva.commons.core.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,12 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
     public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotRoutineDeletionHandler() {
-        super(Void.class);
+        super(Void.class, new Environment());
+    }
+
+    @Override
+    protected void validateRequest(Void unused, RequestInfo requestInfo, Context context) throws ApiGatewayException {
+        // no op
     }
 
     @Override

@@ -7,6 +7,7 @@ import no.sikt.sws.exception.SearchException;
 import no.sikt.sws.models.internal.SnapshotToRestoreDto;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
+import nva.commons.core.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import nva.commons.apigateway.ApiGatewayHandler;
@@ -22,9 +23,14 @@ public class SnapshotRestorationHandler extends ApiGatewayHandler<SnapshotToRest
     public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotRestorationHandler() {
-        super(SnapshotToRestoreDto.class);
+        super(SnapshotToRestoreDto.class, new Environment());
     }
 
+    @Override
+    protected void validateRequest(SnapshotToRestoreDto snapshotToRestoreDto, RequestInfo requestInfo, Context context)
+        throws ApiGatewayException {
+        // no op
+    }
 
     @Override
     protected String processInput(SnapshotToRestoreDto input, RequestInfo requestInfo, Context context)
