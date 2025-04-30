@@ -35,10 +35,17 @@ paths:
           in: path
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
+          schema:
+            type: string
       requestBody:
         required: true
         content:
-          application/json
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
       security:
         - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
       x-amazon-apigateway-integration:
@@ -71,6 +78,8 @@ paths:
           in: path
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
+          schema:
+            type: string
       security:
         - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
       x-amazon-apigateway-integration:
@@ -99,6 +108,8 @@ paths:
           in: path
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
+          schema:
+            type: string
       security:
         - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
       x-amazon-apigateway-integration:
@@ -131,6 +142,8 @@ paths:
           in: path
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
+          schema:
+            type: string
       security:
         - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
       x-amazon-apigateway-integration:
@@ -159,6 +172,8 @@ paths:
           in: path
           required: true
           description: The name of the resource. Can be any valid opensearch index-path and can include slashes
+          schema:
+            type: string
       security:
         - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
       x-amazon-apigateway-integration:
