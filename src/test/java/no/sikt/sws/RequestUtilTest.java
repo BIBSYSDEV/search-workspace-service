@@ -6,7 +6,7 @@ import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
 import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RequestUtilTest {
+class RequestUtilTest {
     @Test
     void shouldGetWorkspaceFromSingle() {
 

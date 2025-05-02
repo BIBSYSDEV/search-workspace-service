@@ -27,14 +27,14 @@ import static software.amazon.awssdk.services.cognitoidentityprovider.model.Time
 
 public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, CognitoCredentialsDto> {
 
-    CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
+    private final CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
             .region(Region.EU_WEST_1)
             .httpClient(UrlConnectionHttpClient.builder().build())
             .build();
 
-    private static final Logger logger = LoggerFactory.getLogger(CognitoHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CognitoHandler.class);
 
-    private static final String allowedNameRegex = "^[a-zA-Z0-9]*$";
+    private static final String ALLOWED_NAME_REGEX = "^[a-zA-Z0-9]*$";
 
     public CognitoHandler() {
         super(CreateUserClientDto.class, new Environment());
@@ -52,7 +52,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Cogni
         if (input == null || input.name == null) {
             throw new IllegalStateException("Request does nt include name");
         }
-        if (!input.name.matches(allowedNameRegex)) {
+        if (!input.name.matches(ALLOWED_NAME_REGEX)) {
             throw new IllegalStateException("Name contains illegal chars. Should only be letters and numbers");
         }
 
@@ -138,7 +138,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Cogni
 
         scopes.add(newScope);
 
-        logger.info("Scopes: " + scopes);
+        LOGGER.info("Scopes: " + scopes);
 
         var updateRequest = UpdateResourceServerRequest
                 .builder()
@@ -161,7 +161,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Cogni
 
         var server = resources
                 .resourceServers()
-                .stream().filter(s -> s.name().equals(BACKEND_SCOPE_RESOURCE_SERVER_NAME))
+                .stream().filter(s -> BACKEND_SCOPE_RESOURCE_SERVER_NAME.equals(s.name()))
                 .findFirst();
         if (server.isEmpty()) {
             throw new IllegalStateException("Should have a resource server.");
@@ -173,7 +173,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Cogni
         var userPool = cognitoClient
                 .listUserPools(ListUserPoolsRequest.builder().build())
                 .userPools()
-                .stream().filter(up -> up.name().equals(USER_POOL_NAME))
+                .stream().filter(up -> USER_POOL_NAME.equals(up.name()))
                 .findFirst();
 
         if (userPool.isEmpty()) {

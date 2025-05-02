@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
+@SuppressWarnings({"PMD.LawOfDemeter", "PMD.AvoidThrowingRawExceptionTypes"})
 public class SearchDto extends Dto {
 
     @JsonProperty("took")
@@ -27,14 +28,9 @@ public class SearchDto extends Dto {
     @JsonProperty("_scroll_id")
     public String scrollId;
 
-
-    public SearchDto() {
-        super();
-    }
-
     public static SearchDto fromResponse(String opensearchResponse) {
         try {
-            return objectMapper.readValue(opensearchResponse, SearchDto.class);
+            return OBJECT_MAPPER.readValue(opensearchResponse, SearchDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

@@ -17,10 +17,10 @@ import java.util.ArrayList;
 
 import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
 
-
+@SuppressWarnings({"PMD.LawOfDemeter"})
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
 
-    private static final Logger logger = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
     private static final Long FOURTEEN_DAYS =  14 * 24 * 60 * 60 * 1000L;
     public static final String SNAPSHOT_GET_ALL_REQUESTS = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
 
@@ -54,7 +54,7 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
                     false);
             return objectMapper.readValue(response.getBody(), SnapshotsDto.class);
         } catch (Exception e) {
-            logger.error("Error when listing all snapshots:" + e.getMessage(), e);
+            LOGGER.error("Error when listing all snapshots:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
     }
@@ -70,8 +70,8 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
                     var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
                         SNAPSHOT_REPO_PATH_REQUEST + "/" + snap.getName(),
                             null);
-                    logger.info("for the snapshot: " + snap.getName()
-                            + " the response is: " + response.getStatus());
+                    LOGGER.info("for the snapshot: " + snap.getName()
+                                + " the response is: " + response.getStatus());
                     responses.add(response.getBody());
                 });
             return String.join(",", responses);

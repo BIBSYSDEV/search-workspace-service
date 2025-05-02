@@ -20,9 +20,10 @@ import java.util.stream.Collectors;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_PROTOCOL;
 
+@SuppressWarnings({"PMD.LawOfDemeter", "PMD.OnlyOneReturn"})
 public class OpenSearchClient {
     private static final String NULL_STRING = "null";
-    private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchClient.class);
     private final AwsClientWrapper awsClientWrapper;
     private final AwsSignerWrapper awsSignerWrapper;
 
@@ -41,8 +42,8 @@ public class OpenSearchClient {
             return new OpenSearchResponse(response.getHttpResponse().getStatusCode(), response.getAwsResponse());
 
         } catch (OpenSearchException e) {
-            logger.info(e.getMessage());
-            logger.info("Creating OpenSearchResponse " + e.getStatus() + " " + e.getBody());
+            LOGGER.info(e.getMessage());
+            LOGGER.info("Creating OpenSearchResponse " + e.getStatus() + " " + e.getBody());
             return new OpenSearchResponse(e.getStatus(), e.getBody());
         }
 
@@ -56,7 +57,7 @@ public class OpenSearchClient {
         var query = splitPath.length > 1 ? splitPath[1] : null;
 
 
-        logger.info(endpoint + " - " + query);
+        LOGGER.info(endpoint + " - " + query);
 
         Request<Void> request = new DefaultRequest<>("es");
         request.setHttpMethod(httpMethod);
@@ -96,16 +97,14 @@ public class OpenSearchClient {
         var awsClient = new AwsClientWrapper(true);
         var signer = new AwsSignerWrapper();
 
-        var client = new OpenSearchClient(awsClient, signer);
-        return client;
+        return new OpenSearchClient(awsClient, signer);
     }
 
     public static OpenSearchClient defaultClient() {
         var awsClient = new AwsClientWrapper(false);
         var signer = new AwsSignerWrapper();
 
-        var client = new OpenSearchClient(awsClient, signer);
-        return client;
+        return new OpenSearchClient(awsClient, signer);
     }
 
 }

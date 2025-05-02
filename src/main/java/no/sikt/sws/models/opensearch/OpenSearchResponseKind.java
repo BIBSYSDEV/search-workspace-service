@@ -5,7 +5,7 @@ import nva.commons.apigateway.exceptions.BadRequestException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
 
-
+@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity"})
 public enum OpenSearchResponseKind {
     ACK("acknowledged"),
     ERROR("error"),

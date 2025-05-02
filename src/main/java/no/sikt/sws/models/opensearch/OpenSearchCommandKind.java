@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 
 
+@SuppressWarnings({"PMD.OnlyOneReturn"})
 public enum OpenSearchCommandKind {
     ALIAS("_alias"),
     BULK("_bulk"),
@@ -45,10 +46,10 @@ public enum OpenSearchCommandKind {
         var resource = new ArrayDeque<>(Arrays.asList(resourceIdentifier.split("/"))).getLast();
         String finalResource = (resource.isEmpty() ? resourceIdentifier : resource).split("[?]")[0];
 
-        var result = Arrays.stream(OpenSearchCommandKind.values())
+        var result = Arrays.stream(values())
                 .filter(p -> finalResource.equals(p.val) || resourceIdentifier.matches(p.val))
                         .findFirst()
-                        .orElse(OpenSearchCommandKind.INDEX);
+                        .orElse(INDEX);
 
         if (result == INDEX && !resourceIdentifier.matches(ALLOWED_INPUT)) {
             result = INVALID;

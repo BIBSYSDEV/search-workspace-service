@@ -18,10 +18,6 @@ public class HitsDto extends Dto {
     @JsonProperty("hits")
     public Collection<DocDto> hits;
 
-    public HitsDto() {
-        super();
-    }
-
     @Override
     public HitsDto stripper(String workspacePrefix) {
         hits.forEach(doc -> doc.stripper(workspacePrefix));

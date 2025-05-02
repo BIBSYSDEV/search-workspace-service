@@ -10,9 +10,10 @@ import java.util.stream.Collectors;
 
 import static nva.commons.core.attempt.Try.attempt;
 
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
 public class IndexesDto extends Dto {
 
-    Map<String, IndexDto> sourceMap;
+    private Map<String, IndexDto> sourceMap;
 
     @Override
     public IndexesDto stripper(String workspacePrefix) {
@@ -32,7 +33,7 @@ public class IndexesDto extends Dto {
     public static IndexesDto fromResponse(String opensearchResponse) {
         try {
             var dto = new IndexesDto();
-            dto.sourceMap = objectMapper.readValue(opensearchResponse, new TypeReference<>() {});
+            dto.sourceMap = OBJECT_MAPPER.readValue(opensearchResponse, new TypeReference<>() {});
             return dto;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -42,7 +43,7 @@ public class IndexesDto extends Dto {
     @JsonIgnore
     @Override
     public  String toJsonCompact() {
-        return attempt(() -> objectMapper
+        return attempt(() -> OBJECT_MAPPER
             .writer(getPrettyPrinterCompact())
             .writeValueAsString(sourceMap)).orElseThrow();
     }

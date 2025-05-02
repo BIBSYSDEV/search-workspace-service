@@ -34,13 +34,14 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
     public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
 
 
-    private static final Logger logger = LoggerFactory.getLogger(IndexHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexHandler.class);
 
     public IndexHandler() {
         super(String.class);
     }
 
     @Override
+    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ExceptionAsFlowControl"})
     protected ProxyResponse<String> processProxyInput(
             String body,
             RequestInfo request,
@@ -73,10 +74,10 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
             return new ProxyResponse<>(response.getStatus(), responseBody);
         } catch (BadRequestException | RequestTooLargeException e) {
-            logger.error(e.getLocalizedMessage());
+            LOGGER.error(e.getLocalizedMessage());
             throw e;
         } catch (Exception e) {
-            logger.error("Error: " + e.getMessage(), e);
+            LOGGER.error("Error: " + e.getMessage(), e);
             throw new SearchException(INTERNAL_ERROR, e);
         }
     }

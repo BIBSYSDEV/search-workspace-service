@@ -22,10 +22,6 @@ public class ShardsDto extends Dto {
     @JsonProperty("failures")
     public Collection<FailureDto> failures;
 
-    public ShardsDto() {
-        super();
-    }
-
     @Override
     @SuppressWarnings("unused")
     public ShardsDto stripper(String workspacePrefix) {

@@ -18,10 +18,15 @@ import java.util.stream.Collectors;
 import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
 
 @JacocoGenerated
+@SuppressWarnings({"PMD.LawOfDemeter", "PMD.OnlyOneReturn", "PMD.AvoidThrowingRawExceptionTypes"})
 public class Prefixer {
 
-    private static final Logger logger = LoggerFactory.getLogger(Prefixer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Prefixer.class);
     public static final String INDEX = "_index";
+    private static final String SEARCH_SCROLL_PATH = "_search/scroll";
+    private static final String SEARCH_PATH = "_search";
+    private static final String UNDERSCORE = "_";
+    private static final String TOUCHED_BODY = "          --> TOUCHED BODY";
 
     /**
      * Prefixing of URL.
@@ -30,15 +35,15 @@ public class Prefixer {
      * @return prefixed url
      */
     public static String url(String workspacePrefix, String resourceIdentifier) {
-        logger.debug("prefixing " + workspacePrefix + resourceIdentifier);
+        LOGGER.debug("prefixing " + workspacePrefix + resourceIdentifier);
         if (resourceIdentifier == null || resourceIdentifier.isEmpty()) {
             return workspacePrefix + "-*";
-        } else if ("_search/scroll".equals(resourceIdentifier)) {
+        } else if (SEARCH_SCROLL_PATH.equals(resourceIdentifier)) {
             return resourceIdentifier;
-        } else if (resourceIdentifier.startsWith("_search")) {
+        } else if (resourceIdentifier.startsWith(SEARCH_PATH)) {
             return workspacePrefix + "-*/" + resourceIdentifier;
 
-        } else if (resourceIdentifier.startsWith("_")) {
+        } else if (resourceIdentifier.startsWith(UNDERSCORE)) {
             return resourceIdentifier;
         }
         return workspacePrefix + "-" + resourceIdentifier;
@@ -52,6 +57,7 @@ public class Prefixer {
      * @param gatewayBody        body to prefix
      * @return prefixed body
      */
+    @SuppressWarnings({"PMD.CyclomaticComplexity"})
     public static String body(String workspacePrefix, String resourceIdentifier, String gatewayBody)
             throws BadRequestException {
 
@@ -65,29 +71,21 @@ public class Prefixer {
 
         var commandKind = OpenSearchCommandKind.fromString(resourceIdentifier);
 
-        switch (commandKind) {
-            case ALIAS:
-                return Prefixer.aliasBody(workspacePrefix,gatewayBody);
-            case BULK:
-                return Prefixer.bulkBody(workspacePrefix, gatewayBody);
-            case SEARCH:
-            case MAPPING:
-            case DOC:
-            case SCROLL:
-                logger.info("           --> BODY UNTOUCHED");
-                return gatewayBody;
-            case INDEX:
-                return Prefixer.indexesBody(workspacePrefix,gatewayBody);
-            case NOT_IMPLEMENTED:
-            case INVALID:
-            default:
-                throw new IllegalStateException("Unexpected value: " + resourceIdentifier);
-        }
+        return switch (commandKind) {
+            case ALIAS -> aliasBody(workspacePrefix, gatewayBody);
+            case BULK -> bulkBody(workspacePrefix, gatewayBody);
+            case SEARCH, MAPPING, DOC, SCROLL -> {
+                LOGGER.info("           --> BODY UNTOUCHED");
+                yield gatewayBody;
+            }
+            case INDEX -> indexesBody(workspacePrefix, gatewayBody);
+            default -> throw new IllegalStateException("Unexpected value: " + resourceIdentifier);
+        };
     }
 
     // replace {index} with {workspace}-{index} from responseBody
     public static String indexesBody(String workspacePrefix,String gatewayBody) {
-        logger.info("          --> TOUCHED BODY");
+        LOGGER.info(TOUCHED_BODY);
 
         var node =  string2JsonNode(gatewayBody);
 
@@ -98,7 +96,7 @@ public class Prefixer {
     }
 
 
-    static void nodeUpdated(String workspacePrefix, String nodeName, JsonNode node) {
+    private static void nodeUpdated(String workspacePrefix, String nodeName, JsonNode node) {
         if (node.has(nodeName)) {
             var objectNode = (ObjectNode) node.get(nodeName);
             var names = new ArrayList<String>();
@@ -112,7 +110,7 @@ public class Prefixer {
     }
 
     protected static String bulkBody(String workspacePrefix, String gatewayBulkBody) {
-        logger.info("          --> TOUCHED BODY");
+        LOGGER.info(TOUCHED_BODY);
 
         return convertBulkBodyToJsonList(gatewayBulkBody).stream().map(item -> {
             String indexName;
@@ -136,7 +134,7 @@ public class Prefixer {
     }
 
     protected static String aliasBody(String workspacePrefix, String gatewayAliasBody) {
-        logger.info("          --> TOUCHED BODY");
+        LOGGER.info(TOUCHED_BODY);
         return gatewayAliasBody
                 .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
                 .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2");

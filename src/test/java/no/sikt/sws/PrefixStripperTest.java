@@ -1,7 +1,7 @@
 package no.sikt.sws;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
-import static no.sikt.sws.testutils.TestConstants.TEST_PREFIX_MOCKNAME;
+import static no.sikt.sws.testutils.Constants.TEST_PREFIX_MOCKNAME;
 import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
 import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,8 +9,8 @@ import java.util.stream.Stream;
 import no.sikt.sws.models.internal.WorkspaceResponse;
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
-import no.sikt.sws.testutils.TestCaseLoader;
-import no.sikt.sws.testutils.TestCaseSws;
+import no.sikt.sws.testutils.CaseLoader;
+import no.sikt.sws.testutils.CaseSws;
 import nva.commons.apigateway.exceptions.BadRequestException;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Disabled;
@@ -21,16 +21,23 @@ import org.junit.jupiter.api.TestFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PrefixStripperTest {
+@SuppressWarnings({"PMD.GuardLogStatement"})
+class PrefixStripperTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(PrefixStripperTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrefixStripperTest.class);
+    private static final String ARROW_RIGHT = "--> ";
+    private static final String ARROW_LEFT = "<-- ";
+    private static final String OPENSEARCH = "http://opensearch/";
+    private static final String APIGATEWAY = "http://apigateway/";
+    private static final String ARROW = " -> ";
+    private static final String SPACE = " ";
 
     /**
     **  Merge all testcases into one stream.
     **/
-    static Stream<TestCaseSws> getStreamOfTestCases() {
+    private static Stream<CaseSws> getStreamOfTestCases() {
 
-        return new TestCaseLoader.Builder()
+        return new CaseLoader.Builder()
                    .loadResource("proxy/requests-mapping.json")
                    .loadResource("proxy/requests-search.json")
                    .loadResource("proxy/requests-bulk.json")
@@ -44,27 +51,27 @@ public class PrefixStripperTest {
     @DisplayName("Opensearch url prefixing")
     Stream<DynamicTest> testUrlPrefixFactory() {
 
-        var requestTests = getStreamOfTestCases().filter(TestCaseSws::isRequestTest);
+        var requestTests = getStreamOfTestCases().filter(CaseSws::isRequestTest);
 
-        return DynamicTest.stream(requestTests, TestCaseSws::getName, this::assertUrlPrefix);
+        return DynamicTest.stream(requestTests, CaseSws::getName, this::assertUrlPrefix);
     }
 
     @TestFactory
     @DisplayName("Opensearch request-body prefixing")
     Stream<DynamicTest> testRequestPrefixFactory() {
 
-        var requestBodyTests = getStreamOfTestCases().filter(TestCaseSws::isRequestBodyTest);
+        var requestBodyTests = getStreamOfTestCases().filter(CaseSws::isRequestBodyTest);
 
-        return DynamicTest.stream(requestBodyTests, TestCaseSws::getName, this::assertRequestPrefix);
+        return DynamicTest.stream(requestBodyTests, CaseSws::getName, this::assertRequestPrefix);
     }
 
     @TestFactory
     @DisplayName("Opensearch response-body stripping")
     Stream<DynamicTest> testResponseStrippingFactory() {
 
-        var responseTests = getStreamOfTestCases().filter(TestCaseSws::isResponseTest);
+        var responseTests = getStreamOfTestCases().filter(CaseSws::isResponseTest);
 
-        return DynamicTest.stream(responseTests, TestCaseSws::getName, this::assertResponseStripping);
+        return DynamicTest.stream(responseTests, CaseSws::getName, this::assertResponseStripping);
     }
 
     @Test
@@ -73,7 +80,7 @@ public class PrefixStripperTest {
         var filename = "workspace/response-workspace.json";
         var testName = "GET (all) indexes (workspace / )";
 
-        var testCase = new TestCaseLoader(filename)
+        var testCase = new CaseLoader(filename)
             .getTestCase(testName);
 
         if (testCase.isIndexResponse()) {
@@ -82,17 +89,13 @@ public class PrefixStripperTest {
 
     }
 
-    /**
-     * Using for debuging a single test-case. Change the filename, testcase,
-     * and assert-function on the last line as needed
-     */
     @Test
-    @Disabled
+    @Disabled("Using for debuging a single test-case. Change the filename, testcase, and assert-function on the last line as needed")
     void runSingleTestcase() throws BadRequestException {
         var filename = "proxy/requests-indexes.json";
         var testName = "PUT index by name, with template";
 
-        var testCase = new TestCaseLoader(filename)
+        var testCase = new CaseLoader(filename)
             .getTestCase(testName);
 
         if (testCase.isRequestBodyTest()) {
@@ -110,18 +113,18 @@ public class PrefixStripperTest {
     @DisplayName("Opensearch request-body-alias prefixing")
     void assertRequestPrefixAlias() {
         var filename = "proxy/requests-alias.json";
-        new TestCaseLoader(filename)
+        new CaseLoader(filename)
             .getTestCases()
             .forEach(this::assertAliasPrefix);
     }
 
-    void assertResponseIndexStripping(TestCaseSws testCase) {
-        logger.info(testCase.toString());
+    private void assertResponseIndexStripping(CaseSws testCase) {
+        LOGGER.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
 
-        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
-            + " http://apigateway/ -> " + testCase.getRequestGateway().getUrl()
-            + " http://opensearch/" +  testCase.getRequestOpensearch().getUrl());
+        LOGGER.info(ARROW_RIGHT + testCase.getRequestOpensearch().getMethod()
+                    + SPACE + APIGATEWAY + ARROW + testCase.getRequestGateway().getUrl()
+                    + SPACE + OPENSEARCH + testCase.getRequestOpensearch().getUrl());
 
         var expectedResponse = testCase.getResponseStripped();
 
@@ -135,12 +138,12 @@ public class PrefixStripperTest {
         assertEquals(expectedResponse,resultResponse);
     }
 
-    void assertResponseStripping(TestCaseSws testCase) throws BadRequestException {
-        logger.info(testCase.toString());
+    private void assertResponseStripping(CaseSws testCase) throws BadRequestException {
+        LOGGER.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
 
-        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
-            + " http://opensearch/" +  testCase.getRequestOpensearch().getUrl());
+        LOGGER.info(ARROW_RIGHT + testCase.getRequestOpensearch().getMethod()
+                    + SPACE + OPENSEARCH + testCase.getRequestOpensearch().getUrl());
 
         var expectedResponse = testCase.getResponseStripped();
         var openSearchResponse = testCase.getResponse();
@@ -150,8 +153,8 @@ public class PrefixStripperTest {
         var responseKind =
             OpenSearchResponseKind.fromString(httpMethod,command,openSearchResponse);
 
-        logger.info("--> " + command.name());
-        logger.info("<-- " + responseKind.name());
+        LOGGER.info(ARROW_RIGHT + command.name());
+        LOGGER.info(ARROW_LEFT + responseKind.name());
         var resultResponse = PrefixStripper.body(
                 command,
                 responseKind,
@@ -161,23 +164,23 @@ public class PrefixStripperTest {
         assertEquals(toJsonCompact(expectedResponse),toJsonCompact(resultResponse));
     }
 
-    void assertUrlPrefix(TestCaseSws testCase) {
-        logger.info(testCase.toString());
+    private void assertUrlPrefix(CaseSws testCase) {
+        LOGGER.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
 
         var gatewayUrl = testCase.getRequestGateway().getUrl();
         var expectedUrl = testCase.getRequestOpensearch().getUrl();
         var resultUrl = Prefixer.url(TEST_PREFIX_MOCKNAME,gatewayUrl);
 
-        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
-                + " http://opensearch/" + resultUrl);
+        LOGGER.info(ARROW_RIGHT + testCase.getRequestOpensearch().getMethod()
+                    + SPACE + OPENSEARCH + resultUrl);
 
         assertEquals(expectedUrl,resultUrl);
 
     }
 
-    void assertAliasPrefix(TestCaseSws testCase) {
-        logger.info(testCase.toString());
+    private void assertAliasPrefix(CaseSws testCase) {
+        LOGGER.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
 
         var resourceIdentifier = testCase.getRequestGateway().getUrl();
@@ -193,12 +196,12 @@ public class PrefixStripperTest {
     /**
      * Testing body prefixing gateway request to opensearch requests.
      */
-    void assertRequestPrefix(TestCaseSws testCase) {
-        logger.info(testCase.toString());
+    private void assertRequestPrefix(CaseSws testCase) {
+        LOGGER.info(testCase.toString());
         Assumptions.assumeTrue(testCase.isEnabled());
 
-        logger.info("--> " + testCase.getRequestOpensearch().getMethod()
-            + " http://opensearch/" + testCase.getRequestOpensearch().getUrl());
+        LOGGER.info(ARROW_RIGHT + testCase.getRequestOpensearch().getMethod()
+                    + SPACE + OPENSEARCH + testCase.getRequestOpensearch().getUrl());
 
         var resourceIdentifier = testCase.getRequestGateway().getUrl();
         var expectedBody = testCase.getRequestOpensearch().getBody();
@@ -206,7 +209,7 @@ public class PrefixStripperTest {
         var command =
             OpenSearchCommandKind.fromString(testCase.getRequestGateway().getUrl());
 
-        logger.info("--> " + command.name());
+        LOGGER.info(ARROW_RIGHT + command.name());
 
         var resultBody = attempt(() ->
             Prefixer.body(TEST_PREFIX_MOCKNAME, resourceIdentifier, gatewayBody)

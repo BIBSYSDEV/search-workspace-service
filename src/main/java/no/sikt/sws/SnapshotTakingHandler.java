@@ -14,9 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
 
-
 public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
-    private static final Logger logger = LoggerFactory.getLogger(SnapshotTakingHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SnapshotTakingHandler.class);
     public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotTakingHandler() {
@@ -38,11 +37,11 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
             var response = openSearchClient.sendRequest(HttpMethodName.PUT,
                 SNAPSHOT_REPO_PATH_REQUEST + "/" + createSnapshotName,
                     null);
-            logger.info("response-code:" + response.getStatus());
-            logger.info("response-body:" + response.getBody());
+            LOGGER.info("response-code:" + response.getStatus());
+            LOGGER.info("response-body:" + response.getBody());
             return response.getBody();
         } catch (Exception e) {
-            logger.error("Error when attempting to take snapshot:" + e.getMessage(), e);
+            LOGGER.error("Error when attempting to take snapshot:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
     }

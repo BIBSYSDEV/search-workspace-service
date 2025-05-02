@@ -17,20 +17,21 @@ import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static nva.commons.core.attempt.Try.attempt;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@SuppressWarnings("PMD.ShortClassName")
 public abstract class Dto {
 
     @JsonIgnore
-    Logger logger = LoggerFactory.getLogger(getClass().getName());
+    protected Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     @JsonIgnore
-    static final ObjectMapper objectMapper = new ObjectMapper()
+    protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @JsonIgnore
-    Function<String, String> toRegEx = prefix -> "(?<=[ /\"\\[])" + prefix + "-";
+    protected Function<String, String> toRegEx = prefix -> "(?<=[ /\"\\[])" + prefix + "-";
 
     @JsonIgnore
-    Function<String, JsonNode> string2JsonNode = nodeAsString -> attempt(() ->
+    protected Function<String, JsonNode> string2JsonNode = nodeAsString -> attempt(() ->
         JsonUtils.dtoObjectMapper.readValue(nodeAsString, JsonNode.class)).get();
 
     @JsonIgnore
@@ -54,20 +55,20 @@ public abstract class Dto {
     @JsonIgnore
     @Override
     public String toString() {
-        return  attempt(() -> objectMapper
+        return  attempt(() -> OBJECT_MAPPER
             .writer(getPrettyPrinterFormatted())
             .writeValueAsString(this)).orElseThrow();
     }
 
     @JsonIgnore
     public  String toJsonCompact() {
-        return attempt(() -> objectMapper
+        return attempt(() -> OBJECT_MAPPER
             .writer(getPrettyPrinterCompact())
             .writeValueAsString(this)).orElseThrow();
     }
 
     @JsonIgnore
-    abstract Dto stripper(String workspacePrefix);
+    protected abstract Dto stripper(String workspacePrefix);
 
 }
 

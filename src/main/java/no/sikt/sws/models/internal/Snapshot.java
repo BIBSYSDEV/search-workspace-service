@@ -7,10 +7,10 @@ import java.util.Date;
 
 public class Snapshot implements Comparable<Snapshot> {
     @JsonProperty
-    String name;
+    private String name;
 
     @JsonProperty
-    Date epochTime;
+    private Date epochTime;
 
     public Date getEpochTime() {
         return epochTime;

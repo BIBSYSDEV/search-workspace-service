@@ -13,11 +13,10 @@ import org.slf4j.LoggerFactory;
 import nva.commons.apigateway.ApiGatewayHandler;
 
 
-
 public class SnapshotRestorationHandler extends ApiGatewayHandler<SnapshotToRestoreDto, String> {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(SnapshotRestorationHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SnapshotRestorationHandler.class);
     public static final String SNAPSHOT_REPO_NAME = "_snapshot/snapshots/";
     public static final String RESTORE_COMMAND = "/_restore";
     public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
@@ -35,20 +34,20 @@ public class SnapshotRestorationHandler extends ApiGatewayHandler<SnapshotToRest
     @Override
     protected String processInput(SnapshotToRestoreDto input, RequestInfo requestInfo, Context context)
             throws ApiGatewayException {
-        logger.info("retrieved name of snapshot: " + input.snapshotName);
-        logger.info("full call : " + SNAPSHOT_REPO_NAME
-                + input.snapshotName + RESTORE_COMMAND);
+        LOGGER.info("retrieved name of snapshot: " + input.snapshotName);
+        LOGGER.info("full call : " + SNAPSHOT_REPO_NAME
+                    + input.snapshotName + RESTORE_COMMAND);
         var snapshotRepoPathRequest = SNAPSHOT_REPO_NAME
                 + input.snapshotName + RESTORE_COMMAND;
         try {
             var response = openSearchClient.sendRequest(HttpMethodName.POST,
                     snapshotRepoPathRequest,
                     null);
-            logger.info("response-code:" + response.getStatus());
-            logger.info("response-body:" + response.getBody());
+            LOGGER.info("response-code:" + response.getStatus());
+            LOGGER.info("response-body:" + response.getBody());
             return response.getBody();
         } catch (Exception e) {
-            logger.error("Error when attempting to take snapshot:" + e.getMessage(), e);
+            LOGGER.error("Error when attempting to take snapshot:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
     }

@@ -5,9 +5,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import no.sikt.sws.models.opensearch.SearchDto;
 import no.sikt.sws.testutils.JsonStringMatcher;
-import no.sikt.sws.testutils.TestCaseLoader;
-import no.sikt.sws.testutils.TestCaseSws;
-import no.sikt.sws.testutils.TestUtils;
+import no.sikt.sws.testutils.CaseLoader;
+import no.sikt.sws.testutils.CaseSws;
 import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.stubs.FakeContext;
 import no.unit.nva.testutils.HandlerRequestBuilder;
@@ -33,12 +32,12 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_ENTITY_TOO_LARGE;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static no.sikt.sws.testutils.TestConstants.TEST_INDEX_1;
-import static no.sikt.sws.testutils.TestConstants.TEST_PREFIX_MOCKNAME;
-import static no.sikt.sws.testutils.TestConstants.TEST_PREFIX_SONDRE;
-import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE_MOCKNAME;
-import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE_SONDRE;
-import static no.sikt.sws.testutils.TestUtils.*;
+import static no.sikt.sws.testutils.Constants.TEST_INDEX_1;
+import static no.sikt.sws.testutils.Constants.TEST_PREFIX_MOCKNAME;
+import static no.sikt.sws.testutils.Constants.TEST_PREFIX_SONDRE;
+import static no.sikt.sws.testutils.Constants.TEST_SCOPE_MOCKNAME;
+import static no.sikt.sws.testutils.Constants.TEST_SCOPE_SONDRE;
+import static no.sikt.sws.testutils.Utils.*;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -49,19 +48,21 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-public class IndexHandlerTest  {
+@SuppressWarnings({"PMD.CloseResource"})
+class IndexHandlerTest  {
 
     private static final Context CONTEXT = new FakeContext();
+    private static final String MAPPING_PATH = "/_mapping";
     private ByteArrayOutputStream output;
 
     @InjectMocks
-    IndexHandler handler = new IndexHandler();
+    private final IndexHandler handler = new IndexHandler();
 
     @Mock
-    OpenSearchClient openSearchClient;
+    private OpenSearchClient openSearchClient;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         MockitoAnnotations.openMocks(this);
 
         this.output = new ByteArrayOutputStream();
@@ -72,11 +73,11 @@ public class IndexHandlerTest  {
 
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
 
-        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + "/_mapping", null))
+        when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + MAPPING_PATH, null))
                 .thenReturn(mockResponse);
 
 
-        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_mapping");
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + MAPPING_PATH);
 
         var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
 
@@ -94,13 +95,13 @@ public class IndexHandlerTest  {
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
         when(openSearchClient.sendRequest(
                 eq(POST),
-                eq(TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + "/_mapping"),
+                eq(TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + MAPPING_PATH),
                 argThat(new JsonStringMatcher(body.toString())))
         ).thenReturn(mockResponse);
 
-        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + "/_mapping");
+        var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + MAPPING_PATH);
 
-        var request = TestUtils.buildRequestWithBody(HttpMethod.POST, pathParams, body, TEST_SCOPE_SONDRE);
+        var request = buildRequestWithBody(HttpMethod.POST, pathParams, body, TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
         var response = GatewayResponse.fromOutputStream(output, String.class);
@@ -177,7 +178,7 @@ public class IndexHandlerTest  {
 
     @Test
     void shouldReturn413ForTooLargeResponse() throws IOException {
-        var longStr = "a".repeat(10000000);
+        var longStr = "a".repeat(10_000_000);
         var responseStr = "{ \"indexname\": {\"mappings\":{ \"data\":\"" + longStr + "\"}}}";
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, responseStr);
 
@@ -221,7 +222,7 @@ public class IndexHandlerTest  {
 
     @Test
     void shouldReturn200ForNotTooLargeResponse() throws IOException {
-        var longStr = "a".repeat(1000000);
+        var longStr = "a".repeat(1_000_000);
         var responseStr = "{ \"indexname\": {\"mappings\":{ \"data\":\"" + longStr + "\"}}}";
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, responseStr);
 
@@ -259,18 +260,18 @@ public class IndexHandlerTest  {
     @TestFactory
     @DisplayName("Opensearch parameter requests")
     @SuppressWarnings("JUnitMalformedDeclaration")
-    public Stream<DynamicTest> testRequestWithQueryParameters() {
+    Stream<DynamicTest> testRequestWithQueryParameters() {
 
         var requestsWithParameters =
-            getSearchRequestTestCasesStream().filter(TestCaseSws::isParamRequestTest);
+            getSearchRequestTestCasesStream().filter(CaseSws::isParamRequestTest);
 
         return DynamicTest.stream(
             requestsWithParameters,
-            TestCaseSws::getName,
+            CaseSws::getName,
             this::assertTestCaseWithRequestQueryParameters);
     }
 
-    void assertTestCaseWithRequestQueryParameters(TestCaseSws testCase) throws IOException {
+    private void assertTestCaseWithRequestQueryParameters(CaseSws testCase) throws IOException {
 
         this.output = new ByteArrayOutputStream();
         when(openSearchClient.sendRequest(
@@ -309,7 +310,7 @@ public class IndexHandlerTest  {
     void shouldHandleSearchRequestWithAggregation() throws IOException {
 
         var testcase =
-                new TestCaseLoader("proxy/requests-aggregation.json")
+                new CaseLoader("proxy/requests-aggregation.json")
                         .getTestCase("GET search with aggregation");
         var requestOpensearch = testcase.getRequestOpensearch();
         var requestGateway = testcase.getRequestGateway();
@@ -343,8 +344,8 @@ public class IndexHandlerTest  {
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
 
-    Stream<TestCaseSws> getSearchRequestTestCasesStream() {
-        return new TestCaseLoader.Builder()
+    private Stream<CaseSws> getSearchRequestTestCasesStream() {
+        return new CaseLoader.Builder()
             .loadResource("proxy/requests-search.json")
             .build();
     }

@@ -15,7 +15,7 @@ import static no.sikt.sws.constants.ApplicationConstants.API_GATEWAY_URL;
 
 public class WorkspaceResponse {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper()
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @JsonProperty("account_identifier")
@@ -46,7 +46,7 @@ public class WorkspaceResponse {
 
         String createIndexLink = API_GATEWAY_URL + "/index_name";
         Map<String, OpenSearchIndexDto> openSearchIndexListMap =
-                objectMapper.readValue(openSearchIndexList, new TypeReference<>() {});
+                OBJECT_MAPPER.readValue(openSearchIndexList, new TypeReference<>() {});
 
         var internalIndexListMap = openSearchIndexListMap
                 .entrySet().stream()

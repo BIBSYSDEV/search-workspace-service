@@ -18,7 +18,7 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
     public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
 
-    private static final Logger logger = LoggerFactory.getLogger(WorkspaceHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkspaceHandler.class);
     public static final String INTERNAL_ERROR = "Internal error";
 
     public WorkspaceHandler() {
@@ -43,7 +43,7 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
         try {
             return WorkspaceResponse.fromValues(workspace, indexList);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            LOGGER.error("Error when doing WorkspaceResponse.fromValues:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
     }
@@ -52,14 +52,14 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
     private String getIndexList(String workspace) throws SearchException {
         try {
             var url = workspace + "-*";
-            logger.info("URL: " + url);
+            LOGGER.info("URL: " + url);
             var response = openSearchClient.sendRequest(GET, url, null);
-            logger.info("response-code:" + response.getStatus());
-            logger.info("response-body:" + response.getBody());
+            LOGGER.info("response-code:" + response.getStatus());
+            LOGGER.info("response-body:" + response.getBody());
 
             return response.getBody();
         } catch (Exception e) {
-            logger.error("Error: " + e.getMessage(), e);
+            LOGGER.error("Error: " + e.getMessage(), e);
             throw new SearchException(INTERNAL_ERROR, e);
         }
     }

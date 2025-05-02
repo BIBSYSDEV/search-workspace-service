@@ -14,7 +14,7 @@ import static no.sikt.sws.IndexHandler.RESOURCE_IDENTIFIER;
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 
-public final class TestUtils {
+public final class Utils {
 
     public static Map<String, String> buildPathParamsForIndex(String index) {
         return Map.of(

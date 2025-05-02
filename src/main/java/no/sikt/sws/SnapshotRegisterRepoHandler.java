@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import static no.sikt.sws.constants.ApplicationConstants.*;
 
 public class SnapshotRegisterRepoHandler extends ApiGatewayHandler<Void, String> {
-    private static final Logger logger = LoggerFactory.getLogger(SnapshotRegisterRepoHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SnapshotRegisterRepoHandler.class);
     public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotRegisterRepoHandler() {
@@ -36,16 +36,16 @@ public class SnapshotRegisterRepoHandler extends ApiGatewayHandler<Void, String>
         var request = new SnapshotRequestDto("s3", settings);
 
         try {
-            logger.info(BACKUP_BUCKET_NAME);
+            LOGGER.info(BACKUP_BUCKET_NAME);
             var requestStr = JsonUtils.dtoObjectMapper.writeValueAsString(request);
             var response = openSearchClient.sendRequest(HttpMethodName.PUT,
                 SNAPSHOT_REPO_PATH_REQUEST,
                     requestStr);
-            logger.info("response-code:" + response.getStatus());
-            logger.info("response-body:" + response.getBody());
+            LOGGER.info("response-code:" + response.getStatus());
+            LOGGER.info("response-body:" + response.getBody());
             return response.getBody();
         } catch (Exception e) {
-            logger.error("Error when attempting to set snapshot repository:" + e.getMessage(), e);
+            LOGGER.error("Error when attempting to set snapshot repository:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
     }
