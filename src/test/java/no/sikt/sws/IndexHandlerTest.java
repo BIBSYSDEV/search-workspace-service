@@ -263,6 +263,7 @@ class IndexHandlerTest  {
 
     @TestFactory
     @DisplayName("Opensearch parameter requests")
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     Stream<DynamicTest> testRequestWithQueryParameters() {
 
         var requestsWithParameters =
