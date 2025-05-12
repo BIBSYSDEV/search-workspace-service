@@ -263,7 +263,6 @@ class IndexHandlerTest  {
 
     @TestFactory
     @DisplayName("Opensearch parameter requests")
-    @SuppressWarnings("JUnitMalformedDeclaration")
     Stream<DynamicTest> testRequestWithQueryParameters() {
 
         var requestsWithParameters =
