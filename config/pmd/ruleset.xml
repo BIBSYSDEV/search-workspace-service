@@ -13,13 +13,12 @@
   </rule>
 
   <rule ref="category/java/bestpractices.xml">
-    <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
-
     <!-- Disabled because Cristin IDs are misinterpreted as IPs -->
     <exclude name="AvoidUsingHardCodedIP"/>
     <exclude name="UnitTestContainsTooManyAsserts"/>
     <exclude name="GuardLogStatement"/>
     <exclude name="UnitTestShouldIncludeAssert"/>
+    <exclude name="LawOfDemeter"/>
   </rule>
 
   <rule ref="category/java/codestyle.xml">
@@ -30,6 +29,7 @@
     <exclude name="LocalVariableCouldBeFinal"/>
     <exclude name="MethodArgumentCouldBeFinal"/>
     <exclude name="UseExplicitTypes"/>
+    <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
   </rule>
 
   <rule ref="category/java/design.xml">

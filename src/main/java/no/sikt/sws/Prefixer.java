@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
 
 @JacocoGenerated
-@SuppressWarnings({"PMD.LawOfDemeter", "PMD.OnlyOneReturn", "PMD.AvoidThrowingRawExceptionTypes"})
+@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.AvoidThrowingRawExceptionTypes"})
 public class Prefixer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Prefixer.class);

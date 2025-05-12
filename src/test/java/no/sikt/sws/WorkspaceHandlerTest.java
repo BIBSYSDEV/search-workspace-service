@@ -19,7 +19,9 @@ import java.io.IOException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static no.sikt.sws.testutils.Constants.*;
+import static no.sikt.sws.testutils.Constants.OPEN_SEARCH_INDEX_LIST;
+import static no.sikt.sws.testutils.Constants.TEST_PREFIX_SONDRE;
+import static no.sikt.sws.testutils.Constants.TEST_SCOPE_SONDRE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;

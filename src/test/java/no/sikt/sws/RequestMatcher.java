@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"PMD.LawOfDemeter", "PMD.OnlyOneReturn"})
+@SuppressWarnings({"PMD.OnlyOneReturn"})
 public class RequestMatcher implements ArgumentMatcher<Request> {
 
     private final Request sourceRequest;

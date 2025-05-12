@@ -12,7 +12,7 @@ import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
 
 @JacocoGenerated
-@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity", "PMD.AvoidThrowingRawExceptionTypes"})
+@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity", "PMD.AvoidThrowingRawExceptionTypes", "PMD.TestWithoutAssertion"})
 public class PrefixStripper {
 
     public static final String UNEXPECTED_VALUE = "Unexpected value: ";

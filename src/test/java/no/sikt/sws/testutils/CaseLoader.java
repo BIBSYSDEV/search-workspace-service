@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes", "PMD.LawOfDemeter"})
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
 public class CaseLoader {
     private final List<JsonNode> elements;
 

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@SuppressWarnings({"PMD.LawOfDemeter", "PMD.OnlyOneReturn", "PMD.CyclomaticComplexity"})
+@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity"})
 public class OpenSearchResponse {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchResponse.class);

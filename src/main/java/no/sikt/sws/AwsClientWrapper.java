@@ -14,7 +14,6 @@ import java.util.List;
 
 import static software.amazon.awssdk.http.HttpStatusCode.*;
 
-@SuppressWarnings({"PMD.LawOfDemeter"})
 public class AwsClientWrapper {
 
     private final boolean passError;

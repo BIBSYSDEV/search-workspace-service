@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
-@SuppressWarnings({"PMD.LawOfDemeter", "PMD.AvoidThrowingRawExceptionTypes"})
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
 public class SearchDto extends Dto {
 
     @JsonProperty("took")

@@ -11,7 +11,6 @@ import static no.sikt.sws.testutils.Constants.OPEN_SEARCH_INDEX_LIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SuppressWarnings({"PMD.LawOfDemeter"})
 class WorkspaceResponseTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

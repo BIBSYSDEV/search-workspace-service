@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_PROTOCOL;
 
-@SuppressWarnings({"PMD.LawOfDemeter", "PMD.OnlyOneReturn"})
+@SuppressWarnings({"PMD.OnlyOneReturn"})
 public class OpenSearchClient {
     private static final String NULL_STRING = "null";
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchClient.class);
