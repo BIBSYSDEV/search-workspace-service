@@ -18,7 +18,6 @@
     <exclude name="UnitTestContainsTooManyAsserts"/>
     <exclude name="GuardLogStatement"/>
     <exclude name="UnitTestShouldIncludeAssert"/>
-    <exclude name="LawOfDemeter"/>
   </rule>
 
   <rule ref="category/java/codestyle.xml">
@@ -41,6 +40,7 @@
     <exclude name="UseUtilityClass"/>
     <exclude name="UseObjectForClearerAPI"/>
     <exclude name="TooManyMethods"/>
+    <exclude name="LawOfDemeter"/>
   </rule>
 
 </ruleset>
