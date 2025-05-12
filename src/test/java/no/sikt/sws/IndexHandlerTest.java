@@ -53,7 +53,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings({"PMD.CloseResource"})
-class IndexHandlerTest  {
+class IndexHandlerTest {
 
     private static final Context CONTEXT = new FakeContext();
     private static final String MAPPING_PATH = "/_mapping";
@@ -78,8 +78,7 @@ class IndexHandlerTest  {
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
 
         when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + MAPPING_PATH, null))
-                .thenReturn(mockResponse);
-
+            .thenReturn(mockResponse);
 
         var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + MAPPING_PATH);
 
@@ -98,9 +97,9 @@ class IndexHandlerTest  {
 
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
         when(openSearchClient.sendRequest(
-                eq(POST),
-                eq(TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + MAPPING_PATH),
-                argThat(new JsonStringMatcher(body.toString())))
+            eq(POST),
+            eq(TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1 + MAPPING_PATH),
+            argThat(new JsonStringMatcher(body.toString())))
         ).thenReturn(mockResponse);
 
         var pathParams = buildPathParamsForIndex(TEST_INDEX_1 + MAPPING_PATH);
@@ -145,7 +144,6 @@ class IndexHandlerTest  {
         when(openSearchClient.sendRequest(GET, TEST_PREFIX_SONDRE + "-" + TEST_INDEX_1, null))
             .thenReturn(mockResponse);
 
-
         var pathParams = buildPathParamsForIndex(TEST_INDEX_1);
 
         var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
@@ -163,12 +161,12 @@ class IndexHandlerTest  {
         var searchCommand = "_search?param1=1&param2=2";
         var uri = URI.create(TEST_INDEX_1 + "/" + searchCommand);
         final OpenSearchResponse mockResponse =
-            new OpenSearchResponse(200,"{\"hits\":{\"total\":{\"value\":0,\"relation\":\"eq\"},\"hits\":[]}}");
+            new OpenSearchResponse(200, "{\"hits\":{\"total\":{\"value\":0,\"relation\":\"eq\"},\"hits\":[]}}");
 
         when(openSearchClient.sendRequest(
-                GET,
-                "workspace-sondre-" + uri,
-                null)
+            GET,
+            "workspace-sondre-" + uri,
+            null)
         ).thenReturn(mockResponse);
 
         var pathParams = buildPathParamsForIndex(uri.toString());
@@ -221,7 +219,6 @@ class IndexHandlerTest  {
         var index = json.get("_shards").get("failures").get(0).get("index").textValue();
         assertThat(gatewayResponse.getStatusCode(), is(equalTo(HTTP_INTERNAL_ERROR)));
         assertThat(index, is(equalTo(TEST_INDEX_1)));
-
     }
 
     @Test
@@ -250,7 +247,6 @@ class IndexHandlerTest  {
         when(openSearchClient.sendRequest(GET, "_search/scroll", null))
             .thenReturn(mockResponse);
 
-
         var pathParams = buildPathParamsForIndex("_search/scroll");
 
         var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
@@ -268,8 +264,8 @@ class IndexHandlerTest  {
         var requestsWithParameters =
             getSearchRequestTestCasesStream().filter(CaseSws::isParamRequestTest);
 
-        assertThat(getSearchRequestTestCasesStream().count(), is(not(equalTo(0))));// workaround for
-        // PMD.UnitTestShouldIncludeAssert that I could not get working to get through codacy
+        assertThat("workaround for PMD.UnitTestShouldIncludeAssert that I could not get working to get through codacy",
+                   getSearchRequestTestCasesStream().count(), is(not(equalTo(0))));
 
         return DynamicTest.stream(
             requestsWithParameters,
@@ -281,33 +277,33 @@ class IndexHandlerTest  {
 
         this.output = new ByteArrayOutputStream();
         when(openSearchClient.sendRequest(
-                testCase.getRequestOpensearch().getMethod(),
-                testCase.getRequestOpensearch().getUrl(),
-                testCase.getRequestOpensearch().getBody())
+            testCase.getRequestOpensearch().getMethod(),
+            testCase.getRequestOpensearch().getUrl(),
+            testCase.getRequestOpensearch().getBody())
         ).thenReturn(new OpenSearchResponse(200, testCase.getResponse()));
 
-        var gatewayUrl = testCase.getRequestGateway().getUrl().split("\\?",2);
+        var gatewayUrl = testCase.getRequestGateway().getUrl().split("\\?", 2);
         var pathParams = buildPathParamsForIndex(gatewayUrl[0]);
         var queryParams = buildQueryParams(gatewayUrl[1]);
 
         var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
-                .withHttpMethod(testCase.getRequestGateway().getMethod().name())
-                .withPathParameters(pathParams)
-                .withQueryParameters(queryParams)
-                .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE_MOCKNAME)
-                .build();
+                          .withHttpMethod(testCase.getRequestGateway().getMethod().name())
+                          .withPathParameters(pathParams)
+                          .withQueryParameters(queryParams)
+                          .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE_MOCKNAME)
+                          .build();
 
         handler.handleRequest(request, output, CONTEXT);
 
         var response = GatewayResponse.fromOutputStream(output, String.class);
-        var resultBody =  SearchDto
-                .fromResponse(response.getBody())
-                .stripper(TEST_PREFIX_MOCKNAME)
-                .toJsonCompact();
+        var resultBody = SearchDto
+                             .fromResponse(response.getBody())
+                             .stripper(TEST_PREFIX_MOCKNAME)
+                             .toJsonCompact();
 
         Assertions.assertEquals(
-                stripWhitespaceNewLine(testCase.getResponseStripped()),
-                stripWhitespaceNewLine(resultBody));
+            stripWhitespaceNewLine(testCase.getResponseStripped()),
+            stripWhitespaceNewLine(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
@@ -316,44 +312,43 @@ class IndexHandlerTest  {
     void shouldHandleSearchRequestWithAggregation() throws IOException {
 
         var testcase =
-                new CaseLoader("proxy/requests-aggregation.json")
-                        .getTestCase("GET search with aggregation");
+            new CaseLoader("proxy/requests-aggregation.json")
+                .getTestCase("GET search with aggregation");
         var requestOpensearch = testcase.getRequestOpensearch();
         var requestGateway = testcase.getRequestGateway();
 
         when(openSearchClient.sendRequest(
-                requestOpensearch.getMethod(),
-                requestOpensearch.getUrl(),
-                requestOpensearch.getBody())
+            requestOpensearch.getMethod(),
+            requestOpensearch.getUrl(),
+            requestOpensearch.getBody())
         ).thenReturn(new OpenSearchResponse(200, testcase.getResponse()));
 
         var gatewayUrl = URI.create(requestGateway.getUrl());
         var pathParams = buildPathParamsForIndex(gatewayUrl.getPath());
         var request = buildRequestWithBody(
-                HttpMethod.GET,
-                pathParams,
-                requestGateway.getBody(),
-                TEST_SCOPE_SONDRE);
+            HttpMethod.GET,
+            pathParams,
+            requestGateway.getBody(),
+            TEST_SCOPE_SONDRE);
 
         handler.handleRequest(request, output, CONTEXT);
 
         var response = GatewayResponse.fromOutputStream(output, String.class);
-        var resultBody =  SearchDto
-                .fromResponse(response.getBody())
-                .stripper(TEST_PREFIX_SONDRE)
-                .toJsonCompact();
+        var resultBody = SearchDto
+                             .fromResponse(response.getBody())
+                             .stripper(TEST_PREFIX_SONDRE)
+                             .toJsonCompact();
 
         Assertions.assertEquals(
-                stripWhitespaceNewLine(testcase.getResponseStripped()),
-                stripWhitespaceNewLine(resultBody));
+            stripWhitespaceNewLine(testcase.getResponseStripped()),
+            stripWhitespaceNewLine(resultBody));
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
 
     private Stream<CaseSws> getSearchRequestTestCasesStream() {
         return new CaseLoader.Builder()
-            .loadResource("proxy/requests-search.json")
-            .build();
+                   .loadResource("proxy/requests-search.json")
+                   .build();
     }
-
 }
