@@ -73,7 +73,9 @@ tasks.named("jacocoTestReport", JacocoReport) {
     enabled = true
     reports {
         xml.required = true
+        xml.outputLocation = layout.buildDirectory.file("reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml").get().asFile
         html.required = true
+        html.outputLocation = layout.buildDirectory.dir("reports/jacoco/testCodeCoverageReport/html").get().asFile
     }
 }
 
@@ -105,7 +107,6 @@ tasks.named('check') {
     dependsOn tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification)
 }
 
-
 pmd {
     toolVersion = '7.13.0'
     ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/ruleset.xml')
@@ -133,7 +134,7 @@ test {
     environment "COGNITO_AUTHORIZER_URLS", "http://localhost:3000"
 }
 
-tasks.withType(Checkstyle).configureEach{
+tasks.withType(Checkstyle).configureEach {
     reports {
         xml.required
         html.required
