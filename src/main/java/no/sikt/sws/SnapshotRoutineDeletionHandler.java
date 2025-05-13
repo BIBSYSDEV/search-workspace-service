@@ -9,6 +9,7 @@ import no.sikt.sws.models.internal.SnapshotsDto;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
+import nva.commons.core.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,17 +17,21 @@ import java.util.ArrayList;
 
 import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
 
-
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
 
-    private static final Logger logger = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
     private static final Long FOURTEEN_DAYS =  14 * 24 * 60 * 60 * 1000L;
     public static final String SNAPSHOT_GET_ALL_REQUESTS = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
 
     public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
     public SnapshotRoutineDeletionHandler() {
-        super(Void.class);
+        super(Void.class, new Environment());
+    }
+
+    @Override
+    protected void validateRequest(Void unused, RequestInfo requestInfo, Context context) throws ApiGatewayException {
+        // no op
     }
 
     @Override
@@ -48,7 +53,7 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
                     false);
             return objectMapper.readValue(response.getBody(), SnapshotsDto.class);
         } catch (Exception e) {
-            logger.error("Error when listing all snapshots:" + e.getMessage(), e);
+            LOGGER.error("Error when listing all snapshots:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
     }
@@ -64,8 +69,8 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
                     var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
                         SNAPSHOT_REPO_PATH_REQUEST + "/" + snap.getName(),
                             null);
-                    logger.info("for the snapshot: " + snap.getName()
-                            + " the response is: " + response.getStatus());
+                    LOGGER.info("for the snapshot: " + snap.getName()
+                                + " the response is: " + response.getStatus());
                     responses.add(response.getBody());
                 });
             return String.join(",", responses);

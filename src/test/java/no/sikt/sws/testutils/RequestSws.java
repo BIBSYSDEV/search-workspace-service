@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class TestRequestSws implements Serializable {
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
+public class RequestSws implements Serializable {
 
     @JsonProperty("method")
     private String method;

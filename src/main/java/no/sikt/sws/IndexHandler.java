@@ -11,7 +11,6 @@ import nva.commons.apigateway.ProxyResponse;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
 import nva.commons.apigateway.exceptions.BadRequestException;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +34,14 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
     public OpenSearchClient openSearchClient = OpenSearchClient.passthroughClient();
 
 
-    private static final Logger logger = LoggerFactory.getLogger(IndexHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexHandler.class);
 
     public IndexHandler() {
         super(String.class);
     }
 
     @Override
+    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ExceptionAsFlowControl"})
     protected ProxyResponse<String> processProxyInput(
             String body,
             RequestInfo request,
@@ -74,12 +74,17 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
 
             return new ProxyResponse<>(response.getStatus(), responseBody);
         } catch (BadRequestException | RequestTooLargeException e) {
-            logger.error(e.getLocalizedMessage());
+            LOGGER.error(e.getLocalizedMessage());
             throw e;
         } catch (Exception e) {
-            logger.error("Error: " + e.getMessage(), e);
+            LOGGER.error("Error: " + e.getMessage(), e);
             throw new SearchException(INTERNAL_ERROR, e);
         }
+    }
+
+    @Override
+    protected void validateRequest(String s, RequestInfo requestInfo, Context context) throws ApiGatewayException {
+        // no-op
     }
 
     private static void assertThatLambdaCanHandleResponseSize(String responseBody) throws RequestTooLargeException {
@@ -89,7 +94,6 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
         }
     }
 
-    @NotNull
     private static String getQueryString(RequestInfo request) {
         return request.getQueryParameters().entrySet().stream()
                 .map(entry ->

@@ -4,7 +4,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.services.lambda.runtime.Context;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
-import no.sikt.sws.testutils.TestCaseLoader;
+import no.sikt.sws.testutils.CaseLoader;
 import no.unit.nva.stubs.FakeContext;
 import nva.commons.apigateway.GatewayResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,14 +19,15 @@ import java.io.IOException;
 import static com.amazonaws.http.HttpMethodName.GET;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
-import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE_MOCKNAME;
-import static no.sikt.sws.testutils.TestUtils.buildPathParamsForIndex;
-import static no.sikt.sws.testutils.TestUtils.buildRequest;
+import static no.sikt.sws.testutils.Constants.TEST_SCOPE_MOCKNAME;
+import static no.sikt.sws.testutils.Utils.buildPathParamsForIndex;
+import static no.sikt.sws.testutils.Utils.buildRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings({"PMD.CloseResource"})
 class SnapshotRoutineDeletionHandlerTest {
 
 
@@ -38,12 +39,12 @@ class SnapshotRoutineDeletionHandlerTest {
 
     private ByteArrayOutputStream output;
     @InjectMocks
-    SnapshotRoutineDeletionHandler handler = new SnapshotRoutineDeletionHandler();
+    private final SnapshotRoutineDeletionHandler handler = new SnapshotRoutineDeletionHandler();
     @Mock
-    OpenSearchClient openSearchClient;
+    private OpenSearchClient openSearchClient;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         MockitoAnnotations.openMocks(this);
 
         this.output = new ByteArrayOutputStream();
@@ -52,7 +53,7 @@ class SnapshotRoutineDeletionHandlerTest {
 
     @Test
     void processInput() throws IOException {
-        var testCase = new TestCaseLoader(TEST_CASE_FILE)
+        var testCase = new CaseLoader(TEST_CASE_FILE)
                 .getTestCase("GET (all) snapshots");
         var responseBody = testCase.getResponse();
         var responseStripped = testCase.getResponseStripped();

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
 public class AliasDto extends Dto {
 
     @JsonProperty("actions")
@@ -11,7 +12,7 @@ public class AliasDto extends Dto {
 
     public static AliasDto fromResponse(String opensearchResponse) {
         try {
-            return objectMapper.readValue(opensearchResponse, AliasDto.class);
+            return OBJECT_MAPPER.readValue(opensearchResponse, AliasDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

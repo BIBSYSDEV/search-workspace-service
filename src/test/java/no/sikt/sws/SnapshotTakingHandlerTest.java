@@ -11,16 +11,17 @@ import org.mockito.Mock;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE_SONDRE;
+import static no.sikt.sws.testutils.Constants.TEST_SCOPE_SONDRE;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 
+@SuppressWarnings({"PMD.CloseResource"})
 class SnapshotTakingHandlerTest {
     private static final Context CONTEXT = new FakeContext();
     @InjectMocks
-    SnapshotTakingHandler handler = new SnapshotTakingHandler();
+    private final SnapshotTakingHandler handler = new SnapshotTakingHandler();
 
     @Mock
-    OpenSearchClient openSearchClient;
+    private OpenSearchClient openSearchClient;
 
     @Test
     void createSNapshotTest() throws IOException {

@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TestCaseLoader {
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
+public class CaseLoader {
     private final List<JsonNode> elements;
 
-    public TestCaseLoader(String resourceFileName) {
-        URL resource = getClass().getClassLoader().getResource(resourceFileName);
+    public CaseLoader(String resourceFileName) {
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        URL resource = contextClassLoader.getResource(resourceFileName);
         try {
             this.elements = JsonUtils.dtoObjectMapper.readValue(resource, new TypeReference<>() {});
         } catch (IOException e) {
@@ -27,18 +29,18 @@ public class TestCaseLoader {
         return elements;
     }
 
-    public List<TestCaseSws> getTestCases() {
+    public List<CaseSws> getTestCases() {
         return getElements()
             .stream()
-            .map(TestCaseSws::fromJson)
+            .map(CaseSws::fromJson)
             .sorted()
             .collect(Collectors.toList());
     }
 
-    public TestCaseSws getTestCase(String name) {
+    public CaseSws getTestCase(String name) {
         return getElements()
             .stream()
-            .map(TestCaseSws::fromJson)
+            .map(CaseSws::fromJson)
             .filter(e -> e.getName().equals(name))
             .findFirst()
             .orElseThrow();
@@ -46,20 +48,20 @@ public class TestCaseLoader {
 
     public static final class Builder {
 
-        private final Stream.Builder<TestCaseSws> streamBuilder;
+        private final Stream.Builder<CaseSws> streamBuilder;
 
         public Builder() {
             streamBuilder = Stream.builder();
         }
 
         public Builder loadResource(String filename) {
-            new TestCaseLoader(filename)
+            new CaseLoader(filename)
                 .getTestCases()
                 .forEach(streamBuilder::add);
             return this;
         }
 
-        public Stream<TestCaseSws> build() {
+        public Stream<CaseSws> build() {
             return streamBuilder.build();
         }
     }

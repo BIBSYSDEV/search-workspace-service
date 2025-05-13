@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.PrefixStripper;
 
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
 public class IndexDto extends Dto {
 
     @JsonProperty("aliases")
@@ -16,13 +17,9 @@ public class IndexDto extends Dto {
     @JsonProperty("settings")
     public JsonNode settings;
 
-    public IndexDto() {
-        super();
-    }
-
     public static IndexDto fromResponse(String opensearchResponse) {
         try {
-            return objectMapper.readValue(opensearchResponse, IndexDto.class);
+            return OBJECT_MAPPER.readValue(opensearchResponse, IndexDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

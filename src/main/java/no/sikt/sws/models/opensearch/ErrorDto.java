@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
 public class ErrorDto extends Dto {
 
     @JsonProperty("error")
@@ -14,13 +15,9 @@ public class ErrorDto extends Dto {
     @JsonProperty("status")
     public Number status;
 
-    public ErrorDto() {
-        super();
-    }
-
     public static ErrorDto fromResponse(String opensearchResponse) {
         try {
-            return objectMapper.readValue(opensearchResponse, ErrorDto.class);
+            return OBJECT_MAPPER.readValue(opensearchResponse, ErrorDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

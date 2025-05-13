@@ -16,10 +16,6 @@ public class FailureDto extends Dto {
     @JsonProperty("reason")
     public ReasonDto reason;
 
-    public FailureDto() {
-        super();
-    }
-
     @Override
     public FailureDto stripper(String workspacePrefix) {
         index = index.replaceAll(workspacePrefix + "-", EMPTY_STRING);
@@ -38,7 +34,7 @@ public class FailureDto extends Dto {
         }
 
         @Override
-        Dto stripper(String workspacePrefix) {
+        protected Dto stripper(String workspacePrefix) {
             return this;
         }
     }

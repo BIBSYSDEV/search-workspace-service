@@ -23,18 +23,19 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class OpenSearchClientTest {
+class OpenSearchClientTest {
 
-    final HttpResponse httpResponse = mock(HttpResponse.class);
-    final AwsClientWrapper awsClient = mock(AwsClientWrapper.class);
-    final AwsSignerWrapper awsSigner = mock(AwsSignerWrapper.class);
+    private static final String PROTOCOL_DELIMITER = "://";
+    private final HttpResponse httpResponse = mock(HttpResponse.class);
+    private final AwsClientWrapper awsClient = mock(AwsClientWrapper.class);
+    private final AwsSignerWrapper awsSigner = mock(AwsSignerWrapper.class);
 
-    final Response<String> emptyResponse = new Response<>("", httpResponse);
+    private final Response<String> emptyResponse = new Response<>("", httpResponse);
 
     private OpenSearchClient openSearchClient;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         openSearchClient = new OpenSearchClient(awsClient, awsSigner);
 
@@ -48,7 +49,8 @@ public class OpenSearchClientTest {
 
     @Test
     void testPlainGet() {
-        var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test";
+        var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + PROTOCOL_DELIMITER
+                          + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test";
 
         Request<Void> expectedRequest = new DefaultRequest<>("es");
         expectedRequest.setHttpMethod(GET);
@@ -62,7 +64,7 @@ public class OpenSearchClientTest {
 
     @Test
     void testPostBody() {
-        var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_bulk";
+        var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + PROTOCOL_DELIMITER + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_bulk";
         InputStream inputStream = new ByteArrayInputStream("{}".getBytes());
 
         Request<Void> expectedRequest = new DefaultRequest<>("es");
@@ -78,7 +80,7 @@ public class OpenSearchClientTest {
 
     @Test
     void testBasicQueryParameters() {
-        var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_search";
+        var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + PROTOCOL_DELIMITER + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_search";
 
         Request<Void> expectedRequest = new DefaultRequest<>("es");
         expectedRequest.setHttpMethod(POST);
@@ -93,7 +95,7 @@ public class OpenSearchClientTest {
 
     @Test
     void testAdvancedQueryParameters() {
-        var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + "://" + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_search";
+        var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + PROTOCOL_DELIMITER + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_search";
 
         Request<Void> expectedRequest = new DefaultRequest<>("es");
         expectedRequest.setHttpMethod(POST);

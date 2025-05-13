@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
+@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.AvoidThrowingRawExceptionTypes", "PMD.BooleanGetMethodName"})
 public class DocDto extends Dto {
     @JsonProperty("_index")
     public String indexName;
@@ -51,11 +52,6 @@ public class DocDto extends Dto {
     @JsonProperty("sort")
     public List<Object> sort;
 
-
-    public DocDto() {
-        super();
-    }
-
     @Override
     public DocDto stripper(String workspacePrefix) {
         indexName = indexName.replaceFirst(workspacePrefix + "-",EMPTY_STRING);
@@ -64,7 +60,7 @@ public class DocDto extends Dto {
 
     public static DocDto fromResponse(String opensearchResponse) {
         try {
-            return objectMapper.readValue(opensearchResponse, DocDto.class);
+            return OBJECT_MAPPER.readValue(opensearchResponse, DocDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

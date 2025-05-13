@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SnapshotSettingsRequestDtoTest {
 
     @Test
-    public void testToString() throws JsonProcessingException {
+    void testToString() throws JsonProcessingException {
         var settings = new SnapshotSettingsRequestDto("marinas-bucket", null, null, "/snapshots");
         var request = new SnapshotRequestDto("s3", settings);
         var jsonStr = JsonUtils.dtoObjectMapper.writeValueAsString(request);

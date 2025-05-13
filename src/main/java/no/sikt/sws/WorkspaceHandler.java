@@ -7,6 +7,7 @@ import no.sikt.sws.models.internal.WorkspaceResponse;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
+import nva.commons.core.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,11 +18,16 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
     public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
 
-    private static final Logger logger = LoggerFactory.getLogger(WorkspaceHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkspaceHandler.class);
     public static final String INTERNAL_ERROR = "Internal error";
 
     public WorkspaceHandler() {
-        super(Void.class);
+        super(Void.class, new Environment());
+    }
+
+    @Override
+    protected void validateRequest(Void unused, RequestInfo requestInfo, Context context) throws ApiGatewayException {
+        // no op
     }
 
     @Override
@@ -37,7 +43,7 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
         try {
             return WorkspaceResponse.fromValues(workspace, indexList);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            LOGGER.error("Error when doing WorkspaceResponse.fromValues:" + e.getMessage(), e);
             throw new SearchException(e.getMessage(), e);
         }
     }
@@ -46,14 +52,14 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
     private String getIndexList(String workspace) throws SearchException {
         try {
             var url = workspace + "-*";
-            logger.info("URL: " + url);
+            LOGGER.info("URL: " + url);
             var response = openSearchClient.sendRequest(GET, url, null);
-            logger.info("response-code:" + response.getStatus());
-            logger.info("response-body:" + response.getBody());
+            LOGGER.info("response-code:" + response.getStatus());
+            LOGGER.info("response-body:" + response.getBody());
 
             return response.getBody();
         } catch (Exception e) {
-            logger.error("Error: " + e.getMessage(), e);
+            LOGGER.error("Error: " + e.getMessage(), e);
             throw new SearchException(INTERNAL_ERROR, e);
         }
     }

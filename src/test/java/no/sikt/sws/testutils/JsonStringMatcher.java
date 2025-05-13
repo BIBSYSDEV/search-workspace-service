@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import no.unit.nva.commons.json.JsonUtils;
 import org.mockito.ArgumentMatcher;
 
-
+@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.AvoidThrowingRawExceptionTypes"})
 public class JsonStringMatcher implements ArgumentMatcher<String> {
     private final String expected;
 

@@ -7,9 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity"})
 public class OpenSearchResponse {
 
-    private static final Logger logger = LoggerFactory.getLogger(OpenSearchResponse.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchResponse.class);
     @JsonProperty("body")
     private final String body;
 
@@ -22,7 +23,7 @@ public class OpenSearchResponse {
     }
 
     public OpenSearchResponse(HttpResponse httpResponse) throws IOException {
-        logger.info("httpResponse " + httpResponse.toString());
+        LOGGER.info("httpResponse " + httpResponse.toString());
         var bytes = httpResponse.getContent().readAllBytes();
 
         this.status = httpResponse.getStatusCode();

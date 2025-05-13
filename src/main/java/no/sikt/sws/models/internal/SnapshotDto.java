@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SnapshotDto {
     @JsonProperty("snapshot")
-    String name;
+    public String name;
 
     @JsonProperty("uuid")
-    String uuid;
+    public String uuid;
 
     @JsonProperty("end_time_in_millis")
-    Long epochTime;
+    public Long epochTime;
 
     public Long getEpochTime() {
         return epochTime;

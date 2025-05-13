@@ -12,6 +12,7 @@ import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_NULL;
 
 @JacocoGenerated
+@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity", "PMD.AvoidThrowingRawExceptionTypes", "PMD.TestWithoutAssertion"})
 public class PrefixStripper {
 
     public static final String UNEXPECTED_VALUE = "Unexpected value: ";
@@ -57,42 +58,26 @@ public class PrefixStripper {
         //Regex that matches '{workspace}-' preceded by ' ', '/', '[' or '"'
         var regex = "(?<=[ /\"\\[])" + workspacePrefix + "-";
 
-        switch (responseKind) {
-            case ACK:
-                return responseBody.replaceAll(regex, EMPTY_STRING);
-            case ERROR:
-                return ErrorDto.fromResponse(responseBody).stripper(workspacePrefix)
-                    .toJsonCompact();
-            case CONTENT:
-                switch (commandKind) {
-                    case ALIAS:
-                    case MAPPING:
-                        return IndexDto.fromResponse(responseBody).stripper(workspacePrefix)
-                            .toJsonCompact();
-                    case DOC:
-                        return DocDto.fromResponse(responseBody).stripper(workspacePrefix)
-                            .toJsonCompact();
-                    default:
-                        throw new IllegalStateException(UNEXPECTED_VALUE + commandKind.name());
-                }
-            case CONTENT_COLLECTION:
-                switch (commandKind) {
-                    case BULK:
-                    case MAPPING:
-                        return responseBody.replaceAll(regex, EMPTY_STRING);
-                    case INDEX:
-                        return IndexesDto.fromResponse(responseBody).stripper(workspacePrefix)
-                            .toJsonCompact();
-                    case SEARCH:
-                    case SCROLL:
-                        return SearchDto.fromResponse(responseBody).stripper(workspacePrefix)
-                            .toJsonCompact();
-                    default:
-                        throw new IllegalStateException(UNEXPECTED_VALUE + commandKind.name());
-                }
-            default:
-                throw new IllegalStateException(UNEXPECTED_VALUE + commandKind.name());
-        }
+        return switch (responseKind) {
+            case ACK -> responseBody.replaceAll(regex, EMPTY_STRING);
+            case ERROR -> ErrorDto.fromResponse(responseBody).stripper(workspacePrefix)
+                              .toJsonCompact();
+            case CONTENT -> switch (commandKind) {
+                case ALIAS, MAPPING -> IndexDto.fromResponse(responseBody).stripper(workspacePrefix)
+                                           .toJsonCompact();
+                case DOC -> DocDto.fromResponse(responseBody).stripper(workspacePrefix)
+                                .toJsonCompact();
+                default -> throw new IllegalStateException(UNEXPECTED_VALUE + commandKind.name());
+            };
+            case CONTENT_COLLECTION -> switch (commandKind) {
+                case BULK, MAPPING -> responseBody.replaceAll(regex, EMPTY_STRING);
+                case INDEX -> IndexesDto.fromResponse(responseBody).stripper(workspacePrefix)
+                                  .toJsonCompact();
+                case SEARCH, SCROLL -> SearchDto.fromResponse(responseBody).stripper(workspacePrefix)
+                                           .toJsonCompact();
+                default -> throw new IllegalStateException(UNEXPECTED_VALUE + commandKind.name());
+            };
+        };
     }
 
     private static void validateParameters(String workspacePrefix, String responseBody,

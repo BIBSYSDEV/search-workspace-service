@@ -5,7 +5,6 @@ import com.amazonaws.Request;
 import com.amazonaws.http.HttpMethodName;
 import no.sikt.sws.exception.OpenSearchException;
 import no.sikt.sws.models.opensearch.OpenSearchResponse;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +20,10 @@ import java.util.stream.Collectors;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_ADDRESS;
 import static no.sikt.sws.constants.ApplicationConstants.OPENSEARCH_ENDPOINT_PROTOCOL;
 
+@SuppressWarnings({"PMD.OnlyOneReturn"})
 public class OpenSearchClient {
     private static final String NULL_STRING = "null";
-    private static final Logger logger = LoggerFactory.getLogger(OpenSearchClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchClient.class);
     private final AwsClientWrapper awsClientWrapper;
     private final AwsSignerWrapper awsSignerWrapper;
 
@@ -42,8 +42,8 @@ public class OpenSearchClient {
             return new OpenSearchResponse(response.getHttpResponse().getStatusCode(), response.getAwsResponse());
 
         } catch (OpenSearchException e) {
-            logger.info(e.getMessage());
-            logger.info("Creating OpenSearchResponse " + e.getStatus() + " " + e.getBody());
+            LOGGER.info(e.getMessage());
+            LOGGER.info("Creating OpenSearchResponse " + e.getStatus() + " " + e.getBody());
             return new OpenSearchResponse(e.getStatus(), e.getBody());
         }
 
@@ -57,7 +57,7 @@ public class OpenSearchClient {
         var query = splitPath.length > 1 ? splitPath[1] : null;
 
 
-        logger.info(endpoint + " - " + query);
+        LOGGER.info(endpoint + " - " + query);
 
         Request<Void> request = new DefaultRequest<>("es");
         request.setHttpMethod(httpMethod);
@@ -79,7 +79,6 @@ public class OpenSearchClient {
         return request;
     }
 
-    @NotNull
     private Map<String, List<String>> getStringListMap(String query) {
         return Arrays.stream(query.split("&"))
                 .map(param -> Map.entry(param.split("=")[0], param.split("=")[1]))
@@ -98,16 +97,14 @@ public class OpenSearchClient {
         var awsClient = new AwsClientWrapper(true);
         var signer = new AwsSignerWrapper();
 
-        var client = new OpenSearchClient(awsClient, signer);
-        return client;
+        return new OpenSearchClient(awsClient, signer);
     }
 
     public static OpenSearchClient defaultClient() {
         var awsClient = new AwsClientWrapper(false);
         var signer = new AwsSignerWrapper();
 
-        var client = new OpenSearchClient(awsClient, signer);
-        return client;
+        return new OpenSearchClient(awsClient, signer);
     }
 
 }

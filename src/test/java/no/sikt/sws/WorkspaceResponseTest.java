@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static no.sikt.sws.constants.ApplicationConstants.API_GATEWAY_URL;
-import static no.sikt.sws.testutils.TestConstants.OPEN_SEARCH_INDEX_LIST;
+import static no.sikt.sws.testutils.Constants.OPEN_SEARCH_INDEX_LIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class WorkspaceResponseTest {
+class WorkspaceResponseTest {
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Test
     void workspaceResponseMapsCorrectly() throws JsonProcessingException {
@@ -33,7 +33,7 @@ public class WorkspaceResponseTest {
                    + "}";
         String settingsJson = "{\"index\":{\"number_of_replicas\":\"1\"}}";
 
-        WorkspaceResponse workspaceObject = objectMapper.readValue(responseJson, WorkspaceResponse.class);
+        WorkspaceResponse workspaceObject = OBJECT_MAPPER.readValue(responseJson, WorkspaceResponse.class);
 
         assertEquals("hei", workspaceObject.accountIdentifier);
         assertEquals(settingsJson, workspaceObject.indexList.get("hallo").settings.toString());

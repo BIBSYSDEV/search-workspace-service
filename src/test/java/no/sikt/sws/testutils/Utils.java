@@ -4,7 +4,6 @@ import com.amazonaws.HttpMethod;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.testutils.HandlerRequestBuilder;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -13,10 +12,9 @@ import java.util.stream.Collectors;
 
 import static no.sikt.sws.IndexHandler.RESOURCE_IDENTIFIER;
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
-import static no.sikt.sws.testutils.TestConstants.TEST_SCOPE_SONDRE;
 import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
 
-public final class TestUtils {
+public final class Utils {
 
     public static Map<String, String> buildPathParamsForIndex(String index) {
         return Map.of(
@@ -24,7 +22,6 @@ public final class TestUtils {
         );
     }
 
-    @NotNull
     public static Map<String, String> buildQueryParams(String query) {
         return Arrays.stream(query.split("&"))
             .map(param -> {

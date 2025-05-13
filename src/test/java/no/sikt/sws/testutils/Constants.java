@@ -1,6 +1,6 @@
 package no.sikt.sws.testutils;
 
-public final class TestConstants {
+public final class Constants {
 
     public static final String TEST_INDEX_1  = "some-index-1";
 
