@@ -264,9 +264,6 @@ class IndexHandlerTest {
         var requestsWithParameters =
             getSearchRequestTestCasesStream().filter(CaseSws::isParamRequestTest);
 
-        assertThat("workaround for PMD.UnitTestShouldIncludeAssert that I could not get working to get through codacy",
-                   getSearchRequestTestCasesStream().count(), is(not(equalTo(0))));
-
         return DynamicTest.stream(
             requestsWithParameters,
             CaseSws::getName,
