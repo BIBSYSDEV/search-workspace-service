@@ -88,7 +88,7 @@ tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
             limit {
                 counter = 'METHOD'
                 value = 'COVEREDRATIO'
-                minimum = 0.672 // todo: fix me
+                minimum = 0.672 // FIXME: Increase test coverage and bump this to 1
             }
         }
 
@@ -96,7 +96,7 @@ tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
             limit {
                 counter = 'CLASS'
                 value = 'COVEREDRATIO'
-                minimum = 0.738 // todo: fix me
+                minimum = 0.738  // FIXME: Increase test coverage and bump this to 1
             }
         }
     }
