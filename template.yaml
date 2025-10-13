@@ -567,15 +567,21 @@ Resources:
           DedicatedMasterEnabled: true,
           DedicatedMasterType: t3.medium.search,
           DedicatedMasterCount: 3,
-          InstanceCount: 2,
-          ZoneAwarenessEnabled: false,
-          InstanceType: t3.medium.search
+          InstanceCount: 5,
+          InstanceType: r6g.large.search,
+          ZoneAwarenessEnabled: true,
+          ZoneAwarenessConfig:
+            AvailabilityZoneCount: 3
         },
         {
-          DedicatedMasterEnabled: false,
-          InstanceCount: 1,
-          ZoneAwarenessEnabled: false,
-          InstanceType: t3.medium.search
+          DedicatedMasterEnabled: true,
+          DedicatedMasterType: t3.small.search,
+          DedicatedMasterCount: 3,
+          InstanceCount: 5,
+          InstanceType: r6g.large.search,
+          ZoneAwarenessEnabled: true,
+          ZoneAwarenessConfig:
+            AvailabilityZoneCount: 3
         }
       ]
       EngineVersion: "OpenSearch_2.11"
