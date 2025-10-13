@@ -575,7 +575,7 @@ Resources:
         },
         {
           DedicatedMasterEnabled: true,
-          DedicatedMasterType: t3.small.search,
+          DedicatedMasterType: t3.medium.search,
           DedicatedMasterCount: 3,
           InstanceCount: 5,
           InstanceType: r7g.large.search,
