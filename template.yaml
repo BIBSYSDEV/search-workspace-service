@@ -539,7 +539,7 @@ Resources:
     Properties:
       DomainName: !Sub api.${CustomDomain}
       RestApiId: !Ref SWSApi
-      Stage: !Ref SWSApi.Stage
+      Stage: Prod
 
   SWSOpenSearch:
     Type: AWS::OpenSearchService::Domain
