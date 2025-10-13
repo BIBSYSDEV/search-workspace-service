@@ -568,7 +568,7 @@ Resources:
           DedicatedMasterType: t3.medium.search,
           DedicatedMasterCount: 3,
           InstanceCount: 5,
-          InstanceType: r6g.large.search,
+          InstanceType: r7g.large.search,
           ZoneAwarenessEnabled: true,
           ZoneAwarenessConfig:
             AvailabilityZoneCount: 3
@@ -578,7 +578,7 @@ Resources:
           DedicatedMasterType: t3.small.search,
           DedicatedMasterCount: 3,
           InstanceCount: 5,
-          InstanceType: r6g.large.search,
+          InstanceType: r7g.large.search,
           ZoneAwarenessEnabled: true,
           ZoneAwarenessConfig:
             AvailabilityZoneCount: 3
@@ -588,7 +588,7 @@ Resources:
       EBSOptions:
         EBSEnabled: true
         VolumeSize: 50
-        VolumeType: gp2
+        VolumeType: gp3
       CognitoOptions:
         Enabled: false
       AdvancedOptions:
