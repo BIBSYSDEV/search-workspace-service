@@ -537,6 +537,7 @@ Resources:
 
   SwsBasePathMapping:
     Type: AWS::ApiGateway::BasePathMapping
+    DependsOn: SWSApi
     Properties:
       DomainName: !Sub api.${CustomDomain}
       RestApiId: !Ref SWSApi
