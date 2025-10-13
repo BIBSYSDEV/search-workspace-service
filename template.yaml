@@ -43,6 +43,19 @@ Parameters:
   BackupBucketName:
     Type: String
     Description: Name of the S3 bucket for olensearch buckups
+  LogRetentionInDays:
+    Type: Number
+    Default: 90
+    Description: Number of days to retain CloudWatch logs
+    AllowedValues:
+      - 7
+      - 30
+      - 90
+      - 400
+  LogGroupPrefix:
+    Type: String
+    Default: '/nva/sws/lambda'
+    Description: Prefix for Lambda log group names
 
 Conditions:
   LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
@@ -51,6 +64,50 @@ Conditions:
 Resources:
   ApiAccessLogGroup:
     Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: !Ref LogRetentionInDays
+
+  IndexHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '${LogGroupPrefix}/IndexHandler'
+      RetentionInDays: !Ref LogRetentionInDays
+
+  WorkspaceHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '${LogGroupPrefix}/WorkspaceHandler'
+      RetentionInDays: !Ref LogRetentionInDays
+
+  CognitoHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '${LogGroupPrefix}/CognitoHandler'
+      RetentionInDays: !Ref LogRetentionInDays
+
+  SnapshotRegisterRepoHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotRegisterRepoHandler'
+      RetentionInDays: !Ref LogRetentionInDays
+
+  SnapshotTakingHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotTakingHandler'
+      RetentionInDays: !Ref LogRetentionInDays
+
+  SnapshotRoutineDeletionHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotRoutineDeletionHandler'
+      RetentionInDays: !Ref LogRetentionInDays
+
+  SnapshotRestorationHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotRestorationHandler'
+      RetentionInDays: !Ref LogRetentionInDays
 
   ElasticSearchRole:
     Type: AWS::IAM::Role
@@ -271,6 +328,8 @@ Resources:
     Properties:
       CodeUri: .
       Description: Index handler for indeces within a workspace
+      LoggingConfig:
+        LogGroup: !Ref IndexHandlerLogGroup
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -319,6 +378,8 @@ Resources:
     Properties:
       CodeUri: .
       Description: Handler for workspace - listing indeces and showing account identifier
+      LoggingConfig:
+        LogGroup: !Ref WorkspaceHandlerLogGroup
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -342,6 +403,8 @@ Resources:
     Properties:
       CodeUri: .
       Description: Handler for Cognito - create new users / workspaces
+      LoggingConfig:
+        LogGroup: !Ref CognitoHandlerLogGroup
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -358,6 +421,8 @@ Resources:
     Properties:
       CodeUri: .
       Description: Handler for registering repository for manual snapshots. Needs to be run from Lambda test in console.
+      LoggingConfig:
+        LogGroup: !Ref SnapshotRegisterRepoHandlerLogGroup
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -375,6 +440,8 @@ Resources:
     Properties:
       CodeUri: .
       Description: Handler which takes manual ie via call snapshots of opensearch hourly
+      LoggingConfig:
+        LogGroup: !Ref SnapshotTakingHandlerLogGroup
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -391,11 +458,13 @@ Resources:
           Properties:
             Schedule: rate(1 hour)
 
-  SnapshotRoutineDeletionHandler :
+  SnapshotRoutineDeletionHandler:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
       Description: automation of outdated snapshot deletion
+      LoggingConfig:
+        LogGroup: !Ref SnapshotRoutineDeletionHandlerLogGroup
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
@@ -417,6 +486,8 @@ Resources:
     Properties:
       CodeUri: .
       Description: Handler for Restoring from a snapshot
+      LoggingConfig:
+        LogGroup: !Ref SnapshotRestorationHandlerLogGroup
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'

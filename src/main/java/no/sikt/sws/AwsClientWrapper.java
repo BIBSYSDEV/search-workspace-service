@@ -32,10 +32,7 @@ public class AwsClientWrapper {
         @Override
         public String handle(HttpResponse response) throws Exception {
             var bytes = response.getContent().readAllBytes();
-            var responseCode = response.getStatusCode();
-            var bodyString = new String(bytes);
-            LOGGER.info("Handling response: " + responseCode + " " + bodyString);
-            return bodyString;
+            return new String(bytes);
         }
 
         @Override
