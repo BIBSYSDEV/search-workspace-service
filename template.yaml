@@ -51,6 +51,50 @@ Conditions:
 Resources:
   ApiAccessLogGroup:
     Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 90
+
+  IndexHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${IndexHandler}
+      RetentionInDays: 90
+
+  WorkspaceHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${WorkspaceHandler}
+      RetentionInDays: 90
+
+  CognitoHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${CognitoHandler}
+      RetentionInDays: 90
+
+  SnapshotRegisterRepoHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SnapshotRegisterRepoHandler}
+      RetentionInDays: 90
+
+  SnapshotTakingHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SnapshotTakingHandler}
+      RetentionInDays: 90
+
+  SnapshotRoutineDeletionHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SnapshotRoutineDeletionHandler}
+      RetentionInDays: 90
+
+  SnapshotRestorationHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SnapshotRestorationHandler}
+      RetentionInDays: 90
 
   ElasticSearchRole:
     Type: AWS::IAM::Role
@@ -391,7 +435,7 @@ Resources:
           Properties:
             Schedule: rate(1 hour)
 
-  SnapshotRoutineDeletionHandler :
+  SnapshotRoutineDeletionHandler:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
