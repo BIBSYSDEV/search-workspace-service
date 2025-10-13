@@ -503,6 +503,8 @@ Resources:
 
   UserPool:
     Type: AWS::Cognito::UserPool
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: true
@@ -541,6 +543,8 @@ Resources:
 
   SWSOpenSearch:
     Type: AWS::OpenSearchService::Domain
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       AccessPolicies:
         Version: 2012-10-17
