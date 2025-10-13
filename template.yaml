@@ -565,7 +565,7 @@ Resources:
       ClusterConfig: !If
         - LargeElasticSearch
         - DedicatedMasterEnabled: true
-          DedicatedMasterType: t3.medium.search
+          DedicatedMasterType: m6g.large.search
           DedicatedMasterCount: 3
           InstanceCount: 5
           InstanceType: r7g.large.search
@@ -573,7 +573,7 @@ Resources:
           ZoneAwarenessConfig:
             AvailabilityZoneCount: 3
         - DedicatedMasterEnabled: true
-          DedicatedMasterType: t3.medium.search
+          DedicatedMasterType: m6g.large.search
           DedicatedMasterCount: 3
           InstanceCount: 5
           InstanceType: r7g.large.search
