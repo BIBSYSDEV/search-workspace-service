@@ -42,7 +42,7 @@ Parameters:
     Description: Custom API to connect this lambda to
   BackupBucketName:
     Type: String
-    Description: Name of the S3 bucket for olensearch buckups
+    Description: Name of the S3 bucket for OpenSearch backups
   LogRetentionInDays:
     Type: Number
     Default: 90
@@ -496,13 +496,15 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
-      Handler: no.sikt.sws.SnapshotTakingHandler::handleRequest
+      Handler: no.sikt.sws.SnapshotRestorationHandler::handleRequest
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
 
 
   UserPool:
     Type: AWS::Cognito::UserPool
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: true
@@ -537,10 +539,12 @@ Resources:
     Properties:
       DomainName: !Sub api.${CustomDomain}
       RestApiId: !Ref SWSApi
-      Stage: !Ref SWSApi.Stage
+      Stage: Prod
 
   SWSOpenSearch:
     Type: AWS::OpenSearchService::Domain
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       AccessPolicies:
         Version: 2012-10-17
@@ -558,27 +562,29 @@ Resources:
               - s3:GetObject
               - s3:DeleteObject
             Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
-      ClusterConfig: !If [ LargeElasticSearch,
-        {
-          DedicatedMasterEnabled: true,
-          DedicatedMasterType: t3.medium.search,
-          DedicatedMasterCount: 3,
-          InstanceCount: 2,
-          ZoneAwarenessEnabled: false,
-          InstanceType: t3.medium.search
-        },
-        {
-          DedicatedMasterEnabled: false,
-          InstanceCount: 1,
-          ZoneAwarenessEnabled: false,
-          InstanceType: t3.medium.search
-        }
-      ]
+      ClusterConfig: !If
+        - LargeElasticSearch
+        - DedicatedMasterEnabled: true
+          DedicatedMasterType: t3.medium.search
+          DedicatedMasterCount: 3
+          InstanceCount: 5
+          InstanceType: r7g.large.search
+          ZoneAwarenessEnabled: true
+          ZoneAwarenessConfig:
+            AvailabilityZoneCount: 3
+        - DedicatedMasterEnabled: true
+          DedicatedMasterType: t3.medium.search
+          DedicatedMasterCount: 3
+          InstanceCount: 5
+          InstanceType: r7g.large.search
+          ZoneAwarenessEnabled: true
+          ZoneAwarenessConfig:
+            AvailabilityZoneCount: 3
       EngineVersion: "OpenSearch_2.11"
       EBSOptions:
         EBSEnabled: true
         VolumeSize: 50
-        VolumeType: gp2
+        VolumeType: gp3
       CognitoOptions:
         Enabled: false
       AdvancedOptions:
