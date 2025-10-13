@@ -537,11 +537,10 @@ Resources:
 
   SwsBasePathMapping:
     Type: AWS::ApiGateway::BasePathMapping
-    DependsOn: SWSApi
     Properties:
       DomainName: !Sub api.${CustomDomain}
       RestApiId: !Ref SWSApi
-      Stage: Prod
+      Stage: !Ref SWSApi.Stage
 
   SWSOpenSearch:
     Type: AWS::OpenSearchService::Domain
