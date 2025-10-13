@@ -70,43 +70,43 @@ Resources:
   IndexHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/${IndexHandler}'
+      LogGroupName: !Sub '${LogGroupPrefix}/IndexHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   WorkspaceHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/${WorkspaceHandler}'
+      LogGroupName: !Sub '${LogGroupPrefix}/WorkspaceHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   CognitoHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/${CognitoHandler}'
+      LogGroupName: !Sub '${LogGroupPrefix}/CognitoHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotRegisterRepoHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/${SnapshotRegisterRepoHandler}'
+      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotRegisterRepoHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotTakingHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/${SnapshotTakingHandler}'
+      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotTakingHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotRoutineDeletionHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/${SnapshotRoutineDeletionHandler}'
+      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotRoutineDeletionHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotRestorationHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/${SnapshotRestorationHandler}'
+      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotRestorationHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   ElasticSearchRole:
