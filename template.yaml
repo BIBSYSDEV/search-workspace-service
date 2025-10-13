@@ -42,7 +42,7 @@ Parameters:
     Description: Custom API to connect this lambda to
   BackupBucketName:
     Type: String
-    Description: Name of the S3 bucket for olensearch buckups
+    Description: Name of the S3 bucket for OpenSearch backups
   LogRetentionInDays:
     Type: Number
     Default: 90
@@ -496,7 +496,7 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
-      Handler: no.sikt.sws.SnapshotTakingHandler::handleRequest
+      Handler: no.sikt.sws.SnapshotRestorationHandler::handleRequest
       Role: !GetAtt   SWSSnapshotRepoRole.Arn
 
 
