@@ -55,7 +55,7 @@ Parameters:
   LogGroupPrefix:
     Type: String
     Default: '/nva/sws/'
-    Description: Prefix for Lambda log group names
+    Description: Prefix for log group names
 
 Conditions:
   LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
