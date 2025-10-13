@@ -54,8 +54,8 @@ Parameters:
       - 400
   LogGroupPrefix:
     Type: String
-    Default: '/nva/sws/lambda'
-    Description: Prefix for Lambda log group names
+    Default: '/nva/sws/'
+    Description: Prefix for log group names
 
 Conditions:
   LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
@@ -65,48 +65,49 @@ Resources:
   ApiAccessLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
+      LogGroupName: !Sub 'api/${LogGroupPrefix}/ApiAccessLogGroup'
       RetentionInDays: !Ref LogRetentionInDays
 
   IndexHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/IndexHandler'
+      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/IndexHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   WorkspaceHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/WorkspaceHandler'
+      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/WorkspaceHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   CognitoHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/CognitoHandler'
+      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/CognitoHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotRegisterRepoHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotRegisterRepoHandler'
+      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/SnapshotRegisterRepoHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotTakingHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotTakingHandler'
+      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/SnapshotTakingHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotRoutineDeletionHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotRoutineDeletionHandler'
+      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/SnapshotRoutineDeletionHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotRestorationHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '${LogGroupPrefix}/SnapshotRestorationHandler'
+      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/SnapshotRestorationHandler'
       RetentionInDays: !Ref LogRetentionInDays
 
   ElasticSearchRole:
