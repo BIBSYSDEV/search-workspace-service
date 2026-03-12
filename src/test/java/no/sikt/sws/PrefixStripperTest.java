@@ -5,7 +5,9 @@ import static no.sikt.sws.testutils.Constants.TEST_PREFIX_MOCKNAME;
 import static no.unit.nva.testutils.RandomDataGenerator.objectMapper;
 import static nva.commons.core.attempt.Try.attempt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.stream.Stream;
+
 import no.sikt.sws.models.internal.WorkspaceResponse;
 import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
@@ -216,6 +218,19 @@ class PrefixStripperTest {
         ).get();
 
         assertEquals(toJsonCompact(expectedBody),toJsonCompact(resultBody));
+    }
+
+    @Test
+    void shouldHandleErrorResponseWithoutErrorField() throws BadRequestException {
+        var responseWithMissingErrorField = "{\"status\":400}";
+
+        var result = PrefixStripper.body(
+            OpenSearchCommandKind.DOC,
+            OpenSearchResponseKind.ERROR,
+            TEST_PREFIX_MOCKNAME,
+            responseWithMissingErrorField);
+
+        assertTrue(result.contains("400"));
     }
 
     /**

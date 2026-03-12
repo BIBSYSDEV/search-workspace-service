@@ -77,7 +77,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
             LOGGER.error(e.getLocalizedMessage());
             throw e;
         } catch (Exception e) {
-            LOGGER.error("Error: " + e.getMessage(), e);
+            LOGGER.error(INTERNAL_ERROR, e);
             throw new SearchException(INTERNAL_ERROR, e);
         }
     }
