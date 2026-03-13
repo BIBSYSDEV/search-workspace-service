@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.util.Optional;
+
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
 @SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
@@ -26,7 +28,9 @@ public class ErrorDto extends Dto {
     @Override
     public ErrorDto stripper(String workspacePrefix) {
         var regex = toRegEx.apply(workspacePrefix);
-        error = string2JsonNode.apply(error.toString().replaceAll(regex,EMPTY_STRING));
+        error = Optional.ofNullable(error)
+          .map(node -> string2JsonNode.apply(node.toString().replaceAll(regex, EMPTY_STRING)))
+          .orElse(null);
         return this;
     }
 
