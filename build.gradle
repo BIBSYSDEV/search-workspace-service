@@ -1,53 +1,51 @@
 plugins {
-    // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
     id 'checkstyle'
     id 'pmd'
     id 'jacoco'
 }
 
-repositories {
-    gradlePluginPortal()
-    // Use Maven Central for resolving dependencies.
-    mavenCentral()
-    maven { url = 'https://jitpack.io' }
-}
-
 java {
-    // added to ensure Compatibility in dev mode for devs with java versions > 11
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
 }
 
 dependencies {
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    implementation libs.apache.commons
+    implementation nvaCatalog.commons.lang
 
-    implementation libs.aws.java.sdk.core
+    implementation nvaCatalog.aws.java.sdk.core
 
-    implementation libs.aws.sdk2.eventbridge
-    implementation libs.aws.sdk2.regions
-    implementation libs.aws.sdk2.s3
-    implementation libs.aws.sdk2.urlconnectionclient
+    implementation nvaCatalog.aws.sdk2.eventbridge
+    implementation nvaCatalog.aws.sdk2.regions
+    implementation nvaCatalog.aws.sdk2.s3
+    implementation nvaCatalog.aws.sdk2.urlconnection
     implementation libs.aws.sdk2.cognitoidentityprovider
 
-    implementation libs.bundles.jackson
-    implementation libs.bundles.logging
-    implementation libs.bundles.nva
+    implementation nvaCatalog.bundles.jackson
+    implementation libs.jackson.dataformat.hal
+    implementation nvaCatalog.bundles.logging
+
+    implementation nvaLibs.core
+    implementation nvaLibs.apigateway
 
     implementation libs.jacoco.core
     implementation libs.jacoco.report
     implementation libs.json
     implementation libs.jsonld
 
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation libs.guava
+    implementation nvaCatalog.guava
 
-    implementation libs.mockito.core
+    implementation nvaCatalog.mockito.core
 
     implementation libs.nebula.lint
-    implementation libs.nva.json
-    testImplementation libs.bundles.testing
+    implementation nvaLibs.json
+
+    testImplementation nvaCatalog.bundles.testing.junit
+    testImplementation nvaCatalog.bundles.testing.hamcrest
+    testImplementation libs.hamcrest.jackson
+    testImplementation nvaCatalog.zalando
+    testImplementation nvaLibs.testutils
+    testImplementation nvaLibs.logutils
 }
 tasks.named('test', Test) {
     useJUnitPlatform()
