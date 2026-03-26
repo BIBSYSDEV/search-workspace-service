@@ -1,11 +1,26 @@
 openapi: 3.0.3
 info:
   title: SWS API
+  description: Search Workspace Service API for managing OpenSearch workspaces and resources
   version: 1.0.0
+  contact:
+    email: kontakt@sikt.no
+    url: https://nva.sikt.no
+servers:
+  - url: https://api.sws.aws.sikt.no
+tags:
+  - name: workspace
+    description: Workspace index operations
+  - name: resource
+    description: Workspace resource operations
 paths:
   /:
     get:
+      operationId: listIndexes
+      tags:
+        - workspace
       summary: Collection of indexes
+      description: Returns a collection of all available indexes in the workspace
       security:
         - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
       x-amazon-apigateway-integration:
@@ -29,7 +44,11 @@ paths:
                 $ref: '#/components/schemas/Problem'
   /{resource+}:
     post:
+      operationId: createResource
+      tags:
+        - resource
       summary: Create workspace/resource and/or add content to a workspace-resource
+      description: Creates a workspace resource or adds content to an existing workspace resource
       parameters:
         - name: resource+
           in: path
@@ -72,7 +91,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
     get:
+      operationId: getResource
+      tags:
+        - resource
       summary: Access a workspace-resource
+      description: Retrieves a workspace resource by path
       parameters:
         - name: resource+
           in: path
@@ -102,7 +125,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
     put:
+      operationId: updateResource
+      tags:
+        - resource
       summary: Add or modify content in a workspace-resource
+      description: Adds or modifies content in an existing workspace resource
       parameters:
         - name: resource+
           in: path
@@ -136,7 +163,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
     head:
+      operationId: headResource
+      tags:
+        - resource
       summary: workspace-resource
+      description: Checks if a workspace resource exists
       parameters:
         - name: resource+
           in: path
@@ -166,7 +197,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
     delete:
-      summary:  Deletes a workspace-resource (index)
+      operationId: deleteResource
+      tags:
+        - resource
+      summary: Deletes a workspace-resource (index)
+      description: Deletes a workspace resource and its associated index
       parameters:
         - name: resource+
           in: path
