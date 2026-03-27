@@ -3,6 +3,7 @@ plugins {
     id 'checkstyle'
     id 'pmd'
     id 'jacoco'
+    id("io.github.michael-nestler.spectral") version "0.2.0-0"
 }
 
 java {
@@ -94,6 +95,7 @@ tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
 tasks.named('check') {
     dependsOn tasks.named('test')
     dependsOn tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification)
+    dependsOn tasks.named('spectral')
 }
 
 pmd {
@@ -129,4 +131,9 @@ tasks.withType(Checkstyle).configureEach {
         html.required
         html.stylesheet rootProject.resources.text.fromFile('config/checkstyle/checkstyle-simple.xsl')
     }
+}
+
+spectral {
+    documents.from("docs/*.yaml")
+    ruleset.set(file('.spectral.yaml'))
 }

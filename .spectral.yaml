@@ -1,0 +1,9 @@
+extends:
+  - spectral:oas
+
+rules:
+  # Disabled because we use non-standard AWS extensions
+  oas3-operation-security-defined: off
+
+  # Disabled because our path params allow slashes (greedy path syntax)
+  path-params: off
