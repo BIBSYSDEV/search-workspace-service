@@ -1,9 +1,12 @@
 package no.sikt.sws.models.opensearch;
 
 import com.amazonaws.http.HttpMethodName;
+import com.fasterxml.jackson.databind.JsonNode;
+import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
+import static nva.commons.core.attempt.Try.attempt;
 
 @SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity"})
 public enum OpenSearchResponseKind {
@@ -29,7 +32,7 @@ public enum OpenSearchResponseKind {
         OpenSearchCommandKind commandKind,
         String responseBody) throws BadRequestException {
 
-        if (checkForError(responseBody)) {
+        if (isErrorResponse(responseBody)) {
             return ERROR;
         }
 
@@ -50,9 +53,14 @@ public enum OpenSearchResponseKind {
         }
     }
 
-    private static boolean checkForError(String responseBody) {
-        return  responseBody.contains("\"error\"") && responseBody.contains("\"status\"");
+    private static boolean isErrorResponse(String responseBody) {
+        return attempt(() -> JsonUtils.dtoObjectMapper.readTree(responseBody))
+                   .toOptional()
+                   .filter(OpenSearchResponseKind::isError)
+                   .isPresent();
     }
 
-
+    private static boolean isError(JsonNode node) {
+        return node.has("error") && node.has("status");
+    }
 }

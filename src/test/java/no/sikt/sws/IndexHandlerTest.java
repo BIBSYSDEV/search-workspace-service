@@ -1,31 +1,5 @@
 package no.sikt.sws;
 
-import com.amazonaws.HttpMethod;
-import com.amazonaws.services.lambda.runtime.Context;
-import no.sikt.sws.models.opensearch.OpenSearchResponse;
-import no.sikt.sws.models.opensearch.SearchDto;
-import no.sikt.sws.testutils.JsonStringMatcher;
-import no.sikt.sws.testutils.CaseLoader;
-import no.sikt.sws.testutils.CaseSws;
-import no.unit.nva.commons.json.JsonUtils;
-import no.unit.nva.stubs.FakeContext;
-import no.unit.nva.testutils.HandlerRequestBuilder;
-import nva.commons.apigateway.GatewayResponse;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.util.stream.Stream;
-
 import static com.amazonaws.http.HttpMethodName.GET;
 import static com.amazonaws.http.HttpMethodName.POST;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
@@ -51,12 +25,37 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import com.amazonaws.HttpMethod;
+import com.amazonaws.services.lambda.runtime.Context;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.util.stream.Stream;
+import no.sikt.sws.models.opensearch.OpenSearchResponse;
+import no.sikt.sws.models.opensearch.SearchDto;
+import no.sikt.sws.testutils.CaseLoader;
+import no.sikt.sws.testutils.CaseSws;
+import no.sikt.sws.testutils.JsonStringMatcher;
+import no.unit.nva.commons.json.JsonUtils;
+import no.unit.nva.stubs.FakeContext;
+import no.unit.nva.testutils.HandlerRequestBuilder;
+import nva.commons.apigateway.GatewayResponse;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 @SuppressWarnings({"PMD.CloseResource"})
 class IndexHandlerTest {
 
     private static final Context CONTEXT = new FakeContext();
     private static final String MAPPING_PATH = "/_mapping";
+    private static final String SEARCH_SCROLL = "_search/scroll";
     private ByteArrayOutputStream output;
 
     @InjectMocks
@@ -244,10 +243,10 @@ class IndexHandlerTest {
 
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
 
-        when(openSearchClient.sendRequest(GET, "_search/scroll", null))
+        when(openSearchClient.sendRequest(GET, SEARCH_SCROLL, null))
             .thenReturn(mockResponse);
 
-        var pathParams = buildPathParamsForIndex("_search/scroll");
+        var pathParams = buildPathParamsForIndex(SEARCH_SCROLL);
 
         var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
 
@@ -339,6 +338,37 @@ class IndexHandlerTest {
         Assertions.assertEquals(
             stripWhitespaceNewLine(testcase.getResponseStripped()),
             stripWhitespaceNewLine(resultBody));
+
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
+    }
+
+    @Test
+    void shouldNotThrowExceptionWhenDocumentContainsErrorAndStatusNodes() throws IOException {
+        var responseBody = """
+            {
+              "hits": {
+                "hits": [
+                  {
+                    "_index": "abc",
+                    "_id": "def",
+                    "error": "error",
+                    "status": "status"
+                  }
+                ]
+              }
+            }
+            """;
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, responseBody);
+
+        when(openSearchClient.sendRequest(GET, SEARCH_SCROLL, null))
+            .thenReturn(mockResponse);
+
+        var pathParams = buildPathParamsForIndex(SEARCH_SCROLL);
+
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
+
+        handler.handleRequest(request, output, CONTEXT);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
 
         assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
     }
