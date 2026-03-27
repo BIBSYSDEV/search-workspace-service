@@ -8,6 +8,7 @@ info:
     url: https://nva.sikt.no
 servers:
   - url: https://api.sws.aws.sikt.no
+  - url: https://api.dev.sws.aws.sikt.no
 tags:
   - name: workspace
     description: Workspace index operations
