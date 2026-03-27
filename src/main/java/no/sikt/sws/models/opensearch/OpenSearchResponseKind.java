@@ -1,9 +1,11 @@
 package no.sikt.sws.models.opensearch;
 
 import com.amazonaws.http.HttpMethodName;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nva.commons.apigateway.exceptions.BadRequestException;
 
 import static com.amazonaws.http.HttpMethodName.GET;
+import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
 
 @SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity"})
 public enum OpenSearchResponseKind {
@@ -51,7 +53,11 @@ public enum OpenSearchResponseKind {
     }
 
     private static boolean checkForError(String responseBody) {
-        return  responseBody.contains("\"error\"") && responseBody.contains("\"status\"");
+        try {
+            return dtoObjectMapper.readTree(responseBody).has("error");
+        } catch (JsonProcessingException e) {
+            return true;
+        }
     }
 
 
