@@ -57,6 +57,7 @@ class IndexHandlerTest {
 
     private static final Context CONTEXT = new FakeContext();
     private static final String MAPPING_PATH = "/_mapping";
+    private static final String SEARCH_SCROLL = "_search/scroll";
     private ByteArrayOutputStream output;
 
     @InjectMocks
@@ -244,10 +245,10 @@ class IndexHandlerTest {
 
         final OpenSearchResponse mockResponse = new OpenSearchResponse(200, "{}");
 
-        when(openSearchClient.sendRequest(GET, "_search/scroll", null))
+        when(openSearchClient.sendRequest(GET, SEARCH_SCROLL, null))
             .thenReturn(mockResponse);
 
-        var pathParams = buildPathParamsForIndex("_search/scroll");
+        var pathParams = buildPathParamsForIndex(SEARCH_SCROLL);
 
         var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
 
@@ -348,4 +349,36 @@ class IndexHandlerTest {
                    .loadResource("proxy/requests-search.json")
                    .build();
     }
+
+    @Test
+    void shouldNotThrowExceptionWhenDocumentContainsErrorAndStatusNodes() throws IOException {
+        var responseBody = """
+            {
+              "hits": {
+                "hits": [
+                  {
+                    "_index": "abc",
+                    "_id": "def",
+                    "error": "error",
+                    "status": "status"
+                  }
+                ]
+              }
+            }
+            """;
+        final OpenSearchResponse mockResponse = new OpenSearchResponse(200, responseBody);
+
+        when(openSearchClient.sendRequest(GET, SEARCH_SCROLL, null))
+          .thenReturn(mockResponse);
+
+        var pathParams = buildPathParamsForIndex(SEARCH_SCROLL);
+
+        var request = buildRequest(HttpMethod.GET, pathParams, TEST_SCOPE_SONDRE);
+
+        handler.handleRequest(request, output, CONTEXT);
+        var response = GatewayResponse.fromOutputStream(output, String.class);
+
+        assertThat(response.getStatusCode(), is(equalTo(HTTP_OK)));
+    }
+
 }

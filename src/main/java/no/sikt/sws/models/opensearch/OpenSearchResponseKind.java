@@ -54,11 +54,9 @@ public enum OpenSearchResponseKind {
 
     private static boolean checkForError(String responseBody) {
         try {
-            return dtoObjectMapper.readTree(responseBody).has("error");
+            return dtoObjectMapper.readTree(responseBody).has("error") && dtoObjectMapper.readTree(responseBody).has("status");
         } catch (JsonProcessingException e) {
             return true;
         }
     }
-
-
 }
