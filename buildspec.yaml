@@ -6,12 +6,6 @@ env:
     GRADLE_OPTS: "-Dorg.gradle.configuration-cache=false"
     SAM_CLI_TELEMETRY: "0"
 
-reports:
-  nva-sws-junit-tests:
-    files:
-      - '*/build/test-results/test/TEST-*.xml'
-    file-format: JUNITXML
-
 phases:
   install:
     runtime-versions:
