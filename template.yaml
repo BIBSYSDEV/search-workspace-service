@@ -583,7 +583,7 @@ Resources:
           ZoneAwarenessEnabled: true
           ZoneAwarenessConfig:
             AvailabilityZoneCount: 3
-      EngineVersion: "OpenSearch_2.11"
+      EngineVersion: "OpenSearch_2.19"
       EBSOptions:
         EBSEnabled: true
         VolumeSize: 50
