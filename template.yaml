@@ -546,6 +546,8 @@ Resources:
     Type: AWS::OpenSearchService::Domain
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
+    UpdatePolicy:
+      EnableVersionUpgrade: true
     Properties:
       AccessPolicies:
         Version: 2012-10-17
