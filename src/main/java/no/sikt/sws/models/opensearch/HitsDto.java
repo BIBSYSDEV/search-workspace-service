@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Collection;
 
-@SuppressWarnings("checkstyle:RightCurly")
 public class HitsDto extends Dto {
     @JsonProperty("total")
     public JsonNode shards;
