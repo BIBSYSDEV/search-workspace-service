@@ -47,7 +47,6 @@ public class PrefixStripper {
      * @param responseBody    body to strip
      * @return stripped body
      */
-    @SuppressWarnings("checkstyle:MissingSwitchDefault")
     public static String body(OpenSearchCommandKind commandKind,
                               OpenSearchResponseKind responseKind,
                               String workspacePrefix,
