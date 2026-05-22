@@ -22,6 +22,7 @@ public class FailureDto extends Dto {
         return this;
     }
 
+    @SuppressWarnings("PMD.PublicMemberInNonPublicType")
     private class ReasonDto extends Dto {
         @JsonProperty("type")
         public String type;

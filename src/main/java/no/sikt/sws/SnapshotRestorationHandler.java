@@ -32,6 +32,7 @@ public class SnapshotRestorationHandler extends ApiGatewayHandler<SnapshotToRest
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     protected String processInput(SnapshotToRestoreDto input, RequestInfo requestInfo, Context context)
             throws ApiGatewayException {
         LOGGER.info("retrieved name of snapshot: " + input.snapshotName);

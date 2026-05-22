@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 
-@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.AvoidThrowingRawExceptionTypes", "PMD.BooleanGetMethodName"})
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes", "PMD.BooleanGetMethodName"})
 public class DocDto extends Dto {
     @JsonProperty("_index")
     public String indexName;

@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity"})
 public class OpenSearchResponse {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchResponse.class);
@@ -27,7 +27,7 @@ public class OpenSearchResponse {
         var bytes = httpResponse.getContent().readAllBytes();
 
         this.status = httpResponse.getStatusCode();
-        this.body = new String(bytes);
+        this.body = new String(bytes, StandardCharsets.UTF_8);
     }
 
     public String getBody() {

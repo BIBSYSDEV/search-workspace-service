@@ -31,6 +31,7 @@ public class SnapshotRegisterRepoHandler extends ApiGatewayHandler<Void, String>
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
         var settings = new SnapshotSettingsRequestDto(BACKUP_BUCKET_NAME, null, BACKUP_ROLE_ARN, "snapshots");
         var request = new SnapshotRequestDto("s3", settings);

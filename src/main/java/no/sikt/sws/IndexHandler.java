@@ -41,7 +41,7 @@ public class IndexHandler extends ApiGatewayProxyHandler<String, String> {
     }
 
     @Override
-    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ExceptionAsFlowControl"})
+    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ExceptionAsFlowControl", "PMD.AvoidCatchingGenericException"})
     protected ProxyResponse<String> processProxyInput(
             String body,
             RequestInfo request,

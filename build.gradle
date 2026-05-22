@@ -99,7 +99,7 @@ tasks.named('check') {
 }
 
 pmd {
-    toolVersion = '7.13.0'
+    toolVersion = '7.23.0'
     ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/ruleset.xml')
     ruleSets = []
     ignoreFailures = false

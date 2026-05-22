@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ class OpenSearchClientTest {
         var statusCode = 200;
 
         when(httpResponse.getStatusCode()).thenReturn(statusCode);
-        when(httpResponse.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
+        when(httpResponse.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
     }
 
     @Test
@@ -65,7 +66,7 @@ class OpenSearchClientTest {
     @Test
     void testPostBody() {
         var expectedUri = OPENSEARCH_ENDPOINT_PROTOCOL + PROTOCOL_DELIMITER + OPENSEARCH_ENDPOINT_ADDRESS + "/sondre-test/_bulk";
-        InputStream inputStream = new ByteArrayInputStream("{}".getBytes());
+        InputStream inputStream = new ByteArrayInputStream("{}".getBytes(StandardCharsets.UTF_8));
 
         Request<Void> expectedRequest = new DefaultRequest<>("es");
         expectedRequest.setHttpMethod(POST);
