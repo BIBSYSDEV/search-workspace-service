@@ -9,6 +9,7 @@ import no.sikt.sws.exception.OpenSearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class AwsClientWrapper {
         @Override
         public String handle(HttpResponse response) throws Exception {
             var bytes = response.getContent().readAllBytes();
-            return new String(bytes);
+            return new String(bytes, StandardCharsets.UTF_8);
         }
 
         @Override
@@ -49,7 +50,7 @@ public class AwsClientWrapper {
 
             var responseCode = response.getStatusCode();
             var bytes = response.getContent().readAllBytes();
-            var bodyString = new String(bytes);
+            var bodyString = new String(bytes, StandardCharsets.UTF_8);
 
             if (passError && FORWARDED_ES_ERROR_CODES.contains(responseCode)) {
                 return new OpenSearchException(responseCode, bodyString);

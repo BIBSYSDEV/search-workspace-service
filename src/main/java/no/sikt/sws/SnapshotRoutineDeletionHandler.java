@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
 
+@SuppressWarnings("PMD.AvoidCatchingGenericException")
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);

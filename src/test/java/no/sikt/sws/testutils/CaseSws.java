@@ -11,7 +11,8 @@ import static no.sikt.sws.constants.ApplicationConstants.EMPTY_STRING;
 import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
 
 // WorkspaceIndexHandlerTestCase
-@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes", "PMD.SystemPrintln"})
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes", "PMD.SystemPrintln",
+    "PMD.AvoidCatchingGenericException", "PMD.OverrideBothEqualsAndHashCodeOnComparable"})
 public class CaseSws implements Serializable, Comparable<CaseSws> {
     @JsonProperty("name")
     private String name;

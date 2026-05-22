@@ -31,11 +31,11 @@ import static org.mockito.Mockito.when;
 class SnapshotRoutineDeletionHandlerTest {
 
 
-    public static final String GET_URL_ALL = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
+    private static final String GET_URL_ALL = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
 
-    public static final String TEST_CASE_FILE = "snapshot/request-snapshot.json";
+    private static final String TEST_CASE_FILE = "snapshot/request-snapshot.json";
     private static final Context CONTEXT = new FakeContext();
-    public static final String DELETE_URL_SNAP = SNAPSHOT_REPO_PATH_REQUEST + "/snap1665487673861";
+    private static final String DELETE_URL_SNAP = SNAPSHOT_REPO_PATH_REQUEST + "/snap1665487673861";
 
     private ByteArrayOutputStream output;
     @InjectMocks

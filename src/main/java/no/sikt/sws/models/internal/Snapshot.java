@@ -2,17 +2,18 @@ package no.sikt.sws.models.internal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.Instant;
 import java.util.Comparator;
-import java.util.Date;
 
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashCodeOnComparable")
 public class Snapshot implements Comparable<Snapshot> {
     @JsonProperty
     private String name;
 
     @JsonProperty
-    private Date epochTime;
+    private Instant epochTime;
 
-    public Date getEpochTime() {
+    public Instant getEpochTime() {
         return epochTime;
     }
 
@@ -25,7 +26,7 @@ public class Snapshot implements Comparable<Snapshot> {
     }
 
     public void setEpochTime(Long epochTime) {
-        this.epochTime = new Date(epochTime);
+        this.epochTime = Instant.ofEpochMilli(epochTime);
     }
 
     @Override
@@ -35,6 +36,6 @@ public class Snapshot implements Comparable<Snapshot> {
 
     public static class Comparators {
         public static final Comparator<Snapshot> SNAP_COMPARATOR_TIME =
-                Comparator.comparingLong((Snapshot snap) -> snap.getEpochTime().getTime());
+                Comparator.comparing(Snapshot::getEpochTime);
     }
 }

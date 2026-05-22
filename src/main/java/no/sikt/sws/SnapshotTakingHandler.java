@@ -3,7 +3,6 @@ package no.sikt.sws;
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.services.lambda.runtime.Context;
 
-import java.util.Date;
 import no.sikt.sws.exception.SearchException;
 import nva.commons.apigateway.ApiGatewayHandler;
 import nva.commons.apigateway.RequestInfo;
@@ -28,9 +27,10 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     protected String processInput(Void input, RequestInfo requestInfo, Context context) throws ApiGatewayException {
 
-        var timestamp = String.valueOf(new Date().getTime());
+        var timestamp = String.valueOf(System.currentTimeMillis());
         var createSnapshotName = "snap" + timestamp;
 
         try {

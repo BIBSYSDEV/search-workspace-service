@@ -49,6 +49,7 @@ public class WorkspaceHandler extends ApiGatewayHandler<Void, WorkspaceResponse>
     }
 
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private String getIndexList(String workspace) throws SearchException {
         try {
             var url = workspace + "-*";

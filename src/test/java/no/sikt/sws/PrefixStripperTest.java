@@ -23,7 +23,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings({"PMD.GuardLogStatement"})
 class PrefixStripperTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrefixStripperTest.class);

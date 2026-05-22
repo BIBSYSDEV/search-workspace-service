@@ -5,6 +5,7 @@ import org.mockito.ArgumentMatcher;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"PMD.OnlyOneReturn"})
@@ -26,13 +27,14 @@ public class RequestMatcher implements ArgumentMatcher<Request> {
         }
 
         if (sourceRequest.getContent() != null) {
-            var excepctedContent = new BufferedReader(new InputStreamReader(sourceRequest.getContent()))
+            var expectedContent = new BufferedReader(new InputStreamReader(sourceRequest.getContent(),
+                    StandardCharsets.UTF_8))
                     .lines().collect(Collectors.joining("\n"));
 
-            var actualContent = new BufferedReader(new InputStreamReader(request.getContent()))
+            var actualContent = new BufferedReader(new InputStreamReader(request.getContent(), StandardCharsets.UTF_8))
                     .lines().collect(Collectors.joining("\n"));
 
-            if (!excepctedContent.equals(actualContent)) {
+            if (!expectedContent.equals(actualContent)) {
                 return false;
             }
         }

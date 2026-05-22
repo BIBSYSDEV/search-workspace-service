@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +69,7 @@ public class OpenSearchClient {
         }
 
         if (data != null && !NULL_STRING.equals(data)) {
-            InputStream inputStream = new ByteArrayInputStream(data.getBytes());
+            InputStream inputStream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
             request.setContent(inputStream);
 
             var headers = new HashMap<String, String>();
