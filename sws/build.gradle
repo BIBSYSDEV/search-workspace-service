@@ -1,12 +1,5 @@
 plugins {
-    id 'java-library'
-    id 'pmd'
-    id 'jacoco'
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    id 'nva-sws.java-conventions'
 }
 
 dependencies {
@@ -36,7 +29,6 @@ dependencies {
 
     implementation nvaCatalog.mockito.core
 
-    implementation libs.nebula.lint
     implementation nvaLibs.json
 
     testImplementation nvaCatalog.bundles.testing.junit
@@ -45,62 +37,6 @@ dependencies {
     testImplementation nvaCatalog.zalando
     testImplementation nvaLibs.testutils
     testImplementation nvaLibs.logutils
-}
-
-tasks.named('test', Test) {
-    useJUnitPlatform()
-    failFast = false
-    testLogging {
-        events = ['skipped', 'passed', 'failed']
-        showCauses = true
-        exceptionFormat = "full"
-    }
-}
-
-tasks.named("jacocoTestReport", JacocoReport) {
-    dependsOn(tasks.named('test'))
-    enabled = true
-    reports {
-        xml.required = true
-        xml.outputLocation = layout.buildDirectory.file("reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml").get().asFile
-        html.required = true
-        html.outputLocation = layout.buildDirectory.dir("reports/jacoco/testCodeCoverageReport/html").get().asFile
-    }
-}
-
-tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
-    dependsOn tasks.named('jacocoTestReport', JacocoReport)
-
-    violationRules {
-
-        rule {
-            limit {
-                counter = 'METHOD'
-                value = 'COVEREDRATIO'
-                minimum = 0.672 // FIXME: Increase test coverage and bump this to 1
-            }
-        }
-
-        rule {
-            limit {
-                counter = 'CLASS'
-                value = 'COVEREDRATIO'
-                minimum = 0.738  // FIXME: Increase test coverage and bump this to 1
-            }
-        }
-    }
-}
-
-tasks.named('check') {
-    dependsOn tasks.named('test')
-    dependsOn tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification)
-}
-
-pmd {
-    toolVersion = '7.23.0'
-    ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/ruleset.xml')
-    ruleSets = []
-    ignoreFailures = false
 }
 
 test {

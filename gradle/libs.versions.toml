@@ -4,7 +4,6 @@ jacksonFormatHal    = { strictly = '1.0.9' }
 jacoco              = { strictly = '0.8.13' }
 json                = { strictly = '20250107' }
 jsonld              = { strictly = '0.13.6' }
-nebula              = { strictly = '20.5.8' }
 
 [libraries]
 hamcrest-jackson                 = { group = 'com.spotify',            name = 'hamcrest-jackson',        version.ref = 'hamcrestJackson' }
@@ -13,4 +12,3 @@ jacoco-core                      = { group = 'org.jacoco',             name = 'o
 jacoco-report                    = { group = 'org.jacoco',             name = 'org.jacoco.report',       version.ref = 'jacoco' }
 json                             = { group = 'org.json',               name = 'json',                    version.ref = 'json' }
 jsonld                           = { group = 'com.github.jsonld-java', name = 'jsonld-java',             version.ref = 'jsonld' }
-nebula-lint                      = { group = 'nebula.lint',            name = 'nebula.lint.gradle.plugin', version.ref = 'nebula' }
