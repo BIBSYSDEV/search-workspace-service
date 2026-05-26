@@ -1,0 +1,118 @@
+plugins {
+    id 'java-library'
+    id 'pmd'
+    id 'jacoco'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+dependencies {
+    implementation platform("software.amazon.awssdk:bom:${nvaCatalog.versions.aws.sdk2.asProvider().get()}")
+    implementation 'software.amazon.awssdk:cognitoidentityprovider'
+    implementation 'software.amazon.awssdk:eventbridge'
+    implementation 'software.amazon.awssdk:regions'
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'software.amazon.awssdk:url-connection-client'
+
+    implementation nvaCatalog.commons.lang
+
+    implementation nvaCatalog.aws.java.sdk.core
+    implementation nvaCatalog.bundles.jackson
+    implementation libs.jackson.dataformat.hal
+    implementation nvaCatalog.bundles.logging
+
+    implementation nvaLibs.core
+    implementation nvaLibs.apigateway
+
+    implementation libs.jacoco.core
+    implementation libs.jacoco.report
+    implementation libs.json
+    implementation libs.jsonld
+
+    implementation nvaCatalog.guava
+
+    implementation nvaCatalog.mockito.core
+
+    implementation libs.nebula.lint
+    implementation nvaLibs.json
+
+    testImplementation nvaCatalog.bundles.testing.junit
+    testImplementation nvaCatalog.bundles.testing.hamcrest
+    testImplementation libs.hamcrest.jackson
+    testImplementation nvaCatalog.zalando
+    testImplementation nvaLibs.testutils
+    testImplementation nvaLibs.logutils
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+    failFast = false
+    testLogging {
+        events = ['skipped', 'passed', 'failed']
+        showCauses = true
+        exceptionFormat = "full"
+    }
+}
+
+tasks.named("jacocoTestReport", JacocoReport) {
+    dependsOn(tasks.named('test'))
+    enabled = true
+    reports {
+        xml.required = true
+        xml.outputLocation = layout.buildDirectory.file("reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml").get().asFile
+        html.required = true
+        html.outputLocation = layout.buildDirectory.dir("reports/jacoco/testCodeCoverageReport/html").get().asFile
+    }
+}
+
+tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
+    dependsOn tasks.named('jacocoTestReport', JacocoReport)
+
+    violationRules {
+
+        rule {
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.672 // FIXME: Increase test coverage and bump this to 1
+            }
+        }
+
+        rule {
+            limit {
+                counter = 'CLASS'
+                value = 'COVEREDRATIO'
+                minimum = 0.738  // FIXME: Increase test coverage and bump this to 1
+            }
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('test')
+    dependsOn tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification)
+}
+
+pmd {
+    toolVersion = '7.23.0'
+    ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/ruleset.xml')
+    ruleSets = []
+    ignoreFailures = false
+}
+
+test {
+    environment "ALLOWED_ORIGIN", "*"
+    environment "COGNITO_HOST", "https://example.com"
+    environment "ELASTICSEARCH_REGION", "eu-west-1"
+    environment "BACKUP_BUCKET_NAME", "s3-dummy-name"
+    environment "OPENSEARCH_ENDPOINT_PROTOCOL", "http"
+    environment "OPENSEARCH_ENDPOINT_ADDRESS", "localhost:3000"
+    environment "SCOPE_IDENTIFIER", "https://api.sws.aws.sikt.no/scopes"
+    environment "API_GATEWAY_URL", "localhost:8080"
+    environment "BACKUP_ROLE_ARN", "arn:aws:s3:::dummy-arn"
+    environment "API_HOST", "localhost"
+    environment "COGNITO_AUTHORIZER_URLS", "http://localhost:3000"
+}

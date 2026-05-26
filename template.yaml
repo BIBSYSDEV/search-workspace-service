@@ -4,6 +4,7 @@ Description: >
   Search Workspace Service API and Handlers
 Globals:
   Function:
+    CodeUri: sws
     Timeout: 60
     MemorySize: 1800
     Runtime: java21
