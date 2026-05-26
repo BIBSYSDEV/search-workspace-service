@@ -3,40 +3,38 @@ plugins {
 }
 
 dependencies {
-    implementation platform("software.amazon.awssdk:bom:${nvaCatalog.versions.aws.sdk2.asProvider().get()}")
-    implementation 'software.amazon.awssdk:cognitoidentityprovider'
-    implementation 'software.amazon.awssdk:eventbridge'
-    implementation 'software.amazon.awssdk:regions'
-    implementation 'software.amazon.awssdk:s3'
-    implementation 'software.amazon.awssdk:url-connection-client'
-
-    implementation nvaCatalog.commons.lang
-
-    implementation nvaCatalog.aws.java.sdk.core
-    implementation nvaCatalog.bundles.jackson
-    implementation libs.jackson.dataformat.hal
-    implementation nvaCatalog.bundles.logging
-
-    implementation nvaLibs.core
-    implementation nvaLibs.apigateway
-
-    implementation libs.jacoco.core
-    implementation libs.jacoco.report
-    implementation libs.json
-    implementation libs.jsonld
-
-    implementation nvaCatalog.guava
-
-    implementation nvaCatalog.mockito.core
-
-    implementation nvaLibs.json
-
-    testImplementation nvaCatalog.bundles.testing.junit
-    testImplementation nvaCatalog.bundles.testing.hamcrest
-    testImplementation libs.hamcrest.jackson
-    testImplementation nvaCatalog.zalando
-    testImplementation nvaLibs.testutils
-    testImplementation nvaLibs.logutils
+    api(nvaCatalog.aws.java.sdk.core)
+    api(nvaCatalog.aws.lambda.core)
+    api(nvaCatalog.jackson.annotations)
+    api(nvaCatalog.jackson.core)
+    api(nvaCatalog.jackson.databind)
+    api(nvaCatalog.slf4j.api)
+    api(nvaLibs.apigateway)
+    api(nvaLibs.core)
+    implementation('software.amazon.awssdk:aws-core')
+    implementation('software.amazon.awssdk:cognitoidentityprovider')
+    implementation('software.amazon.awssdk:regions')
+    implementation('software.amazon.awssdk:sdk-core')
+    implementation('software.amazon.awssdk:url-connection-client')
+    implementation(libs.jsonld) {
+        exclude group: 'org.apache.httpcomponents', module: 'httpcore-osgi'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient-osgi'
+        because("Duplicates dependencies from AWS SDKs")
+    }
+    implementation(nvaCatalog.aws.sdk2.aws.core)
+    implementation(nvaCatalog.aws.sdk2.http.client)
+    implementation(nvaCatalog.commons.lang)
+    implementation(nvaLibs.json)
+    implementation(platform("software.amazon.awssdk:bom:${nvaCatalog.versions.aws.sdk2.asProvider().get()}"))
+    runtimeOnly(libs.jackson.dataformat.hal)
+    runtimeOnly(nvaCatalog.log4j.api)
+    runtimeOnly(nvaCatalog.log4j.core)
+    runtimeOnly(nvaCatalog.log4j.slf4j.impl)
+    testImplementation(nvaCatalog.hamcrest)
+    testImplementation(nvaCatalog.junit.jupiter.api)
+    testImplementation(nvaCatalog.mockito.core)
+    testImplementation(nvaLibs.testutils)
+    testImplementation(nvaLibs.testutils)
 }
 
 test {
