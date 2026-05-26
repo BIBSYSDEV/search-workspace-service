@@ -1,0 +1,15 @@
+plugins {
+    id 'nva.java-conventions'
+}
+
+nva {
+    errorprone {
+        allErrorsAsWarnings = false
+    }
+    pmd {
+        rulesetFile = rootProject.file('config/pmd/ruleset.xml')
+    }
+    spotless {
+        enabled = false
+    }
+}

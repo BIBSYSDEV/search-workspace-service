@@ -1,0 +1,20 @@
+plugins {
+    id 'nva.root-module-conventions'
+}
+
+nva {
+    dependencyAnalysis {
+        enforced = false
+    }
+    jacoco {
+        minMethodCoverage = 0.672 // FIXME: Increase test coverage and bump this to 1
+        minClassCoverage = 0.738  // FIXME: Increase test coverage and bump this to 1
+    }
+    spectral {
+        documents = ['docs/*.yaml']
+        rulesetFile = file('.spectral.yaml')
+    }
+    spotless {
+        enabled = false
+    }
+}
