@@ -25,7 +25,7 @@ public class AwsClientWrapper {
 
     private static final List<Integer> FORWARDED_ES_ERROR_CODES = Arrays.asList(HTTP_BAD_REQUEST, HTTP_NOT_FOUND, HTTP_BAD_METHOD, HTTP_NOT_ACCEPTABLE, HTTP_INTERNAL_ERROR);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AwsClientWrapper.class);
 
     public AwsClientWrapper(boolean passError) {
         this.passError = passError;
@@ -60,7 +60,7 @@ public class AwsClientWrapper {
             }
 
 
-            LOGGER.error("Handling error: " + responseCode + " " + bodyString);
+            LOGGER.error("Handling error: {} {}", responseCode, bodyString);
 
             return new AmazonClientException("OpenSearchError: " + " " + responseCode + " " + bodyString);
         }
