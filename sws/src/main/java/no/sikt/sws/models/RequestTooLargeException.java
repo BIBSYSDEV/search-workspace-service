@@ -1,7 +1,7 @@
 package no.sikt.sws.models;
 
 import nva.commons.apigateway.exceptions.ApiGatewayException;
-import software.amazon.awssdk.http.HttpStatusCode;
+import static java.net.HttpURLConnection.HTTP_ENTITY_TOO_LARGE;
 
 public class RequestTooLargeException extends ApiGatewayException {
 
@@ -11,6 +11,6 @@ public class RequestTooLargeException extends ApiGatewayException {
 
     @Override
     protected Integer statusCode() {
-        return HttpStatusCode.REQUEST_TOO_LONG;
+        return HTTP_ENTITY_TOO_LARGE;
     }
 }
