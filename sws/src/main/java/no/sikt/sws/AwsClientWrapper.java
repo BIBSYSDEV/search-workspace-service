@@ -13,14 +13,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import static software.amazon.awssdk.http.HttpStatusCode.*;
+import static java.net.HttpURLConnection.HTTP_BAD_METHOD;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NOT_ACCEPTABLE;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
 public class AwsClientWrapper {
 
     private final boolean passError;
 
-    private static final List<Integer> FORWARDED_ES_ERROR_CODES
-            = Arrays.asList(BAD_REQUEST, NOT_FOUND, METHOD_NOT_ALLOWED, NOT_ACCEPTABLE, INTERNAL_SERVER_ERROR);
+    private static final List<Integer> FORWARDED_ES_ERROR_CODES = Arrays.asList(HTTP_BAD_REQUEST, HTTP_NOT_FOUND, HTTP_BAD_METHOD, HTTP_NOT_ACCEPTABLE, HTTP_INTERNAL_ERROR);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchClient.class);
 
