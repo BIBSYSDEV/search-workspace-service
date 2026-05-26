@@ -18,6 +18,8 @@ Globals:
         BACKUP_ROLE_ARN: !GetAtt SWSSnapshotRepoRole.Arn
         COGNITO_AUTHORIZER_URLS: !GetAtt UserPool.ProviderURL
         API_HOST: !Sub 'api.${CustomDomain}'
+        LOG_LEVEL: "info"
+        LOG4J_CONFIGURATION_FILE: classpath:nva-log4j2.xml
 
 
   Api:
