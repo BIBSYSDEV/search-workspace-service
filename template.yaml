@@ -4,7 +4,6 @@ Description: >
   Search Workspace Service API and Handlers
 Globals:
   Function:
-    CodeUri: sws
     Timeout: 60
     MemorySize: 1800
     Runtime: java21
@@ -330,7 +329,7 @@ Resources:
   IndexHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: sws
       Description: Index handler for indeces within a workspace
       LoggingConfig:
         LogGroup: !Ref IndexHandlerLogGroup
@@ -380,7 +379,7 @@ Resources:
   WorkspaceHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: sws
       Description: Handler for workspace - listing indeces and showing account identifier
       LoggingConfig:
         LogGroup: !Ref WorkspaceHandlerLogGroup
@@ -405,7 +404,7 @@ Resources:
   CognitoHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: sws
       Description: Handler for Cognito - create new users / workspaces
       LoggingConfig:
         LogGroup: !Ref CognitoHandlerLogGroup
@@ -423,7 +422,7 @@ Resources:
   SnapshotRegisterRepoHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: sws
       Description: Handler for registering repository for manual snapshots. Needs to be run from Lambda test in console.
       LoggingConfig:
         LogGroup: !Ref SnapshotRegisterRepoHandlerLogGroup
@@ -442,7 +441,7 @@ Resources:
   SnapshotTakingHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: sws
       Description: Handler which takes manual ie via call snapshots of opensearch hourly
       LoggingConfig:
         LogGroup: !Ref SnapshotTakingHandlerLogGroup
@@ -465,7 +464,7 @@ Resources:
   SnapshotRoutineDeletionHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: sws
       Description: automation of outdated snapshot deletion
       LoggingConfig:
         LogGroup: !Ref SnapshotRoutineDeletionHandlerLogGroup
@@ -488,7 +487,7 @@ Resources:
   SnapshotRestorationHandler:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: sws
       Description: Handler for Restoring from a snapshot
       LoggingConfig:
         LogGroup: !Ref SnapshotRestorationHandlerLogGroup
