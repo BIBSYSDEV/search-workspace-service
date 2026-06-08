@@ -2,47 +2,44 @@ package no.sikt.sws.models.opensearch;
 
 import com.amazonaws.http.HttpResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 public class OpenSearchResponse {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchResponse.class);
-    @JsonProperty("body")
-    private final String body;
+  private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchResponse.class);
 
-    @JsonProperty("status")
-    private final int status;
+  @JsonProperty("body")
+  private final String body;
 
-    public OpenSearchResponse(int status, String body) {
-        this.status = status;
-        this.body = body;
-    }
+  @JsonProperty("status")
+  private final int status;
 
-    public OpenSearchResponse(HttpResponse httpResponse) throws IOException {
-        LOGGER.info("httpResponse " + httpResponse.toString());
-        var bytes = httpResponse.getContent().readAllBytes();
+  public OpenSearchResponse(int status, String body) {
+    this.status = status;
+    this.body = body;
+  }
 
-        this.status = httpResponse.getStatusCode();
-        this.body = new String(bytes, StandardCharsets.UTF_8);
-    }
+  public OpenSearchResponse(HttpResponse httpResponse) throws IOException {
+    LOGGER.info("httpResponse " + httpResponse.toString());
+    var bytes = httpResponse.getContent().readAllBytes();
 
-    public String getBody() {
-        return body;
-    }
+    this.status = httpResponse.getStatusCode();
+    this.body = new String(bytes, StandardCharsets.UTF_8);
+  }
 
-    public int getStatus() {
-        return status;
-    }
+  public String getBody() {
+    return body;
+  }
 
-    @Override
-    public String toString() {
-        return "OpenSearchResponse{"
-                + "status='" + status + '\''
-                + ", body=" + body
-                + '}';
-    }
+  public int getStatus() {
+    return status;
+  }
+
+  @Override
+  public String toString() {
+    return "OpenSearchResponse{" + "status='" + status + '\'' + ", body=" + body + '}';
+  }
 }

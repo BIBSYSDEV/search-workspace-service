@@ -27,7 +27,7 @@ artifacts:
     - packaged.yaml
 cache:
   paths:
-    - '/root/.gradle/caches/**/*'
-    - '/root/venv/**/*'
-    - '/root/.cache/pip/**/*'
-    - '/root/.gradle/wrapper/**/*'
+    - "/root/.gradle/caches/**/*"
+    - "/root/venv/**/*"
+    - "/root/.cache/pip/**/*"
+    - "/root/.gradle/wrapper/**/*"

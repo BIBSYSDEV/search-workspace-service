@@ -7,23 +7,25 @@ import com.fasterxml.jackson.databind.JsonNode;
 @SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
 public class AliasDto extends Dto {
 
-    @JsonProperty("actions")
-    public JsonNode actions;
+  @JsonProperty("actions")
+  public JsonNode actions;
 
-    public static AliasDto fromResponse(String opensearchResponse) {
-        try {
-            return OBJECT_MAPPER.readValue(opensearchResponse, AliasDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+  public static AliasDto fromResponse(String opensearchResponse) {
+    try {
+      return OBJECT_MAPPER.readValue(opensearchResponse, AliasDto.class);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    @Override
-    public AliasDto stripper(String workspacePrefix) {
-        actions =  string2JsonNode.apply(actions.toString()
-            .replaceAll("(\"index\".*?\")(.+?\")","$1" + workspacePrefix + "-$2")
-            .replaceAll("(\"alias\".*?\")(.+?\")","$1" + workspacePrefix + "-$2"));
-        return this;
-    }
-
+  @Override
+  public AliasDto stripper(String workspacePrefix) {
+    actions =
+        string2JsonNode.apply(
+            actions
+                .toString()
+                .replaceAll("(\"index\".*?\")(.+?\")", "$1" + workspacePrefix + "-$2")
+                .replaceAll("(\"alias\".*?\")(.+?\")", "$1" + workspacePrefix + "-$2"));
+    return this;
+  }
 }

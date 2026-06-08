@@ -23,26 +23,26 @@ paths:
       summary: Collection of indexes
       description: Returns a collection of all available indexes in the workspace
       security:
-        - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
+        - CognitoUserPool: ["https://api.sws.aws.sikt.no/scopes/workspace"]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WorkspaceHandler.Arn}/invocations
-        responses: { }
+        responses: {}
         httpMethod: POST
         type: AWS_PROXY
       responses:
-        '200':
+        "200":
           description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OpenSearchResponse'
-        '400':
+                $ref: "#/components/schemas/OpenSearchResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
   /{resource+}:
     post:
       operationId: createResource
@@ -67,30 +67,30 @@ paths:
                 name:
                   type: string
       security:
-        - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
+        - CognitoUserPool: ["https://api.sws.aws.sikt.no/scopes/workspace"]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
-        responses: { }
+        responses: {}
         httpMethod: POST
         type: AWS_PROXY
       responses:
-        '200':
+        "200":
           description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OpenSearchResponse'
-        '201':
+                $ref: "#/components/schemas/OpenSearchResponse"
+        "201":
           description: Created
-        '204':
+        "204":
           description: No content
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
     get:
       operationId: getResource
       tags:
@@ -105,26 +105,26 @@ paths:
           schema:
             type: string
       security:
-        - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
+        - CognitoUserPool: ["https://api.sws.aws.sikt.no/scopes/workspace"]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
-        responses: { }
+        responses: {}
         httpMethod: POST
         type: AWS_PROXY
       responses:
-        '200':
+        "200":
           description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OpenSearchResponse'
-        '400':
+                $ref: "#/components/schemas/OpenSearchResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
     put:
       operationId: updateResource
       tags:
@@ -139,30 +139,30 @@ paths:
           schema:
             type: string
       security:
-        - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
+        - CognitoUserPool: ["https://api.sws.aws.sikt.no/scopes/workspace"]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
-        responses: { }
+        responses: {}
         httpMethod: POST
         type: AWS_PROXY
       responses:
-        '200':
+        "200":
           description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OpenSearchResponse'
-        '201':
+                $ref: "#/components/schemas/OpenSearchResponse"
+        "201":
           description: Created
-        '204':
+        "204":
           description: No content
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
     head:
       operationId: headResource
       tags:
@@ -177,26 +177,26 @@ paths:
           schema:
             type: string
       security:
-        - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
+        - CognitoUserPool: ["https://api.sws.aws.sikt.no/scopes/workspace"]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
-        responses: { }
+        responses: {}
         httpMethod: POST
         type: AWS_PROXY
       responses:
-        '200':
+        "200":
           description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OpenSearchResponse'
-        '400':
+                $ref: "#/components/schemas/OpenSearchResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
     delete:
       operationId: deleteResource
       tags:
@@ -211,34 +211,34 @@ paths:
           schema:
             type: string
       security:
-        - CognitoUserPool: [ 'https://api.sws.aws.sikt.no/scopes/workspace' ]
+        - CognitoUserPool: ["https://api.sws.aws.sikt.no/scopes/workspace"]
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndexHandler.Arn}/invocations
-        responses: { }
+        responses: {}
         httpMethod: POST
         type: AWS_PROXY
       responses:
-        '200':
+        "200":
           description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OpenSearchResponse'
-        '204':
+                $ref: "#/components/schemas/OpenSearchResponse"
+        "204":
           description: Deleted
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '500':
+                $ref: "#/components/schemas/Problem"
+        "500":
           description: Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
 components:
   schemas:
     Problem:

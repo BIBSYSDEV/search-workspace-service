@@ -8,30 +8,29 @@ import no.sikt.sws.PrefixStripper;
 @SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
 public class IndexDto extends Dto {
 
-    @JsonProperty("aliases")
-    public JsonNode aliases;
+  @JsonProperty("aliases")
+  public JsonNode aliases;
 
-    @JsonProperty("mappings")
-    public JsonNode mappings;
+  @JsonProperty("mappings")
+  public JsonNode mappings;
 
-    @JsonProperty("settings")
-    public JsonNode settings;
+  @JsonProperty("settings")
+  public JsonNode settings;
 
-    public static IndexDto fromResponse(String opensearchResponse) {
-        try {
-            return OBJECT_MAPPER.readValue(opensearchResponse, IndexDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+  public static IndexDto fromResponse(String opensearchResponse) {
+    try {
+      return OBJECT_MAPPER.readValue(opensearchResponse, IndexDto.class);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    @Override
-    public IndexDto stripper(String workspacePrefix) {
+  @Override
+  public IndexDto stripper(String workspacePrefix) {
 
-        aliases = PrefixStripper.node(aliases, workspacePrefix);
-        settings = PrefixStripper.node(settings,workspacePrefix);
+    aliases = PrefixStripper.node(aliases, workspacePrefix);
+    settings = PrefixStripper.node(settings, workspacePrefix);
 
-        return this;
-    }
-
+    return this;
+  }
 }

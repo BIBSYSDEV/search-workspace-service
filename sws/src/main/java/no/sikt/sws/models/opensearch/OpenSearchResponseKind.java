@@ -1,62 +1,61 @@
 package no.sikt.sws.models.opensearch;
 
+import static com.amazonaws.http.HttpMethodName.GET;
+import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
+
 import com.amazonaws.http.HttpMethodName;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import nva.commons.apigateway.exceptions.BadRequestException;
 
-import static com.amazonaws.http.HttpMethodName.GET;
-import static no.unit.nva.commons.json.JsonUtils.dtoObjectMapper;
-
 @SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity"})
 public enum OpenSearchResponseKind {
-    ACK("acknowledged"),
-    ERROR("error"),
-    CONTENT("content"),
-    CONTENT_COLLECTION("content-collection")
-    ;
+  ACK("acknowledged"),
+  ERROR("error"),
+  CONTENT("content"),
+  CONTENT_COLLECTION("content-collection");
 
-    private final String val;
+  private final String val;
 
-    OpenSearchResponseKind(String val) {
-        this.val = val;
+  OpenSearchResponseKind(String val) {
+    this.val = val;
+  }
+
+  @Override
+  public String toString() {
+    return val;
+  }
+
+  public static OpenSearchResponseKind fromString(
+      HttpMethodName httpMethod, OpenSearchCommandKind commandKind, String responseBody)
+      throws BadRequestException {
+
+    if (checkForError(responseBody)) {
+      return ERROR;
     }
 
-    @Override
-    public String toString() {
-        return val;
+    switch (commandKind) {
+      case ALIAS:
+        return (httpMethod == GET) ? CONTENT : ACK;
+      case DOC:
+        return CONTENT;
+      case BULK:
+      case SEARCH:
+      case SCROLL:
+        return CONTENT_COLLECTION;
+      case MAPPING:
+      case INDEX:
+        return (httpMethod == GET) ? CONTENT_COLLECTION : ACK;
+      default:
+        throw new BadRequestException(commandKind.name());
     }
+  }
 
-    public static OpenSearchResponseKind fromString(
-        HttpMethodName httpMethod,
-        OpenSearchCommandKind commandKind,
-        String responseBody) throws BadRequestException {
-
-        if (checkForError(responseBody)) {
-            return ERROR;
-        }
-
-        switch (commandKind) {
-            case ALIAS:
-                return (httpMethod == GET) ?  CONTENT :  ACK;
-            case DOC:
-                return CONTENT;
-            case BULK:
-            case SEARCH:
-            case SCROLL:
-                return CONTENT_COLLECTION;
-            case MAPPING:
-            case INDEX:
-                return (httpMethod == GET) ?  CONTENT_COLLECTION : ACK;
-            default:
-                throw new BadRequestException(commandKind.name());
-        }
+  private static boolean checkForError(String responseBody) {
+    try {
+      return dtoObjectMapper.readTree(responseBody).has("error")
+          && dtoObjectMapper.readTree(responseBody).has("status");
+    } catch (JsonProcessingException e) {
+      return true;
     }
-
-    private static boolean checkForError(String responseBody) {
-        try {
-            return dtoObjectMapper.readTree(responseBody).has("error") && dtoObjectMapper.readTree(responseBody).has("status");
-        } catch (JsonProcessingException e) {
-            return true;
-        }
-    }
+  }
 }

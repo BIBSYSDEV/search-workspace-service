@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CreateUserClientDto {
 
-    @JsonProperty("name")
-    public String name;
-
+  @JsonProperty("name")
+  public String name;
 }
