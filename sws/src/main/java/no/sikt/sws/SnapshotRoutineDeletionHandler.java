@@ -1,9 +1,12 @@
 package no.sikt.sws;
 
+import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
+
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import no.sikt.sws.exception.SearchException;
 import no.sikt.sws.models.internal.SnapshotsDto;
 import nva.commons.apigateway.ApiGatewayHandler;
@@ -13,76 +16,78 @@ import nva.commons.core.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-
-import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
-
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
-    private static final Long FOURTEEN_DAYS =  14 * 24 * 60 * 60 * 1000L;
-    public static final String SNAPSHOT_GET_ALL_REQUESTS = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(SnapshotRoutineDeletionHandler.class);
+  private static final Long FOURTEEN_DAYS = 14 * 24 * 60 * 60 * 1000L;
+  public static final String SNAPSHOT_GET_ALL_REQUESTS = SNAPSHOT_REPO_PATH_REQUEST + "/_all";
 
-    public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
+  public OpenSearchClient openSearchClient = OpenSearchClient.defaultClient();
 
-    public SnapshotRoutineDeletionHandler() {
-        super(Void.class, new Environment());
+  public SnapshotRoutineDeletionHandler() {
+    super(Void.class, new Environment());
+  }
+
+  @Override
+  protected void validateRequest(Void unused, RequestInfo requestInfo, Context context)
+      throws ApiGatewayException {
+    // no op
+  }
+
+  @Override
+  protected String processInput(Void input, RequestInfo renquestInfo, Context context)
+      throws ApiGatewayException {
+    try {
+      var allSnaps = returnAllSnaps();
+      return deleteOldSnaps(allSnaps);
+    } catch (Exception e) {
+      throw new SearchException("Something went wrong with deleting outdated snapshots", e);
     }
+  }
 
-    @Override
-    protected void validateRequest(Void unused, RequestInfo requestInfo, Context context) throws ApiGatewayException {
-        // no op
+  protected SnapshotsDto returnAllSnaps() throws ApiGatewayException {
+    try {
+      var response =
+          openSearchClient.sendRequest(HttpMethodName.GET, SNAPSHOT_GET_ALL_REQUESTS, null);
+      ObjectMapper objectMapper =
+          new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      return objectMapper.readValue(response.getBody(), SnapshotsDto.class);
+    } catch (Exception e) {
+      LOGGER.error("Error when listing all snapshots:" + e.getMessage(), e);
+      throw new SearchException(e.getMessage(), e);
     }
+  }
 
-    @Override
-    protected String processInput(Void input, RequestInfo renquestInfo, Context context) throws ApiGatewayException {
-        try {
-            var allSnaps = returnAllSnaps();
-            return deleteOldSnaps(allSnaps);
-        } catch (Exception e) {
-            throw new SearchException("Something went wrong with deleting outdated snapshots", e);
-        }
-    }
-
-    protected SnapshotsDto returnAllSnaps() throws ApiGatewayException {
-        try {
-            var response = openSearchClient.sendRequest(HttpMethodName.GET,
-                    SNAPSHOT_GET_ALL_REQUESTS,
-                    null);
-            ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                    false);
-            return objectMapper.readValue(response.getBody(), SnapshotsDto.class);
-        } catch (Exception e) {
-            LOGGER.error("Error when listing all snapshots:" + e.getMessage(), e);
-            throw new SearchException(e.getMessage(), e);
-        }
-    }
-
-    protected String deleteOldSnaps(SnapshotsDto snapshotsDto)
-            throws SearchException {
-        var responses = new ArrayList<String>();
-        var latest = snapshotsDto.getLatestEpocTime();
-        try {
-            snapshotsDto.snapshots.stream()
-                .filter(item -> latest - item.getEpochTime() > FOURTEEN_DAYS)
-                .forEach(snap -> {
-                    var response = openSearchClient.sendRequest(HttpMethodName.DELETE,
+  protected String deleteOldSnaps(SnapshotsDto snapshotsDto) throws SearchException {
+    var responses = new ArrayList<String>();
+    var latest = snapshotsDto.getLatestEpocTime();
+    try {
+      snapshotsDto.snapshots.stream()
+          .filter(item -> latest - item.getEpochTime() > FOURTEEN_DAYS)
+          .forEach(
+              snap -> {
+                var response =
+                    openSearchClient.sendRequest(
+                        HttpMethodName.DELETE,
                         SNAPSHOT_REPO_PATH_REQUEST + "/" + snap.getName(),
-                            null);
-                    LOGGER.info("for the snapshot: " + snap.getName()
-                                + " the response is: " + response.getStatus());
-                    responses.add(response.getBody());
-                });
-            return String.join(",", responses);
-        } catch (Exception e) {
-            throw new SearchException(e.getMessage(), e);
-        }
+                        null);
+                LOGGER.info(
+                    "for the snapshot: "
+                        + snap.getName()
+                        + " the response is: "
+                        + response.getStatus());
+                responses.add(response.getBody());
+              });
+      return String.join(",", responses);
+    } catch (Exception e) {
+      throw new SearchException(e.getMessage(), e);
     }
+  }
 
-    @Override
-    protected Integer getSuccessStatusCode(Void input, String output) {
-        return 200;
-    }
-
+  @Override
+  protected Integer getSuccessStatusCode(Void input, String output) {
+    return 200;
+  }
 }

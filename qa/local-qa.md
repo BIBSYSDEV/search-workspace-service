@@ -20,8 +20,7 @@ Start the docker image without security and in the new network
 
     docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" --network="sws-network" opensearchproject/opensearch:2.0.1
 
-
-
 ### Run the lambda
+
 Use the RunConfig PutIndexWithConfig in Intellij
 Run/Debug it

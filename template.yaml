@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   Search Workspace Service API and Handlers
@@ -12,15 +12,14 @@ Globals:
     Environment:
       Variables:
         ELASTICSEARCH_REGION: "eu-west-1"
-        SCOPE_IDENTIFIER: 'https://api.sws.aws.sikt.no/scopes'
-        API_GATEWAY_URL: !Sub 'https://api.${CustomDomain}'
-        BACKUP_BUCKET_NAME: !Sub '${BackupBucketName}'
+        SCOPE_IDENTIFIER: "https://api.sws.aws.sikt.no/scopes"
+        API_GATEWAY_URL: !Sub "https://api.${CustomDomain}"
+        BACKUP_BUCKET_NAME: !Sub "${BackupBucketName}"
         BACKUP_ROLE_ARN: !GetAtt SWSSnapshotRepoRole.Arn
         COGNITO_AUTHORIZER_URLS: !GetAtt UserPool.ProviderURL
-        API_HOST: !Sub 'api.${CustomDomain}'
+        API_HOST: !Sub "api.${CustomDomain}"
         LOG_LEVEL: "info"
         LOG4J_CONFIGURATION_FILE: classpath:nva-log4j2.xml
-
 
   Api:
     Cors:
@@ -56,60 +55,59 @@ Parameters:
       - 400
   LogGroupPrefix:
     Type: String
-    Default: '/nva/sws/'
+    Default: "/nva/sws/"
     Description: Prefix for log group names
 
 Conditions:
-  LargeElasticSearch:  !Equals [ !Ref ElasticSearchSize, 'large' ]
-
+  LargeElasticSearch: !Equals [!Ref ElasticSearchSize, "large"]
 
 Resources:
   ApiAccessLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub 'api/${LogGroupPrefix}/ApiAccessLogGroup'
+      LogGroupName: !Sub "api/${LogGroupPrefix}/ApiAccessLogGroup"
       RetentionInDays: !Ref LogRetentionInDays
 
   IndexHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/IndexHandler'
+      LogGroupName: !Sub "lambda/${LogGroupPrefix}/IndexHandler"
       RetentionInDays: !Ref LogRetentionInDays
 
   WorkspaceHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/WorkspaceHandler'
+      LogGroupName: !Sub "lambda/${LogGroupPrefix}/WorkspaceHandler"
       RetentionInDays: !Ref LogRetentionInDays
 
   CognitoHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/CognitoHandler'
+      LogGroupName: !Sub "lambda/${LogGroupPrefix}/CognitoHandler"
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotRegisterRepoHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/SnapshotRegisterRepoHandler'
+      LogGroupName: !Sub "lambda/${LogGroupPrefix}/SnapshotRegisterRepoHandler"
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotTakingHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/SnapshotTakingHandler'
+      LogGroupName: !Sub "lambda/${LogGroupPrefix}/SnapshotTakingHandler"
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotRoutineDeletionHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/SnapshotRoutineDeletionHandler'
+      LogGroupName: !Sub "lambda/${LogGroupPrefix}/SnapshotRoutineDeletionHandler"
       RetentionInDays: !Ref LogRetentionInDays
 
   SnapshotRestorationHandlerLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub 'lambda/${LogGroupPrefix}/SnapshotRestorationHandler'
+      LogGroupName: !Sub "lambda/${LogGroupPrefix}/SnapshotRestorationHandler"
       RetentionInDays: !Ref LogRetentionInDays
 
   ElasticSearchRole:
@@ -120,8 +118,8 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: [ lambda.amazonaws.com ]
-            Action: [ 'sts:AssumeRole' ]
+              Service: [lambda.amazonaws.com]
+            Action: ["sts:AssumeRole"]
       Policies:
         - PolicyName: writeLog
           PolicyDocument:
@@ -132,7 +130,7 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*"
         - PolicyName: readIdentitySecret
           PolicyDocument:
             Version: 2012-10-17
@@ -140,14 +138,14 @@ Resources:
               - Effect: Allow
                 Action:
                   - secretsmanager:GetSecretValue
-                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:IdentityServiceSecret*'
+                Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:IdentityServiceSecret*"
 
   SWSLambdaTriggerRole:
     Type: AWS::IAM::Role
     Properties:
       Path: /
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Principal:
@@ -164,7 +162,7 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*"
         - PolicyName: allOpenSearch
           PolicyDocument:
             Version: 2012-10-17
@@ -176,7 +174,7 @@ Resources:
                   - es:ESHttpPut
                   - es:ESHttpGet
                   - es:ESHttpHead
-                Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
+                Resource: !Sub "arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*"
         - PolicyName: invokeLambda
           PolicyDocument:
             Version: 2012-10-17
@@ -191,7 +189,7 @@ Resources:
     Properties:
       Path: /
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Principal:
@@ -208,7 +206,7 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*"
         - PolicyName: invokeLambda
           PolicyDocument:
             Version: 2012-10-17
@@ -237,7 +235,7 @@ Resources:
     Properties:
       Path: /
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Principal:
@@ -254,7 +252,7 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*"
         - PolicyName: allOpenSearch
           PolicyDocument:
             Version: 2012-10-17
@@ -266,7 +264,7 @@ Resources:
                   - es:ESHttpPut
                   - es:ESHttpGet
                   - es:ESHttpHead
-                Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
+                Resource: !Sub "arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*"
         - PolicyName: invokeLambda
           PolicyDocument:
             Version: 2012-10-17
@@ -285,7 +283,7 @@ Resources:
                   - s3:GetObject
                   - s3:PutObject
                   - s3:DeleteObject
-                Resource: !Sub 'arn:aws:s3:::${BackupBucketName}/*'
+                Resource: !Sub "arn:aws:s3:::${BackupBucketName}/*"
         - PolicyName: lists3Bucket
           PolicyDocument:
             Version: 2012-10-17
@@ -293,10 +291,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - s3:ListBucket
-                Resource: !Sub 'arn:aws:s3:::${BackupBucketName}'
-
-
-
+                Resource: !Sub "arn:aws:s3:::${BackupBucketName}"
 
   SWSApi:
     Type: AWS::Serverless::Api
@@ -307,8 +302,8 @@ Resources:
       StageName: Prod
       EndpointConfiguration: REGIONAL
       DefinitionBody:
-        'Fn::Transform':
-          Name: 'AWS::Include'
+        "Fn::Transform":
+          Name: "AWS::Include"
           Parameters:
             Location: ./docs/openapi.yaml
 
@@ -322,7 +317,7 @@ Resources:
               - sts:AssumeRole
             Effect: Allow
             Principal:
-              Service: [ codedeploy.amazonaws.com ]
+              Service: [codedeploy.amazonaws.com]
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda
 
@@ -335,7 +330,7 @@ Resources:
         LogGroup: !Ref IndexHandlerLogGroup
       Environment:
         Variables:
-          ALLOWED_ORIGIN: '*'
+          ALLOWED_ORIGIN: "*"
           OPENSEARCH_ENDPOINT_PROTOCOL: "https"
           OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
       Policies:
@@ -349,11 +344,11 @@ Resources:
             Path: /{resource+}
             RestApiId: !Ref SWSApi
         HeadEvent:
-         Type: Api
-         Properties:
-           Method: head
-           Path: /{resource+}
-           RestApiId: !Ref SWSApi
+          Type: Api
+          Properties:
+            Method: head
+            Path: /{resource+}
+            RestApiId: !Ref SWSApi
         DeleteEvent:
           Type: Api
           Properties:
@@ -375,7 +370,6 @@ Resources:
       Handler: no.sikt.sws.IndexHandler::handleRequest
       Role: !GetAtt SWSLambdaTriggerRole.Arn
 
-
   WorkspaceHandler:
     Type: AWS::Serverless::Function
     Properties:
@@ -385,7 +379,7 @@ Resources:
         LogGroup: !Ref WorkspaceHandlerLogGroup
       Environment:
         Variables:
-          ALLOWED_ORIGIN: '*'
+          ALLOWED_ORIGIN: "*"
           OPENSEARCH_ENDPOINT_PROTOCOL: "https"
           OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
       Policies:
@@ -410,7 +404,7 @@ Resources:
         LogGroup: !Ref CognitoHandlerLogGroup
       Environment:
         Variables:
-          ALLOWED_ORIGIN: '*'
+          ALLOWED_ORIGIN: "*"
           OPENSEARCH_ENDPOINT_PROTOCOL: "https"
           OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
       Policies:
@@ -428,15 +422,14 @@ Resources:
         LogGroup: !Ref SnapshotRegisterRepoHandlerLogGroup
       Environment:
         Variables:
-          ALLOWED_ORIGIN: '*'
+          ALLOWED_ORIGIN: "*"
           OPENSEARCH_ENDPOINT_PROTOCOL: "https"
           OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.SnapshotRegisterRepoHandler::handleRequest
-      Role: !GetAtt   SWSSnapshotRepoRole.Arn
-
+      Role: !GetAtt SWSSnapshotRepoRole.Arn
 
   SnapshotTakingHandler:
     Type: AWS::Serverless::Function
@@ -447,14 +440,14 @@ Resources:
         LogGroup: !Ref SnapshotTakingHandlerLogGroup
       Environment:
         Variables:
-          ALLOWED_ORIGIN: '*'
+          ALLOWED_ORIGIN: "*"
           OPENSEARCH_ENDPOINT_PROTOCOL: "https"
           OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.SnapshotTakingHandler::handleRequest
-      Role: !GetAtt   SWSSnapshotRepoRole.Arn
+      Role: !GetAtt SWSSnapshotRepoRole.Arn
       Events:
         ScheduledEventTakingSnapshot:
           Type: Schedule
@@ -470,14 +463,14 @@ Resources:
         LogGroup: !Ref SnapshotRoutineDeletionHandlerLogGroup
       Environment:
         Variables:
-          ALLOWED_ORIGIN: '*'
+          ALLOWED_ORIGIN: "*"
           OPENSEARCH_ENDPOINT_PROTOCOL: "https"
           OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.SnapshotRoutineDeletionHandler::handleRequest
-      Role: !GetAtt   SWSSnapshotRepoRole.Arn
+      Role: !GetAtt SWSSnapshotRepoRole.Arn
       Events:
         ScheduledDeletionSnap:
           Type: Schedule
@@ -493,16 +486,14 @@ Resources:
         LogGroup: !Ref SnapshotRestorationHandlerLogGroup
       Environment:
         Variables:
-          ALLOWED_ORIGIN: '*'
+          ALLOWED_ORIGIN: "*"
           OPENSEARCH_ENDPOINT_PROTOCOL: "https"
           OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
       Policies:
         - AWSLambdaBasicExecutionRole
         - AWSLambda_ReadOnlyAccess
       Handler: no.sikt.sws.SnapshotRestorationHandler::handleRequest
-      Role: !GetAtt   SWSSnapshotRepoRole.Arn
-
-
+      Role: !GetAtt SWSSnapshotRepoRole.Arn
 
   UserPool:
     Type: AWS::Cognito::UserPool
@@ -566,7 +557,7 @@ Resources:
               - s3:PutObject
               - s3:GetObject
               - s3:DeleteObject
-            Resource: !Sub 'arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*'
+            Resource: !Sub "arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*"
       ClusterConfig: !If
         - LargeElasticSearch
         - DedicatedMasterEnabled: true

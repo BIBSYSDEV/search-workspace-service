@@ -1,6 +1,11 @@
 package no.sikt.sws;
 
+import static no.sikt.sws.testutils.Constants.TEST_SCOPE_SONDRE;
+import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
+
 import com.amazonaws.services.lambda.runtime.Context;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.stubs.FakeContext;
 import no.unit.nva.testutils.HandlerRequestBuilder;
@@ -8,29 +13,21 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import static no.sikt.sws.testutils.Constants.TEST_SCOPE_SONDRE;
-import static no.unit.nva.testutils.HandlerRequestBuilder.SCOPE_CLAIM;
-
 @SuppressWarnings({"PMD.CloseResource"})
 class SnapshotTakingHandlerTest {
-    private static final Context CONTEXT = new FakeContext();
-    @InjectMocks
-    private final SnapshotTakingHandler handler = new SnapshotTakingHandler();
+  private static final Context CONTEXT = new FakeContext();
+  @InjectMocks private final SnapshotTakingHandler handler = new SnapshotTakingHandler();
 
-    @Mock
-    private OpenSearchClient openSearchClient;
+  @Mock private OpenSearchClient openSearchClient;
 
-    @Test
-    void createSNapshotTest() throws IOException {
-        var request = new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
-                .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE_SONDRE)
-                .build();
+  @Test
+  void createSNapshotTest() throws IOException {
+    var request =
+        new HandlerRequestBuilder<Void>(JsonUtils.dtoObjectMapper)
+            .withAuthorizerClaim(SCOPE_CLAIM, TEST_SCOPE_SONDRE)
+            .build();
 
-        var output = new ByteArrayOutputStream();
-        handler.handleRequest(request, output, CONTEXT);
-    }
-
+    var output = new ByteArrayOutputStream();
+    handler.handleRequest(request, output, CONTEXT);
+  }
 }
