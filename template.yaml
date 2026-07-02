@@ -38,6 +38,13 @@ Parameters:
     Type: String
     Default: sws-auth-dev
     Description: The prefix for the Cognito domain that hosts the sign-up and sign-in pages for your application.
+  DashboardApplicationName:
+    Type: String
+    Default: sws-dev-dashboard
+    Description: Name of the OpenSearch UI dashboard application. Must be unique per account and region.
+    AllowedPattern: "[a-z][a-z0-9\\-]+"
+    MinLength: 3
+    MaxLength: 40
   CustomDomain:
     Type: String
     Description: Custom API to connect this lambda to
@@ -585,3 +592,16 @@ Resources:
         Enabled: false
       AdvancedOptions:
         "indices.query.bool.max_clause_count": "4096"
+
+  SWSDashboardApplication:
+    Type: AWS::OpenSearchService::Application
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      Name: !Ref DashboardApplicationName
+      DataSources:
+        - DataSourceArn: !GetAtt SWSOpenSearch.Arn
+          DataSourceDescription: SWS OpenSearch cluster
+      AppConfigs:
+        - Key: opensearchDashboards.dashboardAdmin.users
+          Value: "*"
