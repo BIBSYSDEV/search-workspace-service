@@ -33,11 +33,12 @@ public class ClusterSettingsHandler implements RequestHandler<Object, String> {
     LOGGER.info("Applying cluster settings: {}", CLUSTER_SETTINGS);
     var response =
         openSearchClient.sendRequest(HttpMethodName.PUT, CLUSTER_SETTINGS_PATH, CLUSTER_SETTINGS);
-    LOGGER.info("Response: {} - {}", response.getStatus(), response.getBody());
 
     if (response.getStatus() != HTTP_OK) {
+      LOGGER.error("Failed to apply cluster settings: {}", response);
       throw new IllegalStateException("Failed to apply cluster settings");
     }
+    LOGGER.info("Successfully applied cluster settings: {}", response);
     return response.getBody();
   }
 }
