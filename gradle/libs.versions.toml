@@ -1,7 +1,9 @@
 [versions]
+aws-sdk = { strictly = "1.12.797" }
 jacksonFormatHal    = { strictly = '1.0.9' }
 jsonld              = { strictly = '0.13.6' }
 
 [libraries]
+aws-java-sdk-core = {group = "com.amazonaws", name = "aws-java-sdk-core", version.ref = "aws-sdk" }
 jackson-dataformat-hal           = { group = 'io.openapitools.jackson.dataformat', name = 'jackson-dataformat-hal', version.ref = 'jacksonFormatHal' }
 jsonld                           = { group = 'com.github.jsonld-java', name = 'jsonld-java',             version.ref = 'jsonld' }
