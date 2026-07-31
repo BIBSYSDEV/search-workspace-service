@@ -64,6 +64,9 @@ Parameters:
     Type: String
     Default: "/nva/sws/"
     Description: Prefix for log group names
+  SlackSnsArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/NVA/Monitoring/SlackSnsArn"
 
 Conditions:
   LargeElasticSearch: !Equals [!Ref ElasticSearchSize, "large"]
@@ -115,6 +118,12 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub "lambda/${LogGroupPrefix}/SnapshotRestorationHandler"
+      RetentionInDays: !Ref LogRetentionInDays
+
+  ClusterSettingsHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "lambda/${LogGroupPrefix}/ClusterSettingsHandler"
       RetentionInDays: !Ref LogRetentionInDays
 
   ElasticSearchRole:
@@ -592,6 +601,65 @@ Resources:
         Enabled: false
       AdvancedOptions:
         "indices.query.bool.max_clause_count": "4096"
+
+  # action.auto_create_index is not supported in AdvancedOptions and must be
+  # applied through the cluster settings API. The handler runs after every
+  # completed deployment of this stack and on a weekly schedule as a fallback.
+  ClusterSettingsHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: sws
+      Description: Applies OpenSearch cluster settings not supported by AdvancedOptions
+      LoggingConfig:
+        LogGroup: !Ref ClusterSettingsHandlerLogGroup
+      Environment:
+        Variables:
+          ALLOWED_ORIGIN: "*"
+          OPENSEARCH_ENDPOINT_PROTOCOL: "https"
+          OPENSEARCH_ENDPOINT_ADDRESS: !GetAtt SWSOpenSearch.DomainEndpoint
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+      Handler: no.sikt.sws.ClusterSettingsHandler::handleRequest
+      Role: !GetAtt SWSLambdaTriggerRole.Arn
+      Events:
+        StackDeployed:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.cloudformation
+              detail-type:
+                - CloudFormation Stack Status Change
+              resources:
+                - !Ref AWS::StackId
+              detail:
+                status-details:
+                  status:
+                    - CREATE_COMPLETE
+                    - UPDATE_COMPLETE
+        WeeklySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(7 days)
+
+  ClusterSettingsErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: SWS applying OpenSearch cluster settings failed
+      AlarmDescription: Errors in ClusterSettingsHandler. The cluster may be running with action.auto_create_index enabled. Check logs.
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref ClusterSettingsHandler
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+        - !Ref SlackSnsArn
 
   SWSDashboardApplication:
     Type: AWS::OpenSearchService::Application
