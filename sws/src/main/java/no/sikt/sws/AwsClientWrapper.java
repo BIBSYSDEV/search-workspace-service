@@ -6,7 +6,11 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_ACCEPTABLE;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
-import com.amazonaws.*;
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.Request;
+import com.amazonaws.Response;
+import com.amazonaws.SdkBaseException;
 import com.amazonaws.http.AmazonHttpClient;
 import com.amazonaws.http.ExecutionContext;
 import com.amazonaws.http.HttpResponse;
@@ -53,7 +57,6 @@ public class AwsClientWrapper {
   private final HttpResponseHandler<SdkBaseException> errorHandler =
       new HttpResponseHandler<>() {
 
-        @SuppressWarnings({"PMD.OnlyOneReturn"})
         @Override
         public AmazonClientException handle(HttpResponse response) throws Exception {
 

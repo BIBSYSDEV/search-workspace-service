@@ -1,7 +1,12 @@
 package no.sikt.sws;
 
-import static no.sikt.sws.constants.ApplicationConstants.*;
-import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.*;
+import static no.sikt.sws.constants.ApplicationConstants.BACKEND_SCOPE_RESOURCE_SERVER_NAME;
+import static no.sikt.sws.constants.ApplicationConstants.SCOPE_IDENTIFIER;
+import static no.sikt.sws.constants.ApplicationConstants.USER_POOL_NAME;
+import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.ALLOW_ADMIN_USER_PASSWORD_AUTH;
+import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.ALLOW_CUSTOM_AUTH;
+import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.ALLOW_REFRESH_TOKEN_AUTH;
+import static software.amazon.awssdk.services.cognitoidentityprovider.model.ExplicitAuthFlowsType.ALLOW_USER_SRP_AUTH;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.TimeUnitsType.DAYS;
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.TimeUnitsType.MINUTES;
 
@@ -22,7 +27,15 @@ import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.CreateUserPoolClientRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.DescribeUserPoolClientRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListResourceServersRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUserPoolClientsRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUserPoolsRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ResourceServerScopeType;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ResourceServerType;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.TokenValidityUnitsType;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UpdateResourceServerRequest;
 
 public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, CognitoCredentialsDto> {
 

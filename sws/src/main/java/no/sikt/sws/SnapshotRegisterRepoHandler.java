@@ -1,6 +1,8 @@
 package no.sikt.sws;
 
-import static no.sikt.sws.constants.ApplicationConstants.*;
+import static no.sikt.sws.constants.ApplicationConstants.BACKUP_BUCKET_NAME;
+import static no.sikt.sws.constants.ApplicationConstants.BACKUP_ROLE_ARN;
+import static no.sikt.sws.constants.ApplicationConstants.SNAPSHOT_REPO_PATH_REQUEST;
 
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -30,7 +32,6 @@ public class SnapshotRegisterRepoHandler extends ApiGatewayHandler<Void, String>
   }
 
   @Override
-  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   protected String processInput(Void input, RequestInfo requestInfo, Context context)
       throws ApiGatewayException {
     var settings =

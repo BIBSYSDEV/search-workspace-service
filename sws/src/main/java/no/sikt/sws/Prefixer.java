@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JacocoGenerated
-@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.AvoidThrowingRawExceptionTypes"})
+@SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes"})
 public class Prefixer {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Prefixer.class);

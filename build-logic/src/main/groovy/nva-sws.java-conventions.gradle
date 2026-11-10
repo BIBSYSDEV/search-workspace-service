@@ -7,7 +7,12 @@ nva {
         allErrorsAsWarnings = false
     }
     pmd {
-        rulesetFile = rootProject.file('config/pmd/ruleset.xml')
+        excludedRules = [
+                'AvoidCatchingGenericException',
+                'GuardLogStatement',
+                'UnitTestContainsTooManyAsserts',
+                'UnitTestShouldIncludeAssert'
+        ]
     }
     spotless {
         enabled = true
