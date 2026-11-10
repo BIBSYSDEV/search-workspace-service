@@ -21,11 +21,10 @@ public final class Utils {
 
   public static Map<String, String> buildQueryParams(String query) {
     return Arrays.stream(query.split("&"))
-        .map(
-            param -> {
-              var pair = param.split("=");
-              return Map.entry(pair[0], pair[1]);
-            })
+        .map(param -> {
+          var pair = param.split("=");
+          return Map.entry(pair[0], pair[1]);
+        })
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 

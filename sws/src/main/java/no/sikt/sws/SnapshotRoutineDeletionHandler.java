@@ -65,20 +65,17 @@ public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, Stri
     try {
       snapshotsDto.snapshots.stream()
           .filter(item -> latest - item.getEpochTime() > FOURTEEN_DAYS)
-          .forEach(
-              snap -> {
-                var response =
-                    openSearchClient.sendRequest(
-                        HttpMethodName.DELETE,
-                        SNAPSHOT_REPO_PATH_REQUEST + "/" + snap.getName(),
-                        null);
-                LOGGER.info(
-                    "for the snapshot: "
-                        + snap.getName()
-                        + " the response is: "
-                        + response.getStatus());
-                responses.add(response.getBody());
-              });
+          .forEach(snap -> {
+            var response =
+                openSearchClient.sendRequest(
+                    HttpMethodName.DELETE, SNAPSHOT_REPO_PATH_REQUEST + "/" + snap.getName(), null);
+            LOGGER.info(
+                "for the snapshot: "
+                    + snap.getName()
+                    + " the response is: "
+                    + response.getStatus());
+            responses.add(response.getBody());
+          });
       return String.join(",", responses);
     } catch (Exception e) {
       throw new SearchException(e.getMessage(), e);

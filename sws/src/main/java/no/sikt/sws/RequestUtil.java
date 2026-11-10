@@ -15,10 +15,8 @@ public class RequestUtil {
   public static final String HTTP_METHOD = "httpMethod";
 
   public static HttpMethodName getRequestHttpMethod(RequestInfo requestInfo) {
-    return attempt(
-            () ->
-                HttpMethodName.valueOf(
-                    requestInfo.getOtherProperties().get(HTTP_METHOD).toString()))
+    return attempt(() ->
+            HttpMethodName.valueOf(requestInfo.getOtherProperties().get(HTTP_METHOD).toString()))
         .orElseThrow();
   }
 

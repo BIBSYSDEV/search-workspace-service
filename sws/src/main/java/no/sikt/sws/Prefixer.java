@@ -100,11 +100,10 @@ public class Prefixer {
       var objectNode = (ObjectNode) node.get(nodeName);
       var names = new ArrayList<String>();
       objectNode.fieldNames().forEachRemaining(names::add);
-      names.forEach(
-          name -> {
-            objectNode.set(workspacePrefix + "-" + name, objectNode.get(name));
-            objectNode.remove(name);
-          });
+      names.forEach(name -> {
+        objectNode.set(workspacePrefix + "-" + name, objectNode.get(name));
+        objectNode.remove(name);
+      });
       ((ObjectNode) node).set(nodeName, objectNode);
     }
   }
@@ -113,25 +112,24 @@ public class Prefixer {
     LOGGER.info(TOUCHED_BODY);
 
     return convertBulkBodyToJsonList(gatewayBulkBody).stream()
-            .map(
-                item -> {
-                  String indexName;
-                  if (item.has("index")) {
-                    indexName = item.get("index").get(INDEX).textValue();
-                  } else if (item.has("delete")) {
-                    indexName = item.get("delete").get(INDEX).textValue();
-                  } else if (item.has("update")) {
-                    indexName = item.get("update").get(INDEX).textValue();
-                  } else if (item.has("create")) {
-                    indexName = item.get("create").get(INDEX).textValue();
-                  } else {
-                    return item.toString();
-                  }
-                  var workspaceIndexName = String.format("\"%s-%s\"", workspacePrefix, indexName);
-                  indexName = String.format("\"%s\"", indexName);
+            .map(item -> {
+              String indexName;
+              if (item.has("index")) {
+                indexName = item.get("index").get(INDEX).textValue();
+              } else if (item.has("delete")) {
+                indexName = item.get("delete").get(INDEX).textValue();
+              } else if (item.has("update")) {
+                indexName = item.get("update").get(INDEX).textValue();
+              } else if (item.has("create")) {
+                indexName = item.get("create").get(INDEX).textValue();
+              } else {
+                return item.toString();
+              }
+              var workspaceIndexName = String.format("\"%s-%s\"", workspacePrefix, indexName);
+              indexName = String.format("\"%s\"", indexName);
 
-                  return item.toString().replaceAll(indexName, workspaceIndexName);
-                })
+              return item.toString().replaceAll(indexName, workspaceIndexName);
+            })
             .collect(Collectors.joining("\n"))
         + "\n";
   }
