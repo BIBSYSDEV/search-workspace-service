@@ -16,11 +16,6 @@ dependencies {
     implementation('software.amazon.awssdk:regions')
     implementation('software.amazon.awssdk:sdk-core')
     implementation('software.amazon.awssdk:url-connection-client')
-    implementation(libs.jsonld) {
-        exclude group: 'org.apache.httpcomponents', module: 'httpcore-osgi'
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient-osgi'
-        because("Duplicates dependencies from AWS SDKs")
-    }
     implementation(nvaCatalog.aws.sdk2.aws.core)
     implementation(nvaCatalog.aws.sdk2.http.client)
     implementation(nvaCatalog.commons.lang)

@@ -11,7 +11,6 @@ import static software.amazon.awssdk.services.cognitoidentityprovider.model.Time
 import static software.amazon.awssdk.services.cognitoidentityprovider.model.TimeUnitsType.MINUTES;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.github.jsonldjava.shaded.com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -126,7 +125,7 @@ public class CognitoHandler extends ApiGatewayHandler<CreateUserClientDto, Cogni
             .clientName(appClientName)
             .generateSecret(true)
             .allowedOAuthScopes(
-                Lists.newArrayList(SCOPE_IDENTIFIER + "/workspace", SCOPE_IDENTIFIER + "/" + name))
+                List.of(SCOPE_IDENTIFIER + "/workspace", SCOPE_IDENTIFIER + "/" + name))
             .allowedOAuthFlowsWithStrings("client_credentials")
             .allowedOAuthFlowsUserPoolClient(true)
             .explicitAuthFlows(
