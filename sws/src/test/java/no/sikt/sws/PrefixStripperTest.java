@@ -135,11 +135,10 @@ class PrefixStripperTest {
             .get();
 
     var resultResponse =
-        attempt(
-                () ->
-                    objectMapper
-                        .writerWithDefaultPrettyPrinter()
-                        .writeValueAsString(workspaceResponse.indexList))
+        attempt(() ->
+                objectMapper
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(workspaceResponse.indexList))
             .get();
 
     assertEquals(expectedResponse, resultResponse);

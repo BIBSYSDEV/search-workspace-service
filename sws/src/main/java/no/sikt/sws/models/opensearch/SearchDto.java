@@ -40,10 +40,8 @@ public class SearchDto extends Dto {
   @SuppressWarnings("unused")
   public SearchDto stripper(String workspacePrefix) {
     if (hits != null) {
-      hits.hits.forEach(
-          docDto ->
-              docDto.indexName =
-                  docDto.indexName.replaceFirst(workspacePrefix + "-", EMPTY_STRING));
+      hits.hits.forEach(docDto ->
+          docDto.indexName = docDto.indexName.replaceFirst(workspacePrefix + "-", EMPTY_STRING));
     } else {
       logger.info(toString());
     }

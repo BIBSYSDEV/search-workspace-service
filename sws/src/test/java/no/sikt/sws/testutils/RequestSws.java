@@ -37,14 +37,13 @@ public class RequestSws implements Serializable {
 
   public List<JsonNode> getBulkBody() {
     return Arrays.stream(body.split("\n"))
-        .map(
-            s -> {
-              try {
-                return JsonUtils.dtoObjectMapper.readValue(s, JsonNode.class);
-              } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-              }
-            })
+        .map(s -> {
+          try {
+            return JsonUtils.dtoObjectMapper.readValue(s, JsonNode.class);
+          } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+          }
+        })
         .collect(Collectors.toList());
   }
 
