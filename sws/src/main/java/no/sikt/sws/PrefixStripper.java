@@ -6,17 +6,19 @@ import static no.sikt.sws.constants.ApplicationConstants.REQUIRED_PARAMETER_IS_N
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.sikt.sws.constants.ApplicationConstants;
-import no.sikt.sws.models.opensearch.*;
+import no.sikt.sws.models.opensearch.DocDto;
+import no.sikt.sws.models.opensearch.ErrorDto;
+import no.sikt.sws.models.opensearch.IndexDto;
+import no.sikt.sws.models.opensearch.IndexesDto;
+import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
+import no.sikt.sws.models.opensearch.OpenSearchResponseKind;
+import no.sikt.sws.models.opensearch.SearchDto;
 import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.apigateway.exceptions.BadRequestException;
 import nva.commons.core.JacocoGenerated;
 
 @JacocoGenerated
-@SuppressWarnings({
-  "PMD.OnlyOneReturn",
-  "PMD.CyclomaticComplexity",
-  "PMD.AvoidThrowingRawExceptionTypes"
-})
+@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.AvoidThrowingRawExceptionTypes"})
 public class PrefixStripper {
 
   public static final String UNEXPECTED_VALUE = "Unexpected value: ";

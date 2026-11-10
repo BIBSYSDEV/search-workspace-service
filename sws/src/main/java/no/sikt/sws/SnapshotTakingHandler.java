@@ -27,7 +27,6 @@ public class SnapshotTakingHandler extends ApiGatewayHandler<Void, String> {
   }
 
   @Override
-  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   protected String processInput(Void input, RequestInfo requestInfo, Context context)
       throws ApiGatewayException {
 

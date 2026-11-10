@@ -13,7 +13,6 @@ import no.sikt.sws.models.opensearch.OpenSearchCommandKind;
 @SuppressWarnings({
   "PMD.AvoidThrowingRawExceptionTypes",
   "PMD.SystemPrintln",
-  "PMD.AvoidCatchingGenericException",
   "PMD.OverrideBothEqualsAndHashCodeOnComparable"
 })
 public class CaseSws implements Serializable, Comparable<CaseSws> {

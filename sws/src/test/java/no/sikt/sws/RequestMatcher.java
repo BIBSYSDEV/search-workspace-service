@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import org.mockito.ArgumentMatcher;
 
-@SuppressWarnings({"PMD.OnlyOneReturn"})
 public class RequestMatcher implements ArgumentMatcher<Request> {
 
   private final Request sourceRequest;

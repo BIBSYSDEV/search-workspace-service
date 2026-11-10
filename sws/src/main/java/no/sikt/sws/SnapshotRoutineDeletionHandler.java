@@ -16,7 +16,6 @@ import nva.commons.core.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("PMD.AvoidCatchingGenericException")
 public class SnapshotRoutineDeletionHandler extends ApiGatewayHandler<Void, String> {
 
   private static final Logger LOGGER =

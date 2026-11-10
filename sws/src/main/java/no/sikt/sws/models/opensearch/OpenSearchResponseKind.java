@@ -7,7 +7,7 @@ import com.amazonaws.http.HttpMethodName;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import nva.commons.apigateway.exceptions.BadRequestException;
 
-@SuppressWarnings({"PMD.OnlyOneReturn", "PMD.CyclomaticComplexity"})
+@SuppressWarnings({"PMD.CyclomaticComplexity"})
 public enum OpenSearchResponseKind {
   ACK("acknowledged"),
   ERROR("error"),

@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@SuppressWarnings("PMD.ShortClassName")
 public abstract class Dto {
 
   @JsonIgnore protected Logger logger = LoggerFactory.getLogger(getClass().getName());

@@ -20,7 +20,6 @@ import no.sikt.sws.models.opensearch.OpenSearchResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings({"PMD.OnlyOneReturn"})
 public class OpenSearchClient {
   private static final String NULL_STRING = "null";
   private static final Logger LOGGER = LoggerFactory.getLogger(OpenSearchClient.class);
